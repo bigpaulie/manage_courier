@@ -16,9 +16,12 @@
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
 
 
+    <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.css') }}" rel="stylesheet">
 
-    {!! Html::style("/assets/vendor/bootstrap/css/bootstrap.css") !!}
-    {!! Html::style("/assets/vendor/font-awesome/css/font-awesome.css") !!}
+    <link href="{{ asset('assets/vendor/font-awesome/css/font-awesome.css') }}" rel="stylesheet">
+
+{{--{!! Html::style("/assets/vendor/bootstrap/css/bootstrap.css") !!}--}}
+    {{--{!! Html::style("/assets/vendor/font-awesome/css/font-awesome.css") !!}--}}
     {!! Html::style("/assets/vendor/magnific-popup/magnific-popup.css") !!}
     {!! Html::style("/assets/vendor/bootstrap-datepicker/css/datepicker3.css") !!}
 
