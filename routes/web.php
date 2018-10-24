@@ -30,31 +30,46 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::prefix('admin')->group(function () {
+Route::group(['middleware' => array('auth')], function() {
 
-    Route::get('/dashboard', 'UserController@admin_dashboard')->name('admin.dashboard');
-    Route::get('/profile/{id}', 'UserController@profile')->name('admin.profile');
+    Route::prefix('admin')->group(function () {
 
-    Route::resource('agents', 'AgentController');
-    Route::resource('stores', 'StoreController');
-    Route::resource('couriers', 'CourierController');
-    Route::resource('expenses', 'ExpenseController');
+        Route::get('/dashboard', 'UserController@admin_dashboard')->name('admin.dashboard');
+        Route::get('/profile/{id}', 'UserController@profile')->name('admin.profile');
+        Route::put('/profile/{id}', 'UserController@update_profile');
+        Route::get('/notifications', 'NotificationController@index')->name('admin.notifications');
+        Route::get('/change_password', 'UserController@change_password')->name('admin.change_password');
+        Route::put('/update_password/{user_id}', 'UserController@updatePassword');
+        Route::get('/store_city', 'UserController@storeCity')->name('admin.store_city');
 
-});
 
-Route::prefix('agent')->group(function () {
 
-    Route::get('/dashboard', 'UserController@agent_dashboard')->name('agent.dashboard');
-    Route::get('/profile/{id}', 'UserController@profile')->name('agent.profile');
 
-    Route::resource('couriers', 'CourierController');
-});
 
-Route::prefix('store')->group(function () {
 
-    Route::get('/dashboard', 'UserController@store_dashboard')->name('store.dashboard');
-    Route::get('/profile/{id}', 'UserController@profile')->name('agent.profile');
+        Route::resource('agents', 'AgentController');
+        Route::resource('stores', 'StoreController');
+        Route::resource('couriers', 'CourierController');
+        Route::resource('expenses', 'ExpenseController');
 
-    Route::resource('expenses', 'ExpenseController');
+    });
+
+    Route::prefix('agent')->group(function () {
+
+        Route::get('/dashboard', 'UserController@agent_dashboard')->name('agent.dashboard');
+        Route::get('/profile/{id}', 'UserController@profile')->name('agent.profile');
+        Route::get('/change_password', 'UserController@change_password')->name('agent.change_password');
+
+        Route::resource('couriers', 'CourierController');
+    });
+
+    Route::prefix('store')->group(function () {
+
+        Route::get('/dashboard', 'UserController@store_dashboard')->name('store.dashboard');
+        Route::get('/profile/{id}', 'UserController@profile')->name('store.profile');
+        Route::get('/change_password', 'UserController@change_password')->name('store.change_password');
+        Route::resource('expenses', 'ExpenseController');
+
+    });
 
 });

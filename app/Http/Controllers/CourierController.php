@@ -12,6 +12,8 @@ use App\Models\Service_type;
 use App\Models\Courier;
 use App\Models\Shippment;
 use App\Models\Status;
+use App\Models\Notification;
+
 use Validator;
 
 
@@ -80,7 +82,8 @@ class CourierController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('couriers.create')
+
+            return redirect('/'.\Auth::user()->user_type.'/couriers/create')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -101,9 +104,18 @@ class CourierController extends Controller
         $shippment->carriage_value = $input['carriage_value'];
         $shippment->save();
 
+        if(\Auth::user()->user_type == 'agent'){
+            $notification = new Notification();
+            $notification->user_id = \Auth::user()->id;
+            $notification->notification_type = 'Added New Courier';
+            $notification->message = 'Courier has been added';
+            $notification->status = 'unread';
+            $notification->save();
+        }
+
         $request->session()->flash('message', 'Courier has been added successfully!');
 
-        return redirect()->route('couriers.index');
+        return redirect('/'.\Auth::user()->user_type.'/couriers');
     }
 
     /**
@@ -171,7 +183,8 @@ class CourierController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('couriers.edit',$id)
+
+            return redirect('/'.\Auth::user()->user_type.'/couriers/'.$id.'/edit')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -209,7 +222,7 @@ class CourierController extends Controller
         $shippment->carriage_value = $input['carriage_value'];
         $shippment->save();
         $request->session()->flash('message', 'Courier has been updated successfully!');
-        return redirect()->route('couriers.index');
+        return redirect('/'.\Auth::user()->user_type.'/couriers');
     }
 
     /**
@@ -224,7 +237,7 @@ class CourierController extends Controller
         Shippment::where('courier_id',$id)->delete();
         Courier::where('id',$id)->delete();
         \Session::flash('message', 'Courier has been deleted successfully!');
-        return redirect()->route('couriers.index');
+        return redirect('/'.\Auth::user()->user_type.'/couriers');
     }
 
     public function updateCourierStatus(Request $request){

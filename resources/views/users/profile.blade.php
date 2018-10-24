@@ -3,7 +3,7 @@
 @section('content')
 
     <header class="page-header">
-        <h2>Profile</h2>
+        <h2>{{ucfirst($profile->user_type)}} Profile</h2>
 
         <div class="right-wrapper pull-right">
             <ol class="breadcrumbs">
@@ -12,14 +12,18 @@
                         <i class="fa fa-home"></i>
                     </a>
                 </li>
-                <li><span>Agents</span></li>
+                <li><span>Profile</span></li>
                 <li><span>{{$profile->name}}</span></li>
             </ol>
 
             <a class="sidebar-right-toggle" data-open="sidebar-right"></a>
         </div>
     </header>
-
+    @if (Session::has('message'))
+        <div class="alert alert-success">
+            <strong> {{ Session::get('message') }}</strong>
+        </div>
+    @endif
     <!-- start: page -->
     <div class="row">
         <div class="col-lg-12">
@@ -30,8 +34,8 @@
                     <h2 class="panel-title">{{$profile->name}}</h2>
                 </header>
                 <div class="panel-body">
-                    {!! Form::model($profile,['method' => 'PATCH', 'action' => ['AgentController@update', $profile->id ] ]) !!}
-                    {{csrf_field()}}
+                   {{Form::open(['url' => 'admin/profile/'.$profile->id, 'method' => 'put'])}}
+                        {{csrf_field()}}
                     <div class="form-group @if ($errors->has('company_name')) has-error  @endif">
                         <label class="col-md-3 control-label" for="inputDefault">Company Name</label>
                         <div class="col-md-6">
@@ -151,33 +155,6 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-md-3 control-label" for="inputDefault">Pickup Charges</label>
-                        <div class="col-md-9" >
-                            <div class="col-md-9" v-for="charge, idx in pickup_charges">
-                                <label class="col-md-1 control-label" for="inputDefault">Weight</label>
-                                <div class="col-md-3">
-                                    <input type="text" class="form-control" :name="'pickup_charge[' + [idx]+'][weight]'">
-                                </div>
-
-                                <label class="col-md-1 control-label" for="inputDefault">Amount</label>
-                                <div class="col-md-3">
-                                    <input type="text" class="form-control"  :name="'pickup_charge[' + [idx]+'][amount]'">
-                                </div>
-                                <div class="col-md-3" v-if="idx > 0">
-                                    <button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" @click="removePickup(idx)">Remove</button>
-                                </div>
-
-                            </div>
-
-
-                        </div>
-
-                    </div>
-
-                    <div class="col-md-3 pull-right">
-                        <button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" @click="addPickup">Add More</button>
-                    </div>
 
                     <footer class="panel-footer center">
                         <button class="btn btn-primary">Save</button>
@@ -210,7 +187,7 @@
             el:'#app',
             data:{
                 countries:@json($countries),
-                pickup_charges: [{weight:0.0,amount:0.0}],
+
                 states:@json($states),
                 cities:@json($cities),
                 country_id:'{{$profile->profile->country_id}}',

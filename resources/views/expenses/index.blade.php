@@ -30,53 +30,49 @@
     <section class="panel">
         <header class="panel-heading">
 
-                <a href="{{route('expenses.create')}}" class="btn btn-primary pull-right">Create Expense</a>
+                <a href="{{url(Auth::user()->user_type.'/expenses/create')}}" class="btn btn-primary pull-right">Create Expense</a>
                 <h2 class="panel-title">Manage Expenses</h2>
         </header>
         <div class="panel-body">
             <table class="table table-no-more table-bordered table-striped mb-none">
                 <thead>
                 <tr>
-                    <th>Agent Name</th>
-                    <th>S Company Name</th>
-                    <th class="hidden-xs hidden-sm">S Name</th>
-                    <th class="text-right">R Company Name</th>
-                    <th class="text-right hidden-xs hidden-sm">R Name</th>
-                    <th class="text-right">Traking Number</th>
-                    <th class="text-right">Status</th>
-                    <th class="text-right hidden-xs hidden-sm">Created</th>
+                    <th>Party Name</th>
+                    <th>Amount</th>
+                    <th class="hidden-xs hidden-sm">Expense Type</th>
+                    <th class="text-right">Expense Date</th>
+                    <th class="text-right hidden-xs hidden-sm">Payment By</th>
+                    <th class="text-right">Receiver Name</th>
                     <th class="text-right">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                {{--@foreach($couriers as $key=> $courier)--}}
+                @foreach($expenses as $key=> $expense)
 
-                {{--<tr>--}}
-                    {{--<td data-title="Agent Name">{{$courier->agent->name}}</td>--}}
-                    {{--<td data-title="S Company Name" class="hidden-xs hidden-sm">{{$courier->s_company}}</td>--}}
-                    {{--<td data-title="S Name" class="text-right">{{$courier->s_name}}</td>--}}
-                    {{--<td data-title="R Company Name" class="text-right hidden-xs hidden-sm">{{$courier->r_company}}</td>--}}
-                    {{--<td data-title="R Name" class="text-right">{{$courier->r_name}}</td>--}}
-                    {{--<td data-title="Traking Number" class="text-right">{{$courier->tracking_no}}</td>--}}
-                    {{--<td data-title="Status" class="text-right hidden-xs hidden-sm">{!! Form::select('status_id', $status, $courier->status_id, ['class'=>'form-control','onchange'=>'updateStatus(this,'.$courier->id.')']); !!}</td>--}}
-                    {{--<td data-title="Created" class="text-right hidden-xs hidden-sm">{{date('d-M-Y',strtotime($courier->created_at))}}</td>--}}
-                    {{--<td data-title="Actions" class="text-right actions">--}}
+                <tr>
+                    <td data-title="Party Name">{{$expense->party_name}}</td>
+                    <td data-title="Amount" class="hidden-xs hidden-sm">{{$expense->amount}}</td>
+                    <td data-title="Expense Type" class="text-right">{{$expense->expense_type->name}}</td>
+                    <td data-title="Expense Date" class="text-right hidden-xs hidden-sm">{{date('d-M-Y',strtotime($expense->expense_date))}}</td>
+                    <td data-title="Payment By" class="text-right">{{$expense->payment_by}}</td>
+                    <td data-title="Receiver Name" class="text-right">{{$expense->receiver_name}}</td>
+                    <td data-title="Actions" class="text-right actions">
 
 
-                        {{--{!! Form::model($courier,['method' => 'DELETE', 'action' => ['CourierController@destroy', $courier->id ], 'id'=>'frmdeletecourier_'.$courier->id ]) !!}--}}
-                          {{--<button class="delete-row" type="button" onclick="deleteCourier('{{$courier->id}}')"><i class="fa fa-trash-o"></i></button>--}}
-                        {{--{!! Form::close() !!}--}}
+                        {!! Form::model($expense,['method' => 'DELETE', 'action' => ['ExpenseController@destroy', $expense->id ], 'id'=>'frmdeleteexpense_'.$expense->id ]) !!}
+                          <button class="delete-row" type="button" onclick="deleteExpense('{{$expense->id}}')"><i class="fa fa-trash-o"></i></button>
+                        {!! Form::close() !!}
 
-                        {{--<a href="{{route('couriers.edit',$courier->id)}}" class=""><i class="fa fa-pencil"></i></a>--}}
+                        <a href="{{url(Auth::user()->user_type.'/expenses/'.$expense->id.'/edit')}}" class=""><i class="fa fa-pencil"></i></a>
 
-                    {{--</td>--}}
-                {{--</tr>--}}
-                {{--@endforeach--}}
+                    </td>
+                </tr>
+                @endforeach
                 </tbody>
             </table>
         </div>
 
-        {{--<div class="pull-right">{{ $couriers->links() }}</div>--}}
+        {{--<div class="pull-right">{{ $expenses->links() }}</div>--}}
     </section>
     <!-- end: page -->
 
@@ -86,13 +82,13 @@
 @section('scripts')
 
     <script>
-        function deleteCourier(courier_id){
+        function deleteExpense(expense_id){
 
-        var status= confirm('Are you sure want to delete this courier?');
+        var status= confirm('Are you sure want to delete this expense?');
          if(status == true){
 
              event.preventDefault();
-             document.getElementById('frmdeletecourier_'+courier_id).submit();
+             document.getElementById('frmdeleteexpense_'+expense_id).submit();
              return true;
          }else{
              return false;

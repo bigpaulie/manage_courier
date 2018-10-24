@@ -56,8 +56,8 @@
                         </a>
 
                     </li>
-                    <li class="">
-                        <a>
+                    <li @if($action_name == 'notifications')class="nav-active" @endif>
+                        <a href="/admin/notifications">
                             <i class="fa fa-table" aria-hidden="true"></i>
                             <span>Notifications</span>
                         </a>
@@ -106,27 +106,27 @@
                         </a>
                         <ul class="nav nav-children">
                             <li>
-                                <a href="pages-signup.html">
+                                <a href="/admin/expense_types">
                                     Expense Types
                                 </a>
                             </li>
                             <li>
-                                <a href="pages-signin.html">
+                                <a href="/admin/status">
                                     Status
                                 </a>
                             </li>
                             <li>
-                                <a href="pages-recover-password.html">
+                                <a href="/admin/package_types">
                                     Package Types
                                 </a>
                             </li>
                             <li>
-                                <a href="pages-lock-screen.html">
+                                <a href="/admin/service_types">
                                     Service Types
                                 </a>
                             </li>
                             <li>
-                                <a href="pages-user-profile.html">
+                                <a href="/admin/content_types">
                                     Content Types
                                 </a>
                             </li>
@@ -169,15 +169,14 @@
             @if(Auth::user()->user_type == 'store')
                 <nav id="menu" class="nav-main" role="navigation">
                     <ul class="nav nav-main">
-                        <li>
-                            <a href="index.html">
+                        <li @if($action_name == 'dashboard')class="nav-active" @endif>
+                            <a href="/store/dashboard">
                                 <i class="fa fa-home" aria-hidden="true"></i>
                                 <span>Dashboard</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="mailbox-folder.html">
-                                <span class="pull-right label label-primary">182</span>
+                        <li @if($controller_name == 'expenses')class="nav-active" @endif>
+                            <a href="/store/expenses">
                                 <i class="fa fa-envelope" aria-hidden="true"></i>
                                 <span>Expenses</span>
                             </a>

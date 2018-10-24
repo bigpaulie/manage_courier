@@ -30,7 +30,7 @@
     <section class="panel">
         <header class="panel-heading">
 
-                <a href="{{route('couriers.create')}}" class="btn btn-primary pull-right">Create Courier</a>
+                <a href="{{url(Auth::user()->user_type.'/couriers/create')}}" class="btn btn-primary pull-right">Create Courier</a>
                 <h2 class="panel-title">Manage Couriers</h2>
         </header>
         <div class="panel-body">
@@ -67,7 +67,8 @@
                           <button class="delete-row" type="button" onclick="deleteCourier('{{$courier->id}}')"><i class="fa fa-trash-o"></i></button>
                         {!! Form::close() !!}
 
-                        <a href="{{route('couriers.edit',$courier->id)}}" class=""><i class="fa fa-pencil"></i></a>
+                        <a href="{{url(Auth::user()->user_type.'/couriers/'.$courier->id.'/edit')}}" class=""><i class="fa fa-pencil"></i></a>
+
 
                     </td>
                 </tr>

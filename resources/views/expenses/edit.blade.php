@@ -3,7 +3,7 @@
 @section('content')
 
     <header class="page-header">
-        <h2>Courier</h2>
+        <h2>Expense</h2>
 
         <div class="right-wrapper pull-right">
             <ol class="breadcrumbs">
@@ -12,7 +12,7 @@
                         <i class="fa fa-home"></i>
                     </a>
                 </li>
-                <li><span>Couriers</span></li>
+                <li><span>Expenses</span></li>
                 <li><span>Create</span></li>
             </ol>
 
@@ -21,240 +21,272 @@
     </header>
 
     <!-- start: page -->
-
-        {!! Form::model($courier,['method' => 'PATCH', 'action' => ['CourierController@update', $courier->id ] ]) !!}
-
+    {!! Form::model($expense,['method' => 'PATCH', 'action' => ['ExpenseController@update', $expense->id ] ]) !!}
         {{csrf_field()}}
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
 
                 <section class="panel">
                     <header class="panel-heading">
 
-                        <h2 class="panel-title">Sender Details</h2>
-
-                    </header>
-                    <div class="panel-body">
-                        <div class="form-group @if ($errors->has('s_name')) has-error  @endif">
-                            <label class="col-sm-4 control-label">Name: </label>
-                            <div class="col-sm-8">
-                                <input type="text" name="s_name" class="form-control" value="{{$courier->s_name}}">
-                                @if ($errors->has('s_name'))
-                                    <label for="s_name" class="error">{{ $errors->first('s_name') }}</label>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="form-group @if ($errors->has('s_company')) has-error @endif">
-                            <label class="col-sm-4 control-label">Company Name: </label>
-                            <div class="col-sm-8">
-                                <input type="text" name="s_company" class="form-control" value="{{$courier->s_company}}">
-                                @if ($errors->has('s_company'))
-                                    <label for="s_name" class="error">{{ $errors->first('s_company') }}</label>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group @if ($errors->has('s_address1')) has-error  @endif">
-                            <label class="col-sm-4 control-label">Addess1: </label>
-                            <div class="col-sm-8">
-                                <input type="text" name="s_address1" class="form-control" value="{{$courier->s_address1}}">
-                                @if ($errors->has('s_address1'))
-                                    <label for="s_address1" class="error">{{ $errors->first('s_address1') }}</label>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label">Addess2: </label>
-                            <div class="col-sm-8">
-                                <input type="text" name="s_address2" class="form-control" value="{{$courier->s_address2}}">
-                            </div>
-                        </div>
-
-
-
-                        <div class="form-group @if ($errors->has('s_phone')) has-error @endif">
-                            <label class="col-sm-4 control-label">Phone: </label>
-                            <div class="col-sm-8">
-                                <input type="text" name="s_phone" class="form-control" value="{{$courier->s_phone}}">
-                                @if ($errors->has('s_phone'))
-                                    <label for="s_phone" class="error">{{ $errors->first('s_phone') }}</label>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group @if ($errors->has('s_country')) has-error @endif">
-                            <label class="col-sm-4 control-label">Country: </label>
-                            <div class="col-sm-8">
-                                <select class="form-control mb-md" id="s_country" name="s_country" v-model="s_country" @change="getStates('sender')">
-                                    <option value="">Select Country</option>
-                                    <option  v-for="country in countries" :value="country.id">@{{country.name}}</option>
-                                </select>
-                                @if ($errors->has('s_country'))
-                                    <label for="s_country" class="error">{{ $errors->first('s_country') }}</label>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group @if ($errors->has('s_state')) has-error  @endif">
-                            <label class="col-sm-4 control-label">State: </label>
-                            <div class="col-sm-8">
-                                <select class="form-control mb-md" id="s_state" name="s_state" v-model="s_state" @change="getCities('sender')">
-                                    <option value="">Select State</option>
-                                    <option  v-for="state in s_states" :value="state.id">@{{state.state_name}}</option>
-                                </select>
-                                @if ($errors->has('s_state'))
-                                    <label for="s_state" class="error">{{ $errors->first('s_state') }}</label>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group @if ($errors->has('s_city')) has-error  @endif">
-                            <label class="col-sm-4 control-label">City: </label>
-                            <div class="col-sm-8">
-                                <select class="form-control mb-md" id="s_city" name="s_city" v-model="s_city">
-                                    <option value="">Select City</option>
-                                    <option  v-for="city in s_cities" :value="city.id">@{{city.city_name}}</option>
-                                </select>
-                                @if ($errors->has('s_city'))
-                                    <label for="s_city" class="error">{{ $errors->first('s_city') }}</label>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group @if ($errors->has('s_email')) has-error @endif">
-                            <label class="col-sm-4 control-label">Email: </label>
-                            <div class="col-sm-8">
-                                <input type="text" name="s_email" class="form-control" value="{{$courier->s_email}}">
-                                @if ($errors->has('s_email'))
-                                    <label for="s_email" class="error">{{ $errors->first('s_email') }}</label>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-
-                </section>
-
-            </div>
-
-            <div class="col-md-6">
-
-                <section class="panel">
-                    <header class="panel-heading">
-
-                        <h2 class="panel-title">Recipient Details</h2>
+                        <h2 class="panel-title">Expense Details</h2>
 
 
                     </header>
                     <div class="panel-body">
-                        <div class="form-group @if ($errors->has('r_name')) has-error  @endif">
-                            <label class="col-sm-4 control-label">Name: </label>
-                            <div class="col-sm-8">
-                                <input type="text" name="r_name" class="form-control" value="{{$courier->r_name}}">
-                                @if ($errors->has('r_name'))
-                                    <label for="r_name" class="error">{{ $errors->first('r_name') }}</label>
-                                @endif
+                        <div class="row">
+                            <div class="col-md-6">
+
+                                <div class="form-group @if ($errors->has('expense_type_id')) has-error @endif">
+                                    <label class="col-sm-4 control-label">Expense Type: </label>
+                                    <div class="col-sm-8">
+                                        {!! Form::select('expense_type_id', $expense_types,$expense->expense_type_id, ['class'=>'form-control','placeholder' => 'Select Expense Type']); !!}
+                                        @if ($errors->has('expense_type_id'))
+                                            <label for="expense_type_id" class="error">{{ $errors->first('expense_type_id') }}</label>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="form-group @if ($errors->has('party_name')) has-error @endif">
+                                    <label class="col-sm-4 control-label">Party Name: </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="party_name" value="{{$expense->party_name}}">
+                                        @if ($errors->has('party_name'))
+                                            <label for="party_name" class="error">{{ $errors->first('party_name') }}</label>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group @if ($errors->has('payment_by')) has-error @endif">
+                                    <label class="col-sm-4 control-label">Payment By: </label>
+                                    <div class="col-sm-8">
+                                        {!! Form::select('payment_by', $payment_types, $expense->payment_by, ['class'=>'form-control mb-md','placeholder' => 'Select Payment by','required','v-model'=>'payment_type','@change'=>'showPaymentDetails']); !!}
+                                        @if ($errors->has('payment_by'))
+                                            <label for="payment_by" class="error">{{ $errors->first('payment_by') }}</label>
+                                        @endif
+
+                                    </div>
+                                </div>
+
                             </div>
-                        </div>
-                        <div class="form-group @if ($errors->has('r_company')) has-error  @endif">
-                            <label class="col-sm-4 control-label">Company Name: </label>
-                            <div class="col-sm-8">
-                                <input type="text" name="r_company" class="form-control" value="{{$courier->r_company}}">
-                                @if ($errors->has('r_company'))
-                                    <label for="r_company" class="error">{{ $errors->first('r_company') }}</label>
-                                @endif
-                            </div>
-                        </div>
 
-                        <div class="form-group @if ($errors->has('r_address1')) has-error  @endif">
-                            <label class="col-sm-4 control-label">Addess1: </label>
-                            <div class="col-sm-8">
-                                <input type="text" name="r_address1" class="form-control" value="{{$courier->r_address1}}">
-                                @if ($errors->has('r_address1'))
-                                    <label for="r_address1" class="error">{{ $errors->first('r_address1') }}</label>
-                                @endif
-                            </div>
-                        </div>
+                            <div class="col-md-6">
 
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label">Addess2: </label>
-                            <div class="col-sm-8">
-                                <input type="text" name="r_address2" class="form-control" value="{{$courier->r_address2}}">
-                            </div>
-                        </div>
+                                <div class="form-group @if ($errors->has('expense_date')) has-error @endif">
+                                    <label class="col-sm-4 control-label">Expense Date: </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" data-plugin-datepicker  name="expense_date" class="form-control" value="{{$expense->expense_date}}">
+                                        @if ($errors->has('expense_date'))
+                                            <label for="expense_date" class="error">{{ $errors->first('expense_date') }}</label>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Debited From: </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="debited_from" class="form-control"  value="{{$expense->debited_from}}" placeholder="Bank Name">
+                                    </div>
+                                </div>
 
-
-
-                        <div class="form-group @if ($errors->has('r_phone')) has-error @endif">
-                            <label class="col-sm-4 control-label">Phone: </label>
-                            <div class="col-sm-8">
-                                <input type="text" name="r_phone" class="form-control" value="{{$courier->r_phone}}">
-                                @if ($errors->has('r_phone'))
-                                    <label for="r_phone" class="error">{{ $errors->first('r_phone') }}</label>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group @if ($errors->has('r_country')) has-error @endif">
-                            <label class="col-sm-4 control-label">Country: </label>
-                            <div class="col-sm-8">
-                                <select class="form-control mb-md" id="r_country" name="r_country" v-model="r_country" @change="getStates('reciver')">
-                                    <option value="">Select Country</option>
-                                    <option  v-for="country in countries" :value="country.id">@{{country.name}}</option>
-                                </select>
-                                @if ($errors->has('r_country'))
-                                    <label for="r_country" class="error">{{ $errors->first('r_country') }}</label>
-                                @endif
                             </div>
                         </div>
 
-                        <div class="form-group @if ($errors->has('r_state')) has-error @endif">
-                            <label class="col-sm-4 control-label">State: </label>
-                            <div class="col-sm-8">
-                                <select class="form-control mb-md" id="r_state" name="r_state" v-model="r_state" @change="getCities('reciver')">
-                                    <option value="">Select State</option>
-                                    <option  v-for="rstate in r_states" :value="rstate.id">@{{rstate.state_name}}</option>
-                                </select>
-                                @if ($errors->has('r_state'))
-                                    <label for="r_state" class="error">{{ $errors->first('r_state') }}</label>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group @if ($errors->has('r_city')) has-error @endif">
-                            <label class="col-sm-4 control-label">City: </label>
-                            <div class="col-sm-8">
-                                <select class="form-control mb-md" id="r_city" name="r_city" v-model="r_city">
-                                    <option value="">Select City</option>
-                                    <option  v-for="r_city in r_cities" :value="r_city.id">@{{r_city.city_name}}</option>
-                                </select>
-                                @if ($errors->has('r_city'))
-                                    <label for="r_city" class="error">{{ $errors->first('r_city') }}</label>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group @if ($errors->has('r_email')) has-error @endif">
-                            <label class="col-sm-4 control-label">Email: </label>
-                            <div class="col-sm-8">
-                                <input type="text" name="r_email" class="form-control" value="{{$courier->r_email}}">
-                                @if ($errors->has('r_email'))
-                                    <label for="r_email" class="error">{{ $errors->first('r_email') }}</label>
-                                @endif
-                            </div>
-                        </div>
                     </div>
 
                 </section>
+
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-12">
 
                 <section class="panel">
                     <header class="panel-heading">
 
-                        <h2 class="panel-title">Shipping Details</h2>
+                        <h2 class="panel-title">Payment Details</h2>
+
+                    </header>
+                    <div class="panel-body">
+                        <div class="row"  v-show="cash_details">
+                            <div class="col-md-6">
+
+                                <div class="form-group @if ($errors->has('receiver_cash_name')) has-error @endif">
+                                    <label class="col-sm-4 control-label">Name: </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="receiver_cash_name"
+                                              @if($expense->payment_by == 'cash')
+                                               value="{{$expense->receiver_name}}"
+                                               @endif
+                                        >
+
+                                        @if ($errors->has('receiver_cash_name'))
+                                            <label for="expense_date" class="error">Receiver Name field is required.</label>
+                                        @endif
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group @if ($errors->has('cash_amount')) has-error @endif">
+                                    <label class="col-sm-4 control-label">Amount: </label>
+                                    <div class="col-sm-8">
+                                        <input type="number" name="cash_amount" class="form-control"
+                                               @if($expense->payment_by == 'cash')
+                                                    value="{{$expense->amount}}"
+                                                    @endif
+                                               >
+                                        @if ($errors->has('cash_amount'))
+                                            <label for="cash_amount" class="error">Amount Name field is required.</label>
+                                        @endif
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row"  v-show="cheque_details">
+                            <div class="col-md-6">
+
+                                <div class="form-group @if ($errors->has('cheque_no')) has-error @endif">
+                                    <label class="col-sm-4 control-label">Cheque No: </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="cheque_no"
+                                               @if($expense->payment_by == 'cheque')
+                                                    value="{{$expense->cheque_no}}"
+                                                @endif
+                                        >
+                                        @if ($errors->has('cheque_no'))
+                                            <label for="cheque_no" class="error">{{ $errors->first('cheque_no') }}</label>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group @if ($errors->has('cheque_amount')) has-error @endif">
+                                    <label class="col-sm-4 control-label">Amount: </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="cheque_amount"
+                                               @if($expense->payment_by == 'cheque')
+                                                     value="{{$expense->amount}}"
+                                                @endif
+                                        >
+                                        @if ($errors->has('cheque_amount'))
+                                            <label for="cheque_amount" class="error">Amount Name field is required.</label>
+                                        @endif
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group @if ($errors->has('cheque_date')) has-error @endif">
+                                    <label class="col-sm-4 control-label">Cheque Date: </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" data-plugin-datepicker name="cheque_date" class="form-control"
+                                               @if($expense->payment_by == 'cheque')
+                                                    value="{{$expense->cheque_date}}"
+                                                @endif
+                                                >
+                                        @if ($errors->has('cheque_date'))
+                                            <label for="cheque_date" class="error">{{ $errors->first('cheque_date') }}</label>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group @if ($errors->has('cheque_name')) has-error @endif">
+                                    <label class="col-sm-4 control-label">Cheque Name: </label>
+                                    <div class="col-sm-8">
+                                        <input type="text"  name="cheque_name" class="form-control"
+                                               @if($expense->payment_by == 'cheque')
+                                                    value="{{$expense->receiver_name}}"
+                                                @endif
+                                        >
+                                        @if ($errors->has('cheque_name'))
+                                            <label for="cheque_name" class="error">{{ $errors->first('cheque_name') }}</label>
+                                        @endif
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row"  v-show="net_banking">
+                            <div class="col-md-6">
+
+                                <div class="form-group @if ($errors->has('transaction_id')) has-error @endif">
+                                    <label class="col-sm-4 control-label">Transaction ID: </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="transaction_id"
+
+                                               @if($expense->payment_by == 'net_banking')
+                                                    value="{{$expense->transaction_id}}"
+                                               @endif
+                                              >
+                                        @if ($errors->has('transaction_id'))
+                                            <label for="transaction_id" class="error">{{ $errors->first('transaction_id') }}</label>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group @if ($errors->has('net_banking_amount')) has-error @endif">
+                                    <label class="col-sm-4 control-label">Amount: </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="net_banking_amount"
+
+                                               @if($expense->payment_by == 'net_banking')
+                                               value="{{$expense->amount}}"
+                                               @endif
+                                              >
+                                        @if ($errors->has('net_banking_amount'))
+                                            <label for="net_banking_amount" class="error">Amount Name field is required.</label>
+                                        @endif
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group @if ($errors->has('net_banking_name')) has-error @endif">
+                                    <label class="col-sm-4 control-label">Name: </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="net_banking_name" class="form-control"
+
+                                               @if($expense->payment_by == 'net_banking')
+                                                      value="{{$expense->receiver_name}}"
+                                                @endif
+                                        >
+                                        @if ($errors->has('net_banking_name'))
+                                            <label for="net_banking_name" class="error">Receiver  Name field is required.</label>
+                                        @endif
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+
+                <section class="panel">
+                    <header class="panel-heading">
+
+                        <h2 class="panel-title">Remarks:</h2>
 
                     </header>
                     <div class="panel-body">
@@ -262,69 +294,9 @@
                             <div class="col-md-6">
 
                                 <div class="form-group">
-                                    <label class="col-sm-4 control-label">Package Type: </label>
+                                    <label class="col-sm-4 control-label">Remarks: </label>
                                     <div class="col-sm-8">
-                                        {!! Form::select('package_type_id', $package_types, $courier->shippment->package_type_id, ['class'=>'form-control mb-md','placeholder' => 'Select Package Type','required']); !!}
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">Service Type: </label>
-                                    <div class="col-sm-8">
-                                        {!! Form::select('service_type_id', $service_types, $courier->shippment->service_type_id, ['class'=>'form-control mb-md','placeholder' => 'Select Service Type','required']); !!}
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">Content type: </label>
-                                    <div class="col-sm-8">
-                                        {!! Form::select('content_type_id', $content_types, $courier->shippment->content_type_id, ['class'=>'form-control mb-md','placeholder' => 'Select Content Type','required']); !!}
-
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="col-md-6">
-
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">Weight: </label>
-                                    <div class="col-sm-8">
-                                        <input type="number" name="weight" class="form-control" value="{{$courier->shippment->weight}}" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">Carriage Value: </label>
-                                    <div class="col-sm-8">
-                                        <input type="number" name="carriage_value" class="form-control" value="{{$courier->shippment->carriage_value}}" required>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-
-                </section>
-
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-
-                <section class="panel">
-                    <header class="panel-heading">
-
-                        <h2 class="panel-title">Description</h2>
-
-                    </header>
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-md-6">
-
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">Description: </label>
-                                    <div class="col-sm-8">
-                                        <textarea name="description" rows="5" cols="100">{{$courier->description}}</textarea>
+                                        <textarea name="description" rows="5" cols="100">{{$expense->description}}</textarea>
                                     </div>
                                 </div>
 
@@ -340,6 +312,7 @@
             </div>
 
         </div>
+
 
         <footer class="panel-footer center">
             <button class="btn btn-primary">Submit</button>
@@ -362,49 +335,47 @@
         const oapp = new Vue({
             el:'#app',
             data:{
-                countries:@json($countries),
+                cash_details:true,
+                net_banking:false,
+                cheque_details:false,
+                payment_type:"{{$expense->payment_by}}",
 
-                s_states:@json($s_states),
-                s_cities:@json($s_cities),
-                s_country:'{{$courier->s_country}}',
-                s_state:"{{$courier->s_state}}",
-                s_city:"{{$courier->s_city}}",
-                r_states:@json($r_states),
-                r_cities:@json($r_cities),
-                r_country:"{{$courier->r_country}}",
-                r_state:"{{$courier->r_state}}",
-                r_city:"{{$courier->r_city}}",
             },
             created(){
-                //console.log(this.countries);
+                if(this.payment_type == 'cash'){
+                    this.cash_details =true;
+                    this.net_banking =false;
+                    this.cheque_details =false;
+                }else if(this.payment_type == 'cheque'){
+                    this.cash_details =false;
+                    this.net_banking =false;
+                    this.cheque_details =true;
+                }else if(this.payment_type == 'net_banking'){
+                    this.cash_details =false;
+                    this.net_banking =true;
+                    this.cheque_details =false;
+                }
             },
 
 
             methods: {
 
-                getStates(type){
-                    if(type == 'sender' && parseInt(this.s_country) > 0 ){
-                        let state_url = '/api/getStates?country_id='+this.s_country;
-                        axios.get(state_url).then(response => (this.s_states = response.data));
-                    }
+                showPaymentDetails(){
 
-                    if(type == 'reciver' && parseInt(this.r_country) > 0 ){
-                        let state_url = '/api/getStates?country_id='+this.r_country;
-                        axios.get(state_url).then(response => (this.r_states = response.data));
+                    if(this.payment_type == 'cash'){
+                        this.cash_details =true;
+                        this.net_banking =false;
+                        this.cheque_details =false;
+                    }else if(this.payment_type == 'cheque'){
+                        this.cash_details =false;
+                        this.net_banking =false;
+                        this.cheque_details =true;
+                    }else if(this.payment_type == 'net_banking'){
+                        this.cash_details =false;
+                        this.net_banking =true;
+                        this.cheque_details =false;
                     }
-
                 },
-                getCities(type){
-                    if( type == 'sender' && parseInt(this.s_state) > 0 ){
-                        let city_url = '/api/getCities?state_id='+this.s_state;
-                        axios.get(city_url).then(response => (this.s_cities = response.data));
-                    }
-
-                    if( type == 'reciver' && parseInt(this.r_state) > 0 ){
-                        let city_url = '/api/getCities?state_id='+this.r_state;
-                        axios.get(city_url).then(response => (this.r_cities = response.data));
-                    }
-                }
 
             },
 
@@ -413,6 +384,7 @@
             }
 
         });
+
 
     </script>
 

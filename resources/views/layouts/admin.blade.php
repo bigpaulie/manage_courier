@@ -43,6 +43,10 @@
             float: right;
             color: red;
         }
+        .unread{
+            font-weight: bold;
+            cursor: pointer;
+        }
     </style>
 
 @yield('styles')
