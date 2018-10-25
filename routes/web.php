@@ -49,6 +49,10 @@ Route::group(['middleware' => array('auth')], function() {
 
         // Master Routes
         Route::resource('expense_types', 'ExpensetypeController');
+        Route::resource('status', 'StatusController');
+        Route::resource('package_types', 'PackagetypeController');
+        Route::resource('service_types', 'ServicetypeController');
+        Route::resource('content_types', 'ContenttypeController');
 
     });
 
