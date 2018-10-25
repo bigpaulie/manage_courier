@@ -75,7 +75,7 @@
                                 <div class="form-group @if ($errors->has('expense_date')) has-error @endif">
                                     <label class="col-sm-4 control-label">Expense Date: </label>
                                     <div class="col-sm-8">
-                                        <input type="text" data-plugin-datepicker  name="expense_date" class="form-control" value="{{old('expense_date')}}">
+                                        <input type="text" data-plugin-datepicker  name="expense_date" class="form-control" value="{{date('m/d/Y')}}">
 
                                         @if ($errors->has('expense_date'))
                                             <label for="expense_date" class="error">{{ $errors->first('expense_date') }}</label>
@@ -174,7 +174,7 @@
                                 <div class="form-group @if ($errors->has('cheque_date')) has-error @endif">
                                     <label class="col-sm-4 control-label">Cheque Date: </label>
                                     <div class="col-sm-8">
-                                        <input type="text" data-plugin-datepicker name="cheque_date" class="form-control" value="{{old('cheque_date')}}" >
+                                        <input type="text" data-plugin-datepicker name="cheque_date" class="form-control" value="{{date('m/d/Y')}}" >
                                         @if ($errors->has('cheque_date'))
                                             <label for="cheque_date" class="error">{{ $errors->first('cheque_date') }}</label>
                                         @endif

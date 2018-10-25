@@ -62,10 +62,11 @@
                     <td data-title="Created" class="text-right hidden-xs hidden-sm">{{date('d-M-Y',strtotime($courier->created_at))}}</td>
                     <td data-title="Actions" class="text-right actions">
 
-
+                        @if(Auth::user()->user_type == 'admin')
                         {!! Form::model($courier,['method' => 'DELETE', 'action' => ['CourierController@destroy', $courier->id ], 'id'=>'frmdeletecourier_'.$courier->id ]) !!}
                           <button class="delete-row" type="button" onclick="deleteCourier('{{$courier->id}}')"><i class="fa fa-trash-o"></i></button>
                         {!! Form::close() !!}
+                        @endif
 
                         <a href="{{url(Auth::user()->user_type.'/couriers/'.$courier->id.'/edit')}}" class=""><i class="fa fa-pencil"></i></a>
 

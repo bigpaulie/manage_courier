@@ -42,15 +42,13 @@ Route::group(['middleware' => array('auth')], function() {
         Route::put('/update_password/{user_id}', 'UserController@updatePassword');
         Route::get('/store_city', 'UserController@storeCity')->name('admin.store_city');
 
-
-
-
-
-
         Route::resource('agents', 'AgentController');
         Route::resource('stores', 'StoreController');
         Route::resource('couriers', 'CourierController');
         Route::resource('expenses', 'ExpenseController');
+
+        // Master Routes
+        Route::resource('expense_types', 'ExpensetypeController');
 
     });
 
