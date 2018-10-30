@@ -228,7 +228,8 @@
                 allSelected:false,
                 courierIds:[],
                 selectedCourier:{},
-                accepted_status_id:"{{$accepted_status_id}}"
+                accepted_status_id:"{{$accepted_status_id}}",
+                filter_type:"all",
 
             },
             created(){
@@ -257,6 +258,8 @@
 
                 searchCouriers(page = 1){
 
+                    this.filter_type="filter";
+
                     let searchURL = '/api/getCouriers?page='+page+'&type=filter&traking_number='+this.traking_number;
                     searchURL+='&from_date='+this.from_date+'&end_date='+this.end_date
                     searchURL+='&agent_name='+this.agent_name+'&status_id='+this.status_id
@@ -280,7 +283,7 @@
 
                 createCourierCsv(page=1){
 
-                    let csvURL = '/admin/create_courier_csv?page='+page+'&type=filter&traking_number='+this.traking_number;
+                    let csvURL = '/admin/create_courier_csv?page='+page+'&type='+this.filter_type+'&traking_number='+this.traking_number;
                     csvURL+='&from_date='+this.from_date+'&end_date='+this.end_date
                     csvURL+='&agent_name='+this.agent_name+'&status_id='+this.status_id
                     csvURL+='&user_type='+this.user_type+'&user_id='+this.user_id
