@@ -13,6 +13,12 @@ use App\Models\Courier;
 use App\Models\Shippment;
 use App\Models\Status;
 use App\Models\Notification;
+use App\Models\User;
+use App\Models\Courier_company;
+use App\Models\Payment;
+
+
+
 
 use Validator;
 
@@ -26,15 +32,9 @@ class CourierController extends Controller
      */
     public function index()
     {
-        $user_type = \Auth::user()->user_type;
-        if($user_type == 'admin'){
-            $couriers= Courier::paginate(10);
-        }else if($user_type == 'agent'){
-            $couriers= Courier::where('user_id',\Auth::user()->id)->paginate(10);
-        }
 
-        $data['couriers']=$couriers;
         $data['status']=Status::pluck('name','id')->toArray();
+        $data['courier_companies']=Courier_company::pluck('name','id')->toArray();
         return view('couriers.index',$data);
     }
 
@@ -90,7 +90,7 @@ class CourierController extends Controller
 
         $input = $request->all();
         $input['user_id']= \Auth::user()->id;
-        $status = Status::where('code_name','courier_confirmed')->first();
+        $status = Status::where('code_name','pending')->first();
         $input['status_id']=$status->id;
         $courier = Courier::create($input);
         $courier_id = $courier->id;
@@ -102,6 +102,7 @@ class CourierController extends Controller
         $shippment->content_type_id = $input['content_type_id'];
         $shippment->weight = $input['weight'];
         $shippment->carriage_value = $input['carriage_value'];
+        $shippment->courier_status = $input['courier_status'];
         $shippment->save();
 
         if(\Auth::user()->user_type == 'agent'){
@@ -220,6 +221,7 @@ class CourierController extends Controller
         $shippment->content_type_id = $input['content_type_id'];
         $shippment->weight = $input['weight'];
         $shippment->carriage_value = $input['carriage_value'];
+        $shippment->courier_status = $input['courier_status'];
         $shippment->save();
         $request->session()->flash('message', 'Courier has been updated successfully!');
         return redirect('/'.\Auth::user()->user_type.'/couriers');
@@ -246,5 +248,204 @@ class CourierController extends Controller
         $courier->status_id = $input['status_id'];
         $courier->save();
 
+    }
+
+    public function getCouriers(Request $request){
+
+        $input = $request->all();
+        $type = isset($input['type'])?$input['type']:'all';
+        $traking_number = isset($input['traking_number'])?$input['traking_number']:'';
+        $from_date = isset($input['from_date'])?date('Y-m-d',strtotime($input['from_date'])):'';
+        $end_date = isset($input['end_date'])?date('Y-m-d',strtotime($input['end_date'])):'';
+        $status_id = isset($input['status_id'])?$input['status_id']:'';
+        $agent_name = isset($input['agent_name'])?$input['agent_name']:'';
+        $user_id= $input['user_id'];
+        $user_type = $input['user_type'];
+
+
+        if($type == 'all'){
+            $where = [];
+            if($user_type == 'agent'){
+                $where[] = ['couriers.user_id', $user_id];
+            }
+            $couriers= Courier::with(['agent','status','shippment'])
+                ->where('status_id',1)
+                ->where($where);
+        }else{
+            $where = [];
+            if($user_type == 'agent'){
+                $where[] = ['couriers.user_id', $user_id];
+            }
+            if ($traking_number !="" ) {
+                $where[] = ['couriers.tracking_no', $traking_number];
+                $couriers= Courier::with(['agent','status'])
+                                    ->where($where);
+            }
+            if ($status_id !="" ) {
+                $where[] = ['couriers.status_id', $status_id];
+
+                $couriers= Courier::with(['agent','status','shippment'])
+                                    ->where($where);
+            }
+            if ($agent_name !="" ) {
+
+                $couriers= Courier::with(['agent','status','shippment'])
+                                    ->where($where)
+                                    ->whereHas('agent',function ($query) use($agent_name){
+                                        $query->where('name', 'like', "%{$agent_name}%");
+                                    });
+            }
+
+            if($from_date !="" && $end_date != ""){
+
+                $couriers= Courier::with(['agent','status','shippment'])
+                                    ->whereDate('created_at','>=', $from_date)
+                                    ->whereDate('created_at', '<=',$end_date)
+                                    ->where($where);
+            }
+
+        }
+        $records = $couriers->paginate(15);
+
+        return response()->json($records);
+        //return $couriers;
+    }
+
+    public function createCourierCsv(Request $request){
+
+        $current_timestamp = date("Y-m-d-H-i-s")."_courier";
+        $file_path = storage_path()."/".$current_timestamp.'.csv';
+        $writer = \CsvWriter::create($file_path);
+        $writer->writeLine(['Courier Id','Agent Name', 'Status', 'Tracking No','Sender Name',
+                             'Sender Company', 'Sender Address1','Sender Address2',
+                             'Sender Company', 'Sender Address1','Sender Address2',
+                             'Sender Phone', 'Sender Country','Sender State',
+                             'Sender City', 'Sender Email','Receiver Name',
+                             'Receiver Company', 'Receiver Address1','Receiver Address2',
+                             'Receiver Phone', 'Receiver Country','Receiver State',
+                             'Receiver Email', 'Description','Created',
+                            ]);
+
+        $input = $request->all();
+        $type = isset($input['type'])?$input['type']:'all';
+        $traking_number = isset($input['traking_number'])?$input['traking_number']:'';
+        $from_date = isset($input['from_date'])?date('Y-m-d',strtotime($input['from_date'])):'';
+        $end_date = isset($input['end_date'])?date('Y-m-d',strtotime($input['end_date'])):'';
+        $status_id = isset($input['status_id'])?$input['status_id']:'';
+        $agent_name = isset($input['agent_name'])?$input['agent_name']:'';
+        $user_id= $input['user_id'];
+        $user_type = $input['user_type'];
+
+
+        if($type == 'all'){
+            $where = [];
+            if($user_type == 'agent'){
+                $where[] = ['couriers.user_id', $user_id];
+            }
+            $couriers= Courier::with(['agent','status','shippment'])
+                                ->where('status_id',1)
+                                ->where($where);
+        }else{
+            $where = [];
+            if($user_type == 'agent'){
+                $where[] = ['couriers.user_id', $user_id];
+            }
+            if ($traking_number !="" ) {
+                $where[] = ['couriers.tracking_no', $traking_number];
+                $couriers= Courier::with(['agent','status','shippment'])
+                    ->where($where);
+            }
+            if ($status_id !="" ) {
+                $where[] = ['couriers.status_id', $status_id];
+
+                $couriers= Courier::with(['agent','status','shippment'])
+                    ->where($where);
+            }
+            if ($agent_name !="" ) {
+
+                $couriers= Courier::with(['agent','status','shippment'])
+                    ->where($where)
+                    ->whereHas('agent',function ($query) use($agent_name){
+                        $query->where('name', 'like', "%{$agent_name}%");
+                    });
+            }
+
+            if($from_date !="" && $end_date != ""){
+
+                $couriers= Courier::with(['agent','status','shippment'])
+                    ->whereDate('created_at','>=', $from_date)
+                    ->whereDate('created_at', '<=',$end_date)
+                    ->where($where);
+            }
+
+        }
+        $records = $couriers->paginate(15);
+
+        foreach ($records as $courier){
+
+            $s_country = ($courier->sender_country != null)?$courier->sender_country->name:"";
+            $s_state = ($courier->sender_state != null)?$courier->sender_state->state_name:"";
+            $s_city = ($courier->sender_city != null)?$courier->sender_city->city_name:"";
+            $r_country = ($courier->receiver_country != null)?$courier->receiver_country->name:"";
+            $r_state = ($courier->receiver_state != null)?$courier->receiver_state->state_name:"";
+            $r_city = ($courier->receiver_city != null)?$courier->receiver_city->city_name:"";
+            $temp = [
+                $courier->id,
+                $courier->agent->name,
+                $courier->status->name,
+                $courier->tracking_no,
+                $courier->s_name,
+                $courier->s_company,
+                $courier->s_address1,
+                $courier->s_address2,
+                $courier->s_phone,
+                $s_country,
+                $s_state,
+                $s_city,
+                $courier->s_email,
+                $courier->r_name,
+                $courier->r_company,
+                $courier->r_address1,
+                $courier->r_address2,
+                $courier->r_phone,
+                $r_country,
+                $r_state,
+                $r_city,
+                $courier->r_email,
+                $courier->description,
+                $courier->created_at,
+
+            ];
+            $writer->writeLine($temp);
+        }
+
+        $writer->close();
+        return response()->download($file_path)->deleteFileAfterSend(true);
+
+    }
+
+    public function saveCourierCharge(Request $request){
+        $input = $request->all();
+        $courier_id = $input['courier_id'];
+        $courier = Courier::find($courier_id);
+        if($courier !=null){
+            //$courier->weight = $input['weight'];
+            $courier->status_id = $input['status_id'];
+            $courier->tracking_no = $input['tracking_number'];
+            $courier->save();
+
+            $payment = new Payment();
+            $payment->courier_id = $courier_id;
+            $payment->user_id = $input['user_id'];
+            $payment->courier_company_id = $input['dispatch_through'];
+            $payment->amount = $input['amount'];
+            if($input['is_pickup'] == 'pickup'){
+                $payment->pickup_charge = $input['pickup_charge'];
+                $payment->is_pickup = 1;
+            }
+            $payment->delivery_date = date('Y-m-d',strtotime($input['delivery_date']));
+            $payment->total = $input['total_charge'];
+            $payment->save();
+        }
     }
 }

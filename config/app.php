@@ -160,6 +160,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
+        Wilgucki\Csv\CsvServiceProvider::class,
 
     ],
 
@@ -211,6 +212,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        'CsvReader' => Wilgucki\Csv\Facades\Reader::class,
+        'CsvWriter' => Wilgucki\Csv\Facades\Writer::class,
 
     ],
 

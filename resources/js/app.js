@@ -15,5 +15,19 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+//import pagination from './components/LaravelVuePagination.vue';
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
+
+Vue.component('pagination', require('laravel-vue-pagination'));
+
+import datePicker from 'vue-bootstrap-datetimepicker';
+import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
+
+Vue.use(datePicker);
+
+
+
+//Vue.component('date-picker', VueBootstrapDatetimePicker);
+
+
 

@@ -20,5 +20,11 @@ Route::get('/getStates','API\MasterController@getStates')->name('getStates');
 Route::get('/getCities','API\MasterController@getCities')->name('getCities');
 Route::post('/update_courier_status','CourierController@updateCourierStatus')->name('update_courier_status');
 Route::post('/update_notification_status','NotificationController@updateNotificationStatus')->name('update_notification_status');
+Route::get('/getCouriers','CourierController@getCouriers')->name('getCouriers');
+Route::post('/save_courier_charge','CourierController@saveCourierCharge')->name('save_courier_charge');
+
+
+
+
 
 

@@ -37,4 +37,28 @@ class Courier extends Model
     public function shippment(){
         return $this->hasOne('App\Models\Shippment');
     }
+
+    public function sender_country(){
+        return $this->belongsTo('App\Models\Country','s_country','id');
+    }
+
+    public function sender_state(){
+        return $this->belongsTo('App\Models\State','s_state','id');
+    }
+
+    public function sender_city(){
+        return $this->belongsTo('App\Models\City','s_city','id');
+    }
+
+    public function receiver_country(){
+        return $this->belongsTo('App\Models\Country','r_country','id');
+    }
+
+    public function receiver_state(){
+        return $this->belongsTo('App\Models\State','r_state','id');
+    }
+
+    public function receiver_city(){
+        return $this->belongsTo('App\Models\City','r_city','id');
+    }
 }

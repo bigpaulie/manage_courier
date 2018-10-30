@@ -24,7 +24,9 @@
 {!! Html::style("/assets/vendor/bootstrap/css/bootstrap.css") !!}
 {!! Html::style("/assets/vendor/font-awesome/css/font-awesome.css") !!}
 {!! Html::style("/assets/vendor/magnific-popup/magnific-popup.css") !!}
-{!! Html::style("/assets/vendor/bootstrap-datepicker/css/datepicker3.css") !!}
+@yield('date-styles')
+
+{{--{!! Html::style("/assets/vendor/bootstrap-datepicker/css/datepicker3.css") !!}--}}
 
 
 <!-- Theme CSS -->
@@ -67,7 +69,6 @@
         <!-- start: sidebar -->
              @include('_includes.admin.left_side')
         <!-- end: sidebar -->
-
         <section role="main" class="content-body" id="app">
             @yield('content')
         </section>
@@ -97,9 +98,11 @@
 <!-- Theme Initialization Files -->
 
 {!! Html::script("/assets/javascripts/theme.init.js") !!}
-    <script src="{{ asset('/js/app.js') }}"></script>
- @yield('scripts')
 
-</section>
+   <script src="{{ asset('/js/app.js') }}"></script>
+
+    @yield('scripts')
+
+  </section>
 </body>
 </html>

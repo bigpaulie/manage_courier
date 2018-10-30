@@ -299,6 +299,14 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Pickup/Drop: </label>
+                                    <div class="col-sm-8">
+                                        {!! Form::select('courier_status', ['pickup'=>'Pickup','drop'=>'Drop'],$courier->shippment->courier_status, ['class'=>'form-control mb-md','placeholder' => 'Select Courier Status','required']); !!}
+
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
 

@@ -1,4 +1,8 @@
 @extends('layouts.admin')
+@section('date-styles')
+    {!! Html::style("/assets/vendor/bootstrap-datepicker/css/datepicker3.css") !!}
+@endsection
+
 
 @section('content')
 
