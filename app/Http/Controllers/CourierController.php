@@ -14,7 +14,7 @@ use App\Models\Shippment;
 use App\Models\Status;
 use App\Models\Notification;
 use App\Models\User;
-use App\Models\Courier_company;
+use App\Models\Courier_service;
 use App\Models\Payment;
 
 
@@ -35,7 +35,7 @@ class CourierController extends Controller
 
         $data['status']=Status::pluck('name','id')->toArray();
         $data['accepted_status_id']=Status::where('code_name',"accepted")->first()->id;
-        $data['courier_companies']=Courier_company::pluck('name','id')->toArray();
+        $data['courier_companies']=Courier_service::pluck('name','id')->toArray();
         return view('couriers.index',$data);
     }
 
@@ -438,7 +438,7 @@ class CourierController extends Controller
             $payment = new Payment();
             $payment->courier_id = $courier_id;
             $payment->user_id = $input['user_id'];
-            $payment->courier_company_id = $input['dispatch_through'];
+            $payment->courier_service_id = $input['dispatch_through'];
             $payment->amount = $input['amount'];
             if($input['is_pickup'] == 'pickup'){
                 $payment->pickup_charge = $input['pickup_charge'];

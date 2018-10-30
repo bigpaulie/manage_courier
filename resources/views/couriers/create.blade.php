@@ -288,7 +288,10 @@
                                 <div class="form-group">
                                     <label class="col-sm-4 control-label">Weight: </label>
                                     <div class="col-sm-8">
-                                        <input type="number" name="weight" class="form-control" required value="{{old('weight')}}">
+                                        <div class="input-group mb-md">
+                                            <input type="number" name="weight"  class="form-control" required value="{{old('weight')}}" />
+                                            <span class="input-group-addon ">Kg/Grm</span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">

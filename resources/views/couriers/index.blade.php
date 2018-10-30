@@ -127,10 +127,15 @@
                     {{--<td data-title="R Name" class="text-right">@{{courier.r_name}}</td>--}}
                     <td data-title="Traking Number" class="text-right">@{{courier.tracking_no}}</td>
                     <td data-title="Status" class="text-right hidden-xs hidden-sm">
+                        @if(Auth::user()->user_type == 'admin')
                         <select class="form-control" v-model="courier.status.id" @change="createCharge(courier)">
                             <option>Select Status</option>
                             <option v-for=" (status, key) in status_master" :value="key">@{{ status }}</option>
                         </select>
+                        @endif
+                        @if(Auth::user()->user_type == 'agent')
+                        @{{ courier.status.name }}
+                        @endif
                     </td>
                     <td data-title="Created" class="text-right hidden-xs hidden-sm">@{{courier.shippment.courier_status | capitalize}}</td>
                     <td data-title="Actions" class="text-right actions">

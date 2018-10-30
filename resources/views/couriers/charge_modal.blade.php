@@ -24,7 +24,11 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Weight</label>
                 <div class="col-sm-9">
-                    <input type="text" name="weight" v-model="selectedCourier.weight" class="form-control" />
+
+                    <div class="input-group mb-md">
+                        <input type="text" name="weight" v-model="selectedCourier.weight" class="form-control" />
+                        <span class="input-group-addon ">Kg/Grm</span>
+                    </div>
                 </div>
             </div>
             <div class="form-group">

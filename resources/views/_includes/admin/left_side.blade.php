@@ -37,7 +37,7 @@
                     </li>
                     <li @if($controller_name == 'agents')class="nav-active nav-expanded" @endif>
                         <a href="/admin/agents">
-                            <i class="fa fa-copy" aria-hidden="true"></i>
+                            <i class="fa fa-users" aria-hidden="true"></i>
                             <span>Agents</span>
                         </a>
 
@@ -51,28 +51,28 @@
                     </li>
                     <li @if($controller_name == 'expenses')class="nav-active nav-expanded" @endif>
                         <a href="/admin/expenses">
-                            <i class="fa fa-list-alt" aria-hidden="true"></i>
+                            <i class="fa fa-money" aria-hidden="true"></i>
                             <span>Expenses</span>
                         </a>
 
                     </li>
                     <li @if($action_name == 'notifications')class="nav-active nav-expanded" @endif>
                         <a href="/admin/notifications">
-                            <i class="fa fa-table" aria-hidden="true"></i>
+                            <i class="fa fa-bell" aria-hidden="true"></i>
                             <span>Notifications</span>
                         </a>
 
                     </li>
                     <li class="">
                         <a>
-                            <i class="fa fa-map-marker" aria-hidden="true"></i>
+                            <i class="fa fa-dollar" aria-hidden="true"></i>
                             <span>Payments</span>
                         </a>
 
                     </li>
                     <li class="">
                         <a>
-                            <i class="fa fa-columns" aria-hidden="true"></i>
+                            <i class="fa fa-file" aria-hidden="true"></i>
                             <span>Reports</span>
                         </a>
                         <ul class="nav nav-children">
@@ -98,11 +98,11 @@
                             </li>
                         </ul>
                     </li>
-                    <?php $nav_array = ['expense_types','status','package_types','service_types', 'content_types']; ?>
+                    <?php $nav_array = ['expense_types','status','package_types','service_types', 'content_types','courier_services']; ?>
 
                     <li class="nav-parent @if(in_array($controller_name, $nav_array))nav-expanded nav-active @endif">
                         <a>
-                            <i class="fa fa-copy" aria-hidden="true"></i>
+                            <i class="fa fa-database" aria-hidden="true"></i>
                             <span>Masters</span>
                         </a>
                         <ul class="nav nav-children">
@@ -132,6 +132,12 @@
                                 </a>
                             </li>
 
+                            <li @if($controller_name == 'courier_services')class="nav-active" @endif>
+                                <a href="/admin/courier_services">
+                                    Courier Services
+                                </a>
+                            </li>
+
                         </ul>
                     </li>
 
@@ -157,7 +163,7 @@
 
                         <li class="">
                             <a>
-                                <i class="fa fa-copy" aria-hidden="true"></i>
+                                <i class="fa fa-file" aria-hidden="true"></i>
                                 <span>Reports</span>
                             </a>
 
@@ -178,13 +184,13 @@
                         </li>
                         <li @if($controller_name == 'expenses')class="nav-active nav-expanded" @endif>
                             <a href="/store/expenses">
-                                <i class="fa fa-envelope" aria-hidden="true"></i>
+                                <i class="fa fa-money" aria-hidden="true"></i>
                                 <span>Expenses</span>
                             </a>
                         </li>
                         <li class="">
                             <a>
-                                <i class="fa fa-copy" aria-hidden="true"></i>
+                                <i class="fa fa-file" aria-hidden="true"></i>
                                 <span>Reports</span>
                             </a>
 
