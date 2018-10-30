@@ -227,7 +227,8 @@
                 selected: [],
                 allSelected:false,
                 courierIds:[],
-                selectedCourier:{}
+                selectedCourier:{},
+                accepted_status_id:"{{$accepted_status_id}}"
 
             },
             created(){
@@ -291,7 +292,7 @@
                 },
                 createCharge(courier){
 
-                    if(courier.status.id == 8){
+                    if(courier.status.id == this.accepted_status_id){
                             let c_data={};
                             c_data.courier_id =courier.id;
                             c_data.weight =courier.shippment.weight;

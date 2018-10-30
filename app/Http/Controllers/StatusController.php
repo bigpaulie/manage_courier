@@ -50,7 +50,7 @@ class StatusController extends Controller
         }
 
         $input = $request->all();
-        $input['code_name'] = str_replace(" ","_",$input['name']);
+        $input['code_name'] = str_replace(" ","_",strtolower($input['name']));
         Status::create($input);
         $request->session()->flash('message', 'Status has been added successfully!');
         return redirect()->route('status.index');
@@ -104,7 +104,7 @@ class StatusController extends Controller
         $status = Status::find($id);
         if($status != null){
             $status->name = $input['name'];
-            $status->code_name = str_replace(" ","_",$input['name']);
+            $status->code_name = str_replace(" ","_",strtolower($input['name']));
             $status->save();
         }
         $request->session()->flash('message', 'Status has been updated successfully!');

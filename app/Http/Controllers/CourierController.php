@@ -34,6 +34,7 @@ class CourierController extends Controller
     {
 
         $data['status']=Status::pluck('name','id')->toArray();
+        $data['accepted_status_id']=Status::where('code_name',"accepted")->first()->id;
         $data['courier_companies']=Courier_company::pluck('name','id')->toArray();
         return view('couriers.index',$data);
     }
