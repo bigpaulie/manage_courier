@@ -48,6 +48,17 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group @if ($errors->has('color_code')) has-error  @endif">
+                                    <label class="col-sm-4 control-label">Status Color: </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="colorpicker-default form-control colorpicker-element" data-plugin-colorpicker name="color_code" value="{{$status->color_code}}">
+
+                                        @if ($errors->has('color_code'))
+                                            <label for="color_code" class="error">{{ $errors->first('color_code') }}</label>
+                                        @endif
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
 

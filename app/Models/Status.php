@@ -8,6 +8,6 @@ class Status extends Model
 {
     protected $table = 'status';
 
-    protected $fillable = ['name','code_name'];
+    protected $fillable = ['name','code_name','color_code'];
 
 }

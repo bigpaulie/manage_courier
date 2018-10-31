@@ -19,7 +19,7 @@
                         <div class="form-group mb-lg">
                             <label>Email</label>
                             <div class="input-group input-group-icon">
-                                <input id="email" type="email" class="form-control input-lg{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" required autofocus>
+                                <input id="email" type="email" class="form-control input-lg{{ $errors->has('email') ? ' has-error' : '' }}" name="email" value="{{ old('email') }}" required autofocus>
                                 <span class="input-group-addon">
 										<span class="icon icon-lg">
 											<i class="fa fa-user"></i>
@@ -28,9 +28,9 @@
                             </div>
 
                             @if ($errors->has('email'))
-                                <span class="invalid-feedback" role="alert">
+                                <label class="error" role="alert">
                                         <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
+                                 </label>
                             @endif
                         </div>
 
@@ -40,7 +40,7 @@
                                 <a href="{{ route('password.request') }}" class="pull-right">Lost Password?</a>
                             </div>
                             <div class="input-group input-group-icon">
-                                <input id="password" type="password" class="form-control input-lg{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required>
+                                <input id="password" type="password" class="form-control input-lg{{ $errors->has('password') ? ' has-error' : '' }}" name="password" required>
                                 <span class="input-group-addon">
 										<span class="icon icon-lg">
 											<i class="fa fa-lock"></i>

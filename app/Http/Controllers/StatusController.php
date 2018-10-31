@@ -40,6 +40,7 @@ class StatusController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
+            'color_code' => 'required',
 
         ]);
 
@@ -91,6 +92,7 @@ class StatusController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
+            'color_code' => 'required',
 
         ]);
 
@@ -104,6 +106,7 @@ class StatusController extends Controller
         $status = Status::find($id);
         if($status != null){
             $status->name = $input['name'];
+            $status->color_code = $input['color_code'];
             $status->code_name = str_replace(" ","_",strtolower($input['name']));
             $status->save();
         }

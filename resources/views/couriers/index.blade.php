@@ -57,8 +57,14 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">Status</label>
-                    {!! Form::select('status', $status, old('status'), ['class'=>'form-control','placeholder' => 'Select Status','v-model'=>'status_id']); !!}
+                    {{--{!! Form::select('status', $status, old('status'), ['class'=>'form-control','placeholder' => 'Select Status','v-model'=>'status_id']); !!}--}}
+                    <select class="form-control" v-model="status_id">
+                        <option value="">Select Status</option>
+                        @foreach($status as $statu)
+                          <option value="{{$statu->id}}" style="color: {{$statu->color_code}}">{{$statu->name}}</option>
+                        @endforeach
 
+                    </select>
                 </div>
             </div>
 
@@ -128,13 +134,13 @@
                     <td data-title="Traking Number" class="text-right">@{{courier.tracking_no}}</td>
                     <td data-title="Status" class="text-right hidden-xs hidden-sm">
                         @if(Auth::user()->user_type == 'admin')
-                        <select class="form-control" v-model="courier.status.id" @change="createCharge(courier)">
-                            <option>Select Status</option>
-                            <option v-for=" (status, key) in status_master" :value="key">@{{ status }}</option>
+                        <select class="form-control" v-model="courier.status.id" @change="createCharge(courier)" >
+                            <option value="">Select Status</option>
+                            <option v-for=" (status, key) in status_master" :value="status.id" v-bind:style="{ color:status.color_code  }">@{{ status.name }}</option>
                         </select>
                         @endif
                         @if(Auth::user()->user_type == 'agent')
-                        @{{ courier.status.name }}
+                                <span v-bind:style="{ color:courier.status.color_code  }">@{{ courier.status.name }}</span>
                         @endif
                     </td>
                     <td data-title="Created" class="text-right hidden-xs hidden-sm">@{{courier.shippment.courier_status | capitalize}}</td>

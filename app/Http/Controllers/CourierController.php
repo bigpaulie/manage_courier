@@ -33,7 +33,7 @@ class CourierController extends Controller
     public function index()
     {
 
-        $data['status']=Status::pluck('name','id')->toArray();
+        $data['status']=Status::all();
         $data['accepted_status_id']=Status::where('code_name',"accepted")->first()->id;
         $data['courier_companies']=Courier_service::pluck('name','id')->toArray();
         return view('couriers.index',$data);

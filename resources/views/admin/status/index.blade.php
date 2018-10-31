@@ -48,7 +48,7 @@
 
                 <tr>
                     <td data-title="Id">{{$status->id}}</td>
-                    <td data-title="Expense Type" class="hidden-xs hidden-sm">{{$status->name}}</td>
+                    <td data-title="Expense Type" class="hidden-xs hidden-sm"><span  style="color: {{$status->color_code}}">{{$status->name}}</span></td>
                     <td data-title="Created" class="text-right">{{date('d-M-Y',strtotime($status->created_at))}}</td>
                     <td data-title="Actions" class="text-right actions">
                         {!! Form::model($status,['method' => 'DELETE', 'action' => ['StatusController@destroy', $status->id ], 'id'=>'frmdeletestatus_'.$status->id ]) !!}

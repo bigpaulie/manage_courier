@@ -28,6 +28,10 @@
 
 {{--{!! Html::style("/assets/vendor/bootstrap-datepicker/css/datepicker3.css") !!}--}}
 
+ {!! Html::style("/assets/vendor/bootstrap-colorpicker/css/bootstrap-colorpicker.css") !!}
+
+
+
 
 <!-- Theme CSS -->
 
@@ -85,8 +89,10 @@
 {!! Html::script("/assets/vendor/magnific-popup/magnific-popup.js") !!}
 {!! Html::script("/assets/vendor/jquery-placeholder/jquery.placeholder.js") !!}
 
+    {!! Html::script("/assets/vendor/bootstrap-colorpicker/js/bootstrap-colorpicker.js") !!}
 
-<!-- Specific Page Vendor -->
+
+    <!-- Specific Page Vendor -->
 
     <!-- Theme Base, Components and Settings -->
 {!! Html::script("/assets/javascripts/theme.js") !!}
