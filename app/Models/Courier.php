@@ -38,6 +38,10 @@ class Courier extends Model
         return $this->hasOne('App\Models\Shippment');
     }
 
+    public function courier_charge(){
+        return $this->hasOne('App\Models\Courier_charge');
+    }
+
     public function sender_country(){
         return $this->belongsTo('App\Models\Country','s_country','id');
     }

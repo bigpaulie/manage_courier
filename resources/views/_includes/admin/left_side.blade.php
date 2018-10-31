@@ -17,6 +17,7 @@
                 $route_arr = explode('.',$current_routename);
                 $controller_name = $route_arr[0];
                 $action_name = $route_arr[1];
+                $notification_count = \App\Models\Notification::where('status','unread')->count();
             ?>
             @if(Auth::user()->user_type == 'admin')
 
@@ -58,6 +59,8 @@
                     </li>
                     <li @if($action_name == 'notifications')class="nav-active nav-expanded" @endif>
                         <a href="/admin/notifications">
+                            <span class="pull-right label label-primary">{{$notification_count}}</span>
+
                             <i class="fa fa-bell" aria-hidden="true"></i>
                             <span>Notifications</span>
                         </a>

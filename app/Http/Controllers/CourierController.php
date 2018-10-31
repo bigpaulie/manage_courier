@@ -15,7 +15,7 @@ use App\Models\Status;
 use App\Models\Notification;
 use App\Models\User;
 use App\Models\Courier_service;
-use App\Models\Payment;
+use App\Models\Courier_charge;
 
 
 
@@ -35,6 +35,7 @@ class CourierController extends Controller
 
         $data['status']=Status::all();
         $data['accepted_status_id']=Status::where('code_name',"accepted")->first()->id;
+        $data['shipped_status_id']=Status::where('code_name',"shipped")->first()->id;
         $data['courier_companies']=Courier_service::pluck('name','id')->toArray();
         return view('couriers.index',$data);
     }
@@ -269,8 +270,9 @@ class CourierController extends Controller
             if($user_type == 'agent'){
                 $where[] = ['couriers.user_id', $user_id];
             }
-            $couriers= Courier::with(['agent','status','shippment'])
-                ->where('status_id',1)
+            $couriers= Courier::with(['agent','status','shippment','courier_charge'])
+                ->whereDate('updated_at','>=', date('Y-m-d'))
+                ->whereDate('updated_at', '<=',date('Y-m-d'))
                 ->where($where);
         }else{
             $where = [];
@@ -279,18 +281,18 @@ class CourierController extends Controller
             }
             if ($traking_number !="" ) {
                 $where[] = ['couriers.tracking_no', $traking_number];
-                $couriers= Courier::with(['agent','status'])
+                $couriers= Courier::with(['agent','status','shippment','courier_charge'])
                                     ->where($where);
             }
             if ($status_id !="" ) {
                 $where[] = ['couriers.status_id', $status_id];
 
-                $couriers= Courier::with(['agent','status','shippment'])
+                $couriers= Courier::with(['agent','status','shippment','courier_charge'])
                                     ->where($where);
             }
             if ($agent_name !="" ) {
 
-                $couriers= Courier::with(['agent','status','shippment'])
+                $couriers= Courier::with(['agent','status','shippment','courier_charge'])
                                     ->where($where)
                                     ->whereHas('agent',function ($query) use($agent_name){
                                         $query->where('name', 'like', "%{$agent_name}%");
@@ -299,9 +301,9 @@ class CourierController extends Controller
 
             if($from_date !="" && $end_date != ""){
 
-                $couriers= Courier::with(['agent','status','shippment'])
-                                    ->whereDate('created_at','>=', $from_date)
-                                    ->whereDate('created_at', '<=',$end_date)
+                $couriers= Courier::with(['agent','status','shippment','courier_charge'])
+                                    ->whereDate('updated_at','>=', $from_date)
+                                    ->whereDate('updated_at', '<=',$end_date)
                                     ->where($where);
             }
 
@@ -374,8 +376,8 @@ class CourierController extends Controller
             if($from_date !="" && $end_date != ""){
 
                 $couriers= Courier::with(['agent','status','shippment'])
-                    ->whereDate('created_at','>=', $from_date)
-                    ->whereDate('created_at', '<=',$end_date)
+                    ->whereDate('updated_at','>=', $from_date)
+                    ->whereDate('updated_at', '<=',$end_date)
                     ->where($where);
             }
 
@@ -427,26 +429,61 @@ class CourierController extends Controller
 
     public function saveCourierCharge(Request $request){
         $input = $request->all();
+        $status_code_name = $input['status_code_name'];
         $courier_id = $input['courier_id'];
+        $user_id = $input['user_id'];
         $courier = Courier::find($courier_id);
         if($courier !=null){
             //$courier->weight = $input['weight'];
             $courier->status_id = $input['status_id'];
-            $courier->tracking_no = $input['tracking_number'];
+            if($status_code_name == 'shipped'){
+                $courier->tracking_no = $input['tracking_number'];
+            }
             $courier->save();
 
-            $payment = new Payment();
-            $payment->courier_id = $courier_id;
-            $payment->user_id = $input['user_id'];
-            $payment->courier_service_id = $input['dispatch_through'];
-            $payment->amount = $input['amount'];
-            if($input['is_pickup'] == 'pickup'){
-                $payment->pickup_charge = $input['pickup_charge'];
-                $payment->is_pickup = 1;
+            $courier_charge = Courier_charge::where('courier_id',$courier_id)
+                                              ->where('user_id',$user_id)->first();
+            if($courier_charge != null){
+
+                if($status_code_name == 'accepted') {
+
+                    $courier_charge->amount = $input['amount'];
+                    if ($input['is_pickup'] == 'pickup') {
+                        $courier_charge->pickup_charge = $input['pickup_charge'];
+                        $courier_charge->is_pickup = 1;
+                    }
+                    $courier_charge->total = $input['total_charge'];
+                }
+                if($status_code_name == 'shipped') {
+                    $courier_charge->courier_service_id = $input['dispatch_through'];
+                    $courier_charge->delivery_date = date('Y-m-d',strtotime($input['delivery_date']));
+                }
+                $courier_charge->save();
+
+            }else{
+
+
+                $Courier_charge = new Courier_charge();
+                $Courier_charge->courier_id = $courier_id;
+                $Courier_charge->user_id = $input['user_id'];
+                if($status_code_name == 'accepted') {
+
+                    $Courier_charge->amount = $input['amount'];
+                    if ($input['is_pickup'] == 'pickup') {
+                        $Courier_charge->pickup_charge = $input['pickup_charge'];
+                        $Courier_charge->is_pickup = 1;
+                    }
+                    $Courier_charge->total = $input['total_charge'];
+                }
+                if($status_code_name == 'shipped') {
+                    $Courier_charge->courier_service_id = $input['dispatch_through'];
+                    $Courier_charge->delivery_date = date('Y-m-d',strtotime($input['delivery_date']));
+                }
+                $Courier_charge->save();
+
             }
-            $payment->delivery_date = date('Y-m-d',strtotime($input['delivery_date']));
-            $payment->total = $input['total_charge'];
-            $payment->save();
+
+
         }
     }
 }

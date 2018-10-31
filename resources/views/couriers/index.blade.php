@@ -110,14 +110,12 @@
                     <th><input type="checkbox" class="checkbox-custom chekbox-primary"  @click="selectAll" v-model="allSelected"></th>
 
                     <th v-if="user_type == 'admin'">Agent Name</th>
-
-                    <th>S Company Name</th>
-                    {{--<th class="hidden-xs hidden-sm">S Name</th>--}}
-                    <th class="text-right">R Company Name</th>
-                    {{--<th class="text-right hidden-xs hidden-sm">R Name</th>--}}
                     <th class="text-right">Traking Number</th>
                     <th class="text-right">Status</th>
-                    <th class="text-right hidden-xs hidden-sm">Courier Status</th>
+                    <th class="text-right hidden-xs hidden-sm">Pickup/Drop</th>
+                    <th>Amount</th>
+                    <th>Pickup Charge</th>
+                    <th>Total</th>
                     <th class="text-right">Actions</th>
                 </tr>
                 </thead>
@@ -127,14 +125,10 @@
                 <tr v-for="(courier, index) in couriers.data">
                     <td><input type="checkbox" @click="select" class="checkbox-custom chekbox-primary" v-model="courierIds" :value="courier.id"></td>
                     <td data-title="Agent Name" v-if="user_type == 'admin'">@{{courier.agent.name}}</td>
-                    <td data-title="S Company Name" class="hidden-xs hidden-sm">@{{courier.s_company}}</td>
-                    {{--<td data-title="S Name" class="text-right">@{{courier.s_name}}</td>--}}
-                    <td data-title="R Company Name" class="text-right hidden-xs hidden-sm">@{{courier.r_company}}</td>
-                    {{--<td data-title="R Name" class="text-right">@{{courier.r_name}}</td>--}}
                     <td data-title="Traking Number" class="text-right">@{{courier.tracking_no}}</td>
                     <td data-title="Status" class="text-right hidden-xs hidden-sm">
                         @if(Auth::user()->user_type == 'admin')
-                        <select class="form-control" v-model="courier.status.id" @change="createCharge(courier)" >
+                        <select class="form-control" v-bind:style="{ color:courier.status.color_code  }" v-model="courier.status.id" @change="createCharge(courier)" >
                             <option value="">Select Status</option>
                             <option v-for=" (status, key) in status_master" :value="status.id" v-bind:style="{ color:status.color_code  }">@{{ status.name }}</option>
                         </select>
@@ -143,7 +137,10 @@
                                 <span v-bind:style="{ color:courier.status.color_code  }">@{{ courier.status.name }}</span>
                         @endif
                     </td>
-                    <td data-title="Created" class="text-right hidden-xs hidden-sm">@{{courier.shippment.courier_status | capitalize}}</td>
+                    <td data-title="Pickup/Drop" class="text-right hidden-xs hidden-sm">@{{courier.shippment.courier_status | capitalize}}</td>
+                    <td data-title="Amount"><span v-if="courier.courier_charge != null">@{{courier.courier_charge.amount }}</span></td>
+                    <td data-title="Pickup Charge"><span v-if="courier.courier_charge != null">@{{courier.courier_charge.pickup_charge }}</span></td>
+                    <td data-title="Total"><span v-if="courier.courier_charge != null">@{{courier.courier_charge.total }}</span></td>
                     <td data-title="Actions" class="text-right actions">
 
                         {{--@if(Auth::user()->user_type == 'admin')--}}
@@ -181,6 +178,8 @@
     <!-- end: page -->
 
    @include('couriers.charge_modal')
+   @include('couriers.shipped_modal')
+
 
 
 @endsection
@@ -240,6 +239,7 @@
                 courierIds:[],
                 selectedCourier:{},
                 accepted_status_id:"{{$accepted_status_id}}",
+                shipped_status_id:"{{$shipped_status_id}}",
                 filter_type:"all",
 
             },
@@ -311,12 +311,12 @@
                             c_data.courier_id =courier.id;
                             c_data.weight =courier.shippment.weight;
                             c_data.is_pickup =courier.shippment.courier_status;
-                            c_data.delivery_date ="{{date('m/d/Y')}}";
                             c_data.amount=0;
                             c_data.pickup_charge=0;
                             c_data.status_id = courier.status.id,
+                            c_data.status_code_name = 'accepted',
                             c_data.user_id=courier.user_id
-                        this.selectedCourier=c_data;
+                            this.selectedCourier=c_data;
 
                         $.magnificPopup.open({
                             items: {
@@ -324,6 +324,25 @@
                             },
                             type: 'inline'
                         });
+                    }
+
+                    if(courier.status.id == this.shipped_status_id){
+
+                        let c_data={};
+                        c_data.courier_id =courier.id;
+                        c_data.delivery_date ="{{date('m/d/Y')}}";
+                        c_data.status_id = courier.status.id,
+                        c_data.user_id=courier.user_id,
+                        c_data.status_code_name = 'shipped',
+                        this.selectedCourier=c_data;
+                        $.magnificPopup.open({
+                            items: {
+                                src: '#shippedModal'
+                            },
+                            type: 'inline'
+                        });
+
+
                     }
 
                 },
@@ -338,6 +357,7 @@
                                 //currentObj.output = error;
                             });
                    // e.preventDefault();
+                    this.searchCouriers();
                     $.magnificPopup.close();
 
                 }
