@@ -20,9 +20,9 @@ class Courier extends Model
     protected $fillable = [
         'user_id', 'status_id', 'tracking_no','s_name',
         's_company', 's_address1', 's_address2','s_phone',
-        's_country', 's_state', 's_city','s_email',
+        's_country', 's_state', 's_city','s_email','s_zip_code',
         'r_name', 'r_company', 'r_address1','r_address2',
-        'r_phone', 'r_country', 'r_state','r_city','r_email',
+        'r_phone', 'r_country', 'r_state','r_city','r_email','r_zip_code',
         'description'
     ];
 
@@ -39,7 +39,7 @@ class Courier extends Model
     }
 
     public function courier_charge(){
-        return $this->hasOne('App\Models\Courier_charge');
+        return $this->hasOne('App\Models\Courier_charge')->with('courier_service');
     }
 
     public function sender_country(){

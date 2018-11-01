@@ -52,6 +52,11 @@ class CourierController extends Controller
         $data['package_types']=Package_type::pluck('name', 'id')->toArray();
         $data['content_types']=Content_type::pluck('name', 'id')->toArray();
         $data['service_types']=Service_type::pluck('name', 'id')->toArray();
+        $user_id = \Auth::user()->id;
+        $user_data = User::with('profile')->find($user_id);
+        $data['user_data']= $user_data;
+        $data['s_states']=State::where('country_id',$user_data->profile->country_id)->get();
+        $data['s_cities']=City::where('state_id',$user_data->profile->state_id)->get();
         return view('couriers.create',$data);
     }
 
@@ -72,7 +77,7 @@ class CourierController extends Controller
             's_country' => 'required',
             's_state' => 'required',
             's_city' => 'required',
-            's_email' => 'email',
+            's_zip_code' => 'required',
             'r_name' => 'required',
             'r_company' => 'required',
             'r_address1' => 'required',
@@ -80,7 +85,7 @@ class CourierController extends Controller
             'r_country'=>'required',
             'r_state'=>'required',
             'r_city'=>'required',
-            'r_email' => 'email',
+            'r_zip_code' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -91,6 +96,7 @@ class CourierController extends Controller
         }
 
         $input = $request->all();
+
         $input['user_id']= \Auth::user()->id;
         $status = Status::where('code_name','pending')->first();
         $input['status_id']=$status->id;
@@ -104,7 +110,7 @@ class CourierController extends Controller
         $shippment->content_type_id = $input['content_type_id'];
         $shippment->weight = $input['weight'];
         $shippment->carriage_value = $input['carriage_value'];
-        $shippment->courier_status = $input['courier_status'];
+        $shippment->courier_status = isset($input['courier_status'])?$input['courier_status']:"drop";
         $shippment->save();
 
         if(\Auth::user()->user_type == 'agent'){
@@ -174,7 +180,7 @@ class CourierController extends Controller
             's_country' => 'required',
             's_state' => 'required',
             's_city' => 'required',
-            's_email' => 'email',
+            's_zip_code' => 'required',
             'r_name' => 'required',
             'r_company' => 'required',
             'r_address1' => 'required',
@@ -182,7 +188,7 @@ class CourierController extends Controller
             'r_country'=>'required',
             'r_state'=>'required',
             'r_city'=>'required',
-            'r_email' => 'email',
+            'r_zip_code' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -206,6 +212,7 @@ class CourierController extends Controller
         $courier->s_state = $input['s_state'];
         $courier->s_city = $input['s_city'];
         $courier->s_email = $input['s_email'];
+        $courier->s_zip_code = $input['s_zip_code'];
         $courier->r_name = $input['r_name'];
         $courier->r_company = $input['r_company'];
         $courier->r_address1 = $input['r_address1'];
@@ -215,6 +222,7 @@ class CourierController extends Controller
         $courier->r_state = $input['r_state'];
         $courier->r_city = $input['r_city'];
         $courier->r_email = $input['r_email'];
+        $courier->r_zip_code = $input['r_zip_code'];
         $courier->save();
 
         $shippment = Shippment::where('courier_id',$id)->first();
@@ -223,7 +231,7 @@ class CourierController extends Controller
         $shippment->content_type_id = $input['content_type_id'];
         $shippment->weight = $input['weight'];
         $shippment->carriage_value = $input['carriage_value'];
-        $shippment->courier_status = $input['courier_status'];
+        $shippment->courier_status = isset($input['courier_status'])?$input['courier_status']:"drop";
         $shippment->save();
         $request->session()->flash('message', 'Courier has been updated successfully!');
         return redirect('/'.\Auth::user()->user_type.'/couriers');
@@ -273,7 +281,8 @@ class CourierController extends Controller
             $couriers= Courier::with(['agent','status','shippment','courier_charge'])
                 ->whereDate('updated_at','>=', date('Y-m-d'))
                 ->whereDate('updated_at', '<=',date('Y-m-d'))
-                ->where($where);
+                ->where($where)
+                ->OrderBy('updated_at','desc');
         }else{
             $where = [];
             if($user_type == 'agent'){
@@ -308,9 +317,27 @@ class CourierController extends Controller
             }
 
         }
-        $records = $couriers->paginate(15);
+        $courier_data = $couriers->paginate(15);
 
-        return response()->json($records);
+        // dd($courier_data->total());
+        $total_amount=0;
+        $total_pickup_charge=0;
+        $total=0;
+         if($courier_data->total() > 0 ){
+                foreach ($courier_data as $c_data){
+                    if($c_data->courier_charge != null){
+                        $total_amount+=$c_data->courier_charge->amount;
+                        $total_pickup_charge+=$c_data->courier_charge->pickup_charge;
+                        $total+=$c_data->courier_charge->total;
+                    }
+                }
+         }
+         $response_data['total_amount']=$total_amount;
+         $response_data['total_pickup_charge']=$total_pickup_charge;
+         $response_data['total']=$total;
+         $response_data['courier_data']=$courier_data;
+
+        return response()->json($response_data);
         //return $couriers;
     }
 

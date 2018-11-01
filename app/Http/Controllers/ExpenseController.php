@@ -18,9 +18,12 @@ class ExpenseController extends Controller
     {
         $user_type = \Auth::user()->user_type;
         if($user_type == 'admin'){
-            $expenses= Expense::paginate(10);
+            $expenses= Expense::OrderBy('created_at','desc')
+                                ->paginate(10);
         }else if($user_type == 'store'){
-            $expenses= Expense::where('user_id',\Auth::user()->id)->paginate(10);
+            $expenses= Expense::where('user_id',\Auth::user()->id)
+                                ->OrderBy('created_at','desc')
+                                ->paginate(10);
         }
 
         $data['expenses']=$expenses;

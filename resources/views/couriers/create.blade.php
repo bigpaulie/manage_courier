@@ -33,10 +33,17 @@
 
                         </header>
                         <div class="panel-body">
+
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Self Address: </label>
+                                <div class="col-sm-8">
+                                    <input type="checkbox" v-model="self_address" name="self_address" class="checkbox" value="1" @click="fillUserData">
+                                </div>
+                            </div>
                             <div class="form-group @if ($errors->has('s_name')) has-error  @endif">
                                 <label class="col-sm-4 control-label">Name: </label>
                                 <div class="col-sm-8">
-                                    <input type="text" name="s_name" class="form-control" value="{{old('s_name')}}">
+                                    <input type="text" name="s_name" class="form-control text-capitalize" value="{{old('s_name')}}" v-model="s_name">
                                     @if ($errors->has('s_name'))
                                         <label for="s_name" class="error">{{ $errors->first('s_name') }}</label>
                                     @endif
@@ -45,7 +52,7 @@
                             <div class="form-group @if ($errors->has('s_company')) has-error  @endif">
                                 <label class="col-sm-4 control-label">Company Name: </label>
                                 <div class="col-sm-8">
-                                    <input type="text" name="s_company" class="form-control" value="{{old('s_company')}}">
+                                    <input type="text" name="s_company" class="form-control text-capitalize" value="{{old('s_company')}}" v-model="s_company">
                                     @if ($errors->has('s_company'))
                                         <label for="s_name" class="error">{{ $errors->first('s_company') }}</label>
                                     @endif
@@ -55,7 +62,7 @@
                             <div class="form-group @if ($errors->has('s_address1')) has-error  @endif">
                                 <label class="col-sm-4 control-label">Addess1: </label>
                                 <div class="col-sm-8">
-                                    <input type="text" name="s_address1" class="form-control" value="{{old('s_address1')}}">
+                                    <input type="text" name="s_address1" class="form-control" value="{{old('s_address1')}}" v-model="s_address1">
                                     @if ($errors->has('s_address1'))
                                         <label for="s_address1" class="error">{{ $errors->first('s_address1') }}</label>
                                     @endif
@@ -65,22 +72,9 @@
                             <div class="form-group">
                                 <label class="col-sm-4 control-label">Addess2: </label>
                                 <div class="col-sm-8">
-                                    <input type="text" name="s_address2" class="form-control" value="{{old('s_address2')}}">
+                                    <input type="text" name="s_address2" class="form-control" value="{{old('s_address2')}}" v-model="s_address2">
                                 </div>
                             </div>
-
-
-
-                            <div class="form-group @if ($errors->has('s_phone')) has-error  @endif">
-                                <label class="col-sm-4 control-label">Phone: </label>
-                                <div class="col-sm-8">
-                                    <input type="text" name="s_phone" class="form-control" value="{{old('s_phone')}}">
-                                    @if ($errors->has('s_phone'))
-                                        <label for="s_phone" class="error">{{ $errors->first('s_phone') }}</label>
-                                    @endif
-                                </div>
-                            </div>
-
                             <div class="form-group @if ($errors->has('s_country')) has-error  @endif">
                                 <label class="col-sm-4 control-label">Country: </label>
                                 <div class="col-sm-8">
@@ -110,7 +104,7 @@
                             <div class="form-group @if ($errors->has('s_city')) has-error  @endif">
                                 <label class="col-sm-4 control-label">City: </label>
                                 <div class="col-sm-8">
-                                    <select class="form-control mb-md" id="s_city" name="s_city" >
+                                    <select class="form-control mb-md" id="s_city" name="s_city" v-model="s_city">
                                         <option value="">Select City</option>
                                         <option  v-for="city in s_cities" :value="city.id">@{{city.city_name}}</option>
                                     </select>
@@ -120,10 +114,31 @@
                                 </div>
                             </div>
 
+                            <div class="form-group @if ($errors->has('s_zip_code')) has-error  @endif">
+                                <label class="col-sm-4 control-label">Zip Code: </label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="s_zip_code" class="form-control" value="{{old('s_zip_code')}}" v-model="s_zip_code">
+                                    @if ($errors->has('s_zip_code'))
+                                        <label for="s_zip_code" class="error">{{ $errors->first('s_zip_code') }}</label>
+                                    @endif
+                                </div>
+                            </div>
+
+
+                            <div class="form-group @if ($errors->has('s_phone')) has-error  @endif">
+                                <label class="col-sm-4 control-label">Phone: </label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="s_phone" class="form-control" value="{{old('s_phone')}}" v-model="s_phone">
+                                    @if ($errors->has('s_phone'))
+                                        <label for="s_phone" class="error">{{ $errors->first('s_phone') }}</label>
+                                    @endif
+                                </div>
+                            </div>
+
                             <div class="form-group @if ($errors->has('s_email')) has-error  @endif">
                                 <label class="col-sm-4 control-label">Email: </label>
                                 <div class="col-sm-8">
-                                    <input type="text" name="s_email" class="form-control" value="{{old('s_email')}}">
+                                    <input type="text" name="s_email" class="form-control" value="{{old('s_email')}}" v-model="s_email">
 
                                     @if ($errors->has('s_email'))
                                         <label for="s_email" class="error">{{ $errors->first('s_email') }}</label>
@@ -149,7 +164,7 @@
                             <div class="form-group @if ($errors->has('r_name')) has-error  @endif">
                                 <label class="col-sm-4 control-label">Name: </label>
                                 <div class="col-sm-8">
-                                    <input type="text" name="r_name" class="form-control" value="{{old('r_name')}}">
+                                    <input type="text" name="r_name" class="form-control text-capitalize" value="{{old('r_name')}}">
                                     @if ($errors->has('r_name'))
                                         <label for="r_name" class="error">{{ $errors->first('r_name') }}</label>
                                     @endif
@@ -158,7 +173,7 @@
                             <div class="form-group @if ($errors->has('r_company')) has-error  @endif">
                                 <label class="col-sm-4 control-label">Company Name: </label>
                                 <div class="col-sm-8">
-                                    <input type="text" name="r_company" class="form-control" value="{{old('r_company')}}">
+                                    <input type="text" name="r_company" class="form-control text-capitalize" value="{{old('r_company')}}">
                                     @if ($errors->has('r_company'))
                                         <label for="r_company" class="error">{{ $errors->first('r_company') }}</label>
                                     @endif
@@ -179,18 +194,6 @@
                                 <label class="col-sm-4 control-label">Addess2: </label>
                                 <div class="col-sm-8">
                                     <input type="text" name="r_address2" class="form-control" value="{{old('r_address2')}}">
-                                </div>
-                            </div>
-
-
-
-                            <div class="form-group @if ($errors->has('r_phone')) has-error @endif">
-                                <label class="col-sm-4 control-label">Phone: </label>
-                                <div class="col-sm-8">
-                                    <input type="text" name="r_phone" class="form-control" value="{{old('r_phone')}}">
-                                    @if ($errors->has('r_phone'))
-                                        <label for="r_phone" class="error">{{ $errors->first('r_phone') }}</label>
-                                    @endif
                                 </div>
                             </div>
 
@@ -232,6 +235,28 @@
                                     @endif
                                 </div>
                             </div>
+
+                            <div class="form-group @if ($errors->has('r_zip_code')) has-error @endif">
+                                <label class="col-sm-4 control-label">Zip Code: </label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="r_zip_code" class="form-control" value="{{old('r_zip_code')}}">
+                                    @if ($errors->has('r_zip_code'))
+                                        <label for="r_zip_code" class="error">{{ $errors->first('r_zip_code') }}</label>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="form-group @if ($errors->has('r_phone')) has-error @endif">
+                                <label class="col-sm-4 control-label">Phone: </label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="r_phone" class="form-control" value="{{old('r_phone')}}">
+                                    @if ($errors->has('r_phone'))
+                                        <label for="r_phone" class="error">{{ $errors->first('r_phone') }}</label>
+                                    @endif
+                                </div>
+                            </div>
+
+
 
                             <div class="form-group @if ($errors->has('r_email')) has-error @endif">
                                 <label class="col-sm-4 control-label">Email: </label>
@@ -302,9 +327,9 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-4 control-label">Pickup/Drop: </label>
+                                    <label class="col-sm-4 control-label">Pickup: </label>
                                     <div class="col-sm-8">
-                                        {!! Form::select('courier_status', ['pickup'=>'Pickup','drop'=>'Drop'], old('content_type_id'), ['class'=>'form-control mb-md','placeholder' => 'Select Courier Status','required']); !!}
+                                            <input type="checkbox" name="courier_status" class="" value="pickup">
 
                                     </div>
                                 </div>
@@ -373,15 +398,26 @@
             el:'#app',
             data:{
                 countries:@json($countries),
-
-                s_states:null,
-                s_cities:null,
+                user_data:@json($user_data),
+                s_name:"",
+                s_company:"",
+                s_address1:"",
+                s_address2:"",
+                s_phone:"",
+                s_zip_code:"",
+                s_email:"",
                 s_country:"",
                 s_state:"",
+                s_city:"",
                 r_states:null,
                 r_cities:null,
                 r_country:"",
                 r_state:"",
+                self_address:false,
+                s_states:@json($s_states),
+                s_cities:@json($s_cities),
+
+
             },
             created(){
                 //console.log(this.countries);
@@ -389,6 +425,32 @@
 
 
             methods: {
+
+                fillUserData(){
+                    this.self_address = !this.self_address;
+                     if(this.self_address){
+                         this.s_name = this.user_data.name;
+                         this.s_company = this.user_data.profile.company_name;
+                         this.s_address1 = this.user_data.profile.address;
+                         this.s_phone = this.user_data.profile.phone;
+                         this.s_zip_code = this.user_data.profile.zip_code;
+                         this.s_email = this.user_data.email;
+                         this.s_country = this.user_data.profile.country_id;
+                         this.s_state = this.user_data.profile.state_id;
+                         this.s_city = this.user_data.profile.city_id;
+                     }else{
+                         this.s_name = "";
+                         this.s_company = "";
+                         this.s_address1 = "";
+                         this.s_phone = "";
+                         this.s_zip_code = "";
+                         this.s_email = "";
+                         this.s_country = "";
+                         this.s_state = "";
+                         this.s_city = "";
+
+                     }
+                },
 
                 getStates(type){
                     if(type == 'sender' && parseInt(this.s_country) > 0 ){

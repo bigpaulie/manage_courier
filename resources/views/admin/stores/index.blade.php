@@ -43,7 +43,7 @@
                     <th class="text-right hidden-xs hidden-sm">Phone</th>
                     <th class="text-right">Country</th>
                     <th class="text-right">Address</th>
-                    {{--<th class="text-right hidden-xs hidden-sm">Gender</th>--}}
+                    <th class="text-right hidden-xs hidden-sm">Zip Code</th>
                     <th class="text-right hidden-xs hidden-sm">Created</th>
                     <th class="text-right">Actions</th>
                 </tr>
@@ -62,7 +62,7 @@
                        @endif
                     </td>
                     <td data-title="Address" class="text-right">{{$store->profile->address}}</td>
-                    {{--<td data-title="High" class="text-right hidden-xs hidden-sm">{{$agent->profile->gender}}</td>--}}
+                    <td data-title="High" class="text-right hidden-xs hidden-sm">{{$store->profile->zip_code}}</td>
                     <td data-title="Created" class="text-right hidden-xs hidden-sm">{{date('d-M-Y',strtotime($store->created_at))}}</td>
                     <td data-title="Actions" class="text-right actions">
                         {!! Form::model($store,['method' => 'DELETE', 'action' => ['StoreController@destroy', $store->id ], 'id'=>'frmdeletestore_'.$store->id ]) !!}

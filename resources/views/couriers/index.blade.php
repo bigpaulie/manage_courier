@@ -108,10 +108,11 @@
                 <thead>
                 <tr>
                     <th><input type="checkbox" class="checkbox-custom chekbox-primary"  @click="selectAll" v-model="allSelected"></th>
-
+                    <th class="text-right">Id</th>
                     <th v-if="user_type == 'admin'">Agent Name</th>
-                    <th class="text-right">Traking Number</th>
+                    <th class="text-right">T-Id</th>
                     <th class="text-right">Status</th>
+                    <th class="text-right">Shipped</th>
                     <th class="text-right hidden-xs hidden-sm">Pickup/Drop</th>
                     <th>Amount</th>
                     <th>Pickup Charge</th>
@@ -124,8 +125,13 @@
 
                 <tr v-for="(courier, index) in couriers.data">
                     <td><input type="checkbox" @click="select" class="checkbox-custom chekbox-primary" v-model="courierIds" :value="courier.id"></td>
+                    <td data-title="Id">@{{courier.id}}</td>
                     <td data-title="Agent Name" v-if="user_type == 'admin'">@{{courier.agent.name}}</td>
-                    <td data-title="Traking Number" class="text-right">@{{courier.tracking_no}}</td>
+                    <td data-title="Traking Number" class="text-right">
+                        <span v-if="courier.tracking_no == null">NA</span>
+                        <span v-if="courier.tracking_no != null"><a href="javascript:void(0);">@{{courier.tracking_no}}</a></span>
+
+                    </td>
                     <td data-title="Status" class="text-right hidden-xs hidden-sm">
                         @if(Auth::user()->user_type == 'admin')
                         <select class="form-control" v-bind:style="{ color:courier.status.color_code  }" v-model="courier.status.id" @change="createCharge(courier)" >
@@ -137,10 +143,15 @@
                                 <span v-bind:style="{ color:courier.status.color_code  }">@{{ courier.status.name }}</span>
                         @endif
                     </td>
+                    <td data-title="Shipped">
+                        <span v-if="courier.courier_charge != null && courier.courier_charge.courier_service != null">@{{courier.courier_charge.courier_service.name | exists }}</span>
+                        <span v-if="courier.courier_charge == null || courier.courier_charge.courier_service == null">NA</span>
+
+                    </td>
                     <td data-title="Pickup/Drop" class="text-right hidden-xs hidden-sm">@{{courier.shippment.courier_status | capitalize}}</td>
-                    <td data-title="Amount"><span v-if="courier.courier_charge != null">@{{courier.courier_charge.amount }}</span></td>
-                    <td data-title="Pickup Charge"><span v-if="courier.courier_charge != null">@{{courier.courier_charge.pickup_charge }}</span></td>
-                    <td data-title="Total"><span v-if="courier.courier_charge != null">@{{courier.courier_charge.total }}</span></td>
+                    <td data-title="Amount"><span v-if="courier.courier_charge != null">@{{courier.courier_charge.amount | exists }}</span> <span v-if="courier.courier_charge == null">NA</span></td>
+                    <td data-title="Pickup Charge"><span v-if="courier.courier_charge != null">@{{courier.courier_charge.pickup_charge | exists }}</span><span v-if="courier.courier_charge == null">NA</span></td>
+                    <td data-title="Total"><span v-if="courier.courier_charge != null">@{{courier.courier_charge.total | exists }}</span><span v-if="courier.courier_charge == null">NA</span></td>
                     <td data-title="Actions" class="text-right actions">
 
                         {{--@if(Auth::user()->user_type == 'admin')--}}
@@ -155,11 +166,33 @@
                     </td>
                 </tr>
 
-                <tr v-if="typeof couriers.data != 'undefined' && couriers.data.length == 0"><td colspan="10">
+                <tr v-if="typeof couriers.data != 'undefined' && couriers.data.length == 0"><td colspan="11">
                         <div class="alert alert-danger">
                             <strong>Oh snap!</strong> No Couriers Found.
                         </div>
                     </td>
+                </tr>
+
+                <tr v-if="typeof couriers.data != 'undefined' && couriers.data.length > 0">
+                    <td colspan="6">
+
+                    </td>
+                    <td>
+                        <label><strong class="text-primary">Total Amount: @{{total_amount}}</strong></label>
+                    </td>
+                    <td>
+                        <label><strong class="text-primary">Total Charge: @{{total_charge}}</strong></label>
+
+                    </td>
+
+                    <td>
+                        <label><strong class="text-primary">Total: @{{total}}</strong></label>
+
+                    </td>
+                    <td>
+
+                    </td>
+
                 </tr>
 
                 </tbody>
@@ -220,6 +253,12 @@
             return value.charAt(0).toUpperCase() + value.slice(1)
         });
 
+        Vue.filter('exists', function (value) {
+            if (!value) return 'NA'
+
+            return value;
+        });
+
         const oapp = new Vue({
             el:'#app',
 
@@ -241,12 +280,20 @@
                 accepted_status_id:"{{$accepted_status_id}}",
                 shipped_status_id:"{{$shipped_status_id}}",
                 filter_type:"all",
+                total_amount:"NA",
+                total_charge:"NA",
+                total:"NA",
 
             },
             created(){
                 let searchURL = '/api/getCouriers?type=all&user_type='+this.user_type+'&user_id='+this.user_id;
-                axios.get(searchURL).then(response => {this.couriers = response.data});
-               // this.searchCouriers();
+                axios.get(searchURL).then(response => {
+                    this.couriers = response.data.courier_data;
+                    this.total_amount = response.data.total_amount;
+                    this.total_charge = response.data.total_pickup_charge;
+                    this.total = response.data.total;
+                });
+
             },
 
 
@@ -275,7 +322,13 @@
                     searchURL+='&from_date='+this.from_date+'&end_date='+this.end_date
                     searchURL+='&agent_name='+this.agent_name+'&status_id='+this.status_id
                     searchURL+='&user_type='+this.user_type+'&user_id='+this.user_id
-                    axios.get(searchURL).then(response => {this.couriers = response.data});
+                    axios.get(searchURL).then(response => {
+                        this.couriers = response.data.courier_data;
+                        this.total_amount = response.data.total_amount;
+                        this.total_charge = response.data.total_pickup_charge;
+                        this.total = response.data.total;
+                    });
+
                 },
 
                 resetFilter(){
@@ -326,7 +379,7 @@
                         });
                     }
 
-                    if(courier.status.id == this.shipped_status_id){
+                    else if(courier.status.id == this.shipped_status_id){
 
                         let c_data={};
                         c_data.courier_id =courier.id;
@@ -341,8 +394,19 @@
                             },
                             type: 'inline'
                         });
+                    }else{
 
+                        let status_data={};
+                        status_data.courier_id =courier.id;
+                        status_data.status_id = courier.status.id,
+                        axios.post('/api/update_courier_status', status_data)
+                            .then(function (response) {
 
+                            })
+                            .catch(function (error) {
+                                //currentObj.output = error;
+                            });
+                        this.searchCouriers();
                     }
 
                 },
@@ -360,7 +424,9 @@
                     this.searchCouriers();
                     $.magnificPopup.close();
 
-                }
+                },
+
+
 
             },
 

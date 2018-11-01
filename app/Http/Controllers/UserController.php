@@ -72,6 +72,7 @@ class UserController extends Controller
             'country_id' => 'required',
             'state_id' => 'required',
             'city_id' => 'required',
+            'zip_code' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -97,6 +98,7 @@ class UserController extends Controller
             $user_profile->city_id = $input['city_id'];
             $user_profile->state_id = $input['state_id'];
             $user_profile->country_id = $input['country_id'];
+            $user_profile->zip_code = $input['zip_code'];
             $user_profile->save();
         }
         $request->session()->flash('message', 'Profile has been updated successfully!');

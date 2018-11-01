@@ -43,7 +43,7 @@
                     <th class="text-right hidden-xs hidden-sm">Phone</th>
                     <th class="text-right">Country</th>
                     <th class="text-right">Address</th>
-                    {{--<th class="text-right hidden-xs hidden-sm">Gender</th>--}}
+                    <th class="text-right hidden-xs hidden-sm">Zip Code</th>
                     <th class="text-right hidden-xs hidden-sm">Created</th>
                     <th class="text-right">Actions</th>
                 </tr>
@@ -62,7 +62,7 @@
                        @endif
                     </td>
                     <td data-title="Address" class="text-right">{{$agent->profile->address}}</td>
-                    {{--<td data-title="High" class="text-right hidden-xs hidden-sm">{{$agent->profile->gender}}</td>--}}
+                    <td data-title="Zip Code" class="text-right hidden-xs hidden-sm">{{$agent->profile->zip_code}}</td>
                     <td data-title="Created" class="text-right hidden-xs hidden-sm">{{date('d-M-Y',strtotime($agent->created_at))}}</td>
                     <td data-title="Actions" class="text-right actions">
 

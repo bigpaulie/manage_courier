@@ -26,7 +26,9 @@ class AgentController extends Controller
     public function index()
     {
 
-        $agents= User::where('user_type','agent')->paginate(10);
+        $agents= User::where('user_type','agent')
+                     ->OrderBy('created_at','desc')
+                     ->paginate(10);
 
         $data=['agents'=>$agents];
         return view('admin.agents.index',$data);
@@ -66,6 +68,7 @@ class AgentController extends Controller
             'country_id' => 'required',
             'state_id' => 'required',
             'city_id' => 'required',
+            'zip_code' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -98,18 +101,8 @@ class AgentController extends Controller
         $user_profile->city_id = $input['city_id'];
         $user_profile->state_id = $input['state_id'];
         $user_profile->country_id = $input['country_id'];
+        $user_profile->zip_code = $input['zip_code'];
         $user_profile->save();
-
-        $pickup_charges = $input['pickup_charge'];
-
-        foreach ($pickup_charges as $charge){
-            $pickup_charge = new  Pickup_charge();
-            $pickup_charge->user_id = $user_id;
-            $pickup_charge->weight = $charge['weight'];
-            $pickup_charge->amount = $charge['amount'];
-            $pickup_charge->save();
-        }
-
         $request->session()->flash('message', 'Agent has been added successfully!');
         \Mail::to($user->email)->send(new WelcomeAgent($user));
         return redirect()->route('agents.index');
@@ -165,6 +158,7 @@ class AgentController extends Controller
             'country_id' => 'required',
             'state_id' => 'required',
             'city_id' => 'required',
+            'zip_code' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -190,6 +184,7 @@ class AgentController extends Controller
             $user_profile->city_id = $input['city_id'];
             $user_profile->state_id = $input['state_id'];
             $user_profile->country_id = $input['country_id'];
+            $user_profile->zip_code = $input['zip_code'];
             $user_profile->save();
         }
         $request->session()->flash('message', 'Agent has been updated successfully!');

@@ -303,9 +303,10 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-4 control-label">Pickup/Drop: </label>
+                                    <label class="col-sm-4 control-label">Pickup: </label>
                                     <div class="col-sm-8">
-                                        {!! Form::select('courier_status', ['pickup'=>'Pickup','drop'=>'Drop'],$courier->shippment->courier_status, ['class'=>'form-control mb-md','placeholder' => 'Select Courier Status','required']); !!}
+
+                                        <input type="checkbox" name="courier_status" class="" value="pickup" @if($courier->shippment->courier_status == 'pickup') checked @endif>
 
                                     </div>
                                 </div>

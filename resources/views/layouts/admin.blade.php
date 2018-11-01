@@ -53,6 +53,9 @@
             font-weight: bold;
             cursor: pointer;
         }
+        .capital{
+            text-transform: capitalize;
+        }
     </style>
 
 @yield('styles')

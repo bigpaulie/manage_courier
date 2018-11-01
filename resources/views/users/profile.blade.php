@@ -155,6 +155,17 @@
                         </div>
                     </div>
 
+                    <div class="form-group @if ($errors->has('zip_code')) has-error  @endif">
+                        <label class="col-md-3 control-label" for="inputDefault">Zip Code</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="zip_code" name="zip_code" value="{{$profile->profile->zip_code}}">
+
+                        @if ($errors->has('zip_code'))
+                                <label for="zip_code" class="error">{{ $errors->first('zip_code') }}</label>
+                            @endif
+                        </div>
+                    </div>
+
 
                     <footer class="panel-footer center">
                         <button class="btn btn-primary">Save</button>

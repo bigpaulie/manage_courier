@@ -35,7 +35,7 @@
                         <div class="form-group  @if ($errors->has('company_name')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">Company Name</label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control" id="company_name" name="company_name" value="{{old('company_name')}}">
+                                <input type="text" class="form-control text-capitalize" id="company_name" name="company_name" value="{{old('company_name')}}">
                                 @if ($errors->has('company_name'))
                                      <label for="company_name" class="error">{{ $errors->first('company_name') }}</label>
                                 @endif
@@ -44,7 +44,7 @@
                         <div class="form-group @if ($errors->has('first_name')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">First Name</label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control" id="first_name" name="first_name" value="{{old('first_name')}}">
+                                <input type="text" class="form-control text-capitalize" id="first_name" name="first_name" value="{{old('first_name')}}">
                                 @if ($errors->has('first_name'))
                                     <label for="first_name" class="error">{{ $errors->first('first_name') }}</label>
                                 @endif
@@ -54,7 +54,7 @@
                         <div class="form-group @if ($errors->has('last_name')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">Last Name</label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control" id="last_name" name="last_name" value="{{old('last_name')}}">
+                                <input type="text" class="form-control text-capitalize" id="last_name" name="last_name" value="{{old('last_name')}}">
                                 @if ($errors->has('last_name'))
                                     <label for="last_name" class="error">{{ $errors->first('last_name') }}</label>
                                 @endif
@@ -152,33 +152,16 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="col-md-3 control-label" for="inputDefault">Pickup Charges</label>
-                            <div class="col-md-9" >
-                                <div class="col-md-9" v-for="charge, idx in pickup_charges">
-                                    <label class="col-md-1 control-label" for="inputDefault">Weight</label>
-                                    <div class="col-md-3">
-                                        <input type="text" class="form-control" :name="'pickup_charge[' + [idx]+'][weight]'">
-                                    </div>
-
-                                    <label class="col-md-1 control-label" for="inputDefault">Amount</label>
-                                    <div class="col-md-3">
-                                        <input type="text" class="form-control"  :name="'pickup_charge[' + [idx]+'][amount]'">
-                                    </div>
-                                    <div class="col-md-3" v-if="idx > 0">
-                                        <button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" @click="removePickup(idx)">Remove</button>
-                                    </div>
-
-                                </div>
-
-
+                        <div class="form-group @if ($errors->has('zip_code')) has-error  @endif">
+                            <label class="col-md-3 control-label" for="inputDefault">Zip Code</label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="zip_code" name="zip_code" value="{{old('zip_code')}}">
+                                @if ($errors->has('zip_code'))
+                                    <label for="zip_code" class="error">{{ $errors->first('zip_code') }}</label>
+                                @endif
                             </div>
-
                         </div>
-
-                        <div class="col-md-3 pull-right">
-                            <button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" @click="addPickup">Add More</button>
-                        </div>
+                        <br>
 
                         <footer class="panel-footer center">
                             <button class="btn btn-primary">Save</button>
