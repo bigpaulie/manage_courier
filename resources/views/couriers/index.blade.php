@@ -174,7 +174,7 @@
                 </tr>
 
                 <tr v-if="typeof couriers.data != 'undefined' && couriers.data.length > 0">
-                    <td colspan="6">
+                    <td colspan="7">
 
                     </td>
                     <td>
@@ -189,9 +189,9 @@
                         <label><strong class="text-primary">Total: @{{total}}</strong></label>
 
                     </td>
-                    <td>
+                    {{--<td>--}}
 
-                    </td>
+                    {{--</td>--}}
 
                 </tr>
 
