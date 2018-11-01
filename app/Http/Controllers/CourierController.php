@@ -73,19 +73,19 @@ class CourierController extends Controller
             's_name' => 'required',
             's_company' => 'required',
             's_address1' => 'required',
-            's_phone' => 'required',
+            //'s_phone' => 'required',
             's_country' => 'required',
             's_state' => 'required',
             's_city' => 'required',
-            's_zip_code' => 'required',
+           // 's_zip_code' => 'required',
             'r_name' => 'required',
             'r_company' => 'required',
             'r_address1' => 'required',
-            'r_phone' => 'required',
+           // 'r_phone' => 'required',
             'r_country'=>'required',
             'r_state'=>'required',
             'r_city'=>'required',
-            'r_zip_code' => 'required',
+            //'r_zip_code' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -176,19 +176,19 @@ class CourierController extends Controller
             's_name' => 'required',
             's_company' => 'required',
             's_address1' => 'required',
-            's_phone' => 'required',
+           // 's_phone' => 'required',
             's_country' => 'required',
             's_state' => 'required',
             's_city' => 'required',
-            's_zip_code' => 'required',
+           // 's_zip_code' => 'required',
             'r_name' => 'required',
             'r_company' => 'required',
             'r_address1' => 'required',
-            'r_phone' => 'required',
+           // 'r_phone' => 'required',
             'r_country'=>'required',
             'r_state'=>'required',
             'r_city'=>'required',
-            'r_zip_code' => 'required',
+            //'r_zip_code' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -212,7 +212,7 @@ class CourierController extends Controller
         $courier->s_state = $input['s_state'];
         $courier->s_city = $input['s_city'];
         $courier->s_email = $input['s_email'];
-        $courier->s_zip_code = $input['s_zip_code'];
+       // $courier->s_zip_code = $input['s_zip_code'];
         $courier->r_name = $input['r_name'];
         $courier->r_company = $input['r_company'];
         $courier->r_address1 = $input['r_address1'];

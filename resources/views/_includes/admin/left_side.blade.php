@@ -17,6 +17,7 @@
                 $route_arr = explode('.',$current_routename);
                 $controller_name = $route_arr[0];
                 $action_name = $route_arr[1];
+
                 $notification_count = \App\Models\Notification::where('status','unread')->count();
             ?>
             @if(Auth::user()->user_type == 'admin')
@@ -66,8 +67,8 @@
                         </a>
 
                     </li>
-                    <li class="">
-                        <a>
+                    <li @if($controller_name == 'payments')class="nav-active nav-expanded" @endif>
+                        <a href="/admin/payments">
                             <i class="fa fa-dollar" aria-hidden="true"></i>
                             <span>Payments</span>
                         </a>

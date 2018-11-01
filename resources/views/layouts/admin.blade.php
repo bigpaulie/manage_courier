@@ -81,8 +81,6 @@
         </section>
     </div>
 
-
-
     <!-- Vendor -->
 {!! Html::script("/assets/vendor/jquery/jquery.js") !!}
 {!! Html::script("/assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js") !!}
@@ -93,7 +91,7 @@
 {!! Html::script("/assets/vendor/jquery-placeholder/jquery.placeholder.js") !!}
 
     {!! Html::script("/assets/vendor/bootstrap-colorpicker/js/bootstrap-colorpicker.js") !!}
-
+    {!! Html::script("/assets/vendor/select2/select2.js") !!}
 
     <!-- Specific Page Vendor -->
 

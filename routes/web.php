@@ -48,6 +48,8 @@ Route::group(['middleware' => array('auth')], function() {
         Route::resource('stores', 'StoreController');
         Route::resource('couriers', 'CourierController');
         Route::resource('expenses', 'ExpenseController');
+        Route::resource('payments', 'PaymentController');
+
 
         // Master Routes
         Route::resource('expense_types', 'ExpensetypeController');

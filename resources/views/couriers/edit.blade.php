@@ -71,18 +71,6 @@
                             </div>
                         </div>
 
-
-
-                        <div class="form-group @if ($errors->has('s_phone')) has-error @endif">
-                            <label class="col-sm-4 control-label">Phone: </label>
-                            <div class="col-sm-8">
-                                <input type="text" name="s_phone" class="form-control" value="{{$courier->s_phone}}">
-                                @if ($errors->has('s_phone'))
-                                    <label for="s_phone" class="error">{{ $errors->first('s_phone') }}</label>
-                                @endif
-                            </div>
-                        </div>
-
                         <div class="form-group @if ($errors->has('s_country')) has-error @endif">
                             <label class="col-sm-4 control-label">Country: </label>
                             <div class="col-sm-8">
@@ -101,7 +89,7 @@
                             <div class="col-sm-8">
                                 <select class="form-control mb-md" id="s_state" name="s_state" v-model="s_state" @change="getCities('sender')">
                                     <option value="">Select State</option>
-                                    <option  v-for="state in s_states" :value="state.id">@{{state.state_name}}</option>
+                                    <option  v-for="state in s_states" :value="state.id">@{{state.state_code}}</option>
                                 </select>
                                 @if ($errors->has('s_state'))
                                     <label for="s_state" class="error">{{ $errors->first('s_state') }}</label>
@@ -118,6 +106,16 @@
                                 </select>
                                 @if ($errors->has('s_city'))
                                     <label for="s_city" class="error">{{ $errors->first('s_city') }}</label>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group @if ($errors->has('s_phone')) has-error @endif">
+                            <label class="col-sm-4 control-label">Phone: </label>
+                            <div class="col-sm-8">
+                                <input type="text" name="s_phone" class="form-control" value="{{$courier->s_phone}}">
+                                @if ($errors->has('s_phone'))
+                                    <label for="s_phone" class="error">{{ $errors->first('s_phone') }}</label>
                                 @endif
                             </div>
                         </div>
@@ -183,18 +181,6 @@
                             </div>
                         </div>
 
-
-
-                        <div class="form-group @if ($errors->has('r_phone')) has-error @endif">
-                            <label class="col-sm-4 control-label">Phone: </label>
-                            <div class="col-sm-8">
-                                <input type="text" name="r_phone" class="form-control" value="{{$courier->r_phone}}">
-                                @if ($errors->has('r_phone'))
-                                    <label for="r_phone" class="error">{{ $errors->first('r_phone') }}</label>
-                                @endif
-                            </div>
-                        </div>
-
                         <div class="form-group @if ($errors->has('r_country')) has-error @endif">
                             <label class="col-sm-4 control-label">Country: </label>
                             <div class="col-sm-8">
@@ -213,7 +199,7 @@
                             <div class="col-sm-8">
                                 <select class="form-control mb-md" id="r_state" name="r_state" v-model="r_state" @change="getCities('reciver')">
                                     <option value="">Select State</option>
-                                    <option  v-for="rstate in r_states" :value="rstate.id">@{{rstate.state_name}}</option>
+                                    <option  v-for="rstate in r_states" :value="rstate.id">@{{rstate.state_code}}</option>
                                 </select>
                                 @if ($errors->has('r_state'))
                                     <label for="r_state" class="error">{{ $errors->first('r_state') }}</label>
@@ -230,6 +216,26 @@
                                 </select>
                                 @if ($errors->has('r_city'))
                                     <label for="r_city" class="error">{{ $errors->first('r_city') }}</label>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group @if ($errors->has('r_zip_code')) has-error @endif">
+                            <label class="col-sm-4 control-label">Zip Code: </label>
+                            <div class="col-sm-8">
+                                <input type="text" name="r_zip_code" class="form-control" value="{{$courier->r_zip_code}}">
+                                @if ($errors->has('r_zip_code'))
+                                    <label for="r_zip_code" class="error">{{ $errors->first('r_zip_code') }}</label>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group @if ($errors->has('r_phone')) has-error @endif">
+                            <label class="col-sm-4 control-label">Phone: </label>
+                            <div class="col-sm-8">
+                                <input type="text" name="r_phone" class="form-control" value="{{$courier->r_phone}}">
+                                @if ($errors->has('r_phone'))
+                                    <label for="r_phone" class="error">{{ $errors->first('r_phone') }}</label>
                                 @endif
                             </div>
                         </div>
@@ -290,7 +296,7 @@
                                     <label class="col-sm-4 control-label">Weight: </label>
                                     <div class="col-sm-8">
                                         <div class="input-group mb-md">
-                                            <input type="number" name="weight"  class="form-control" required value="{{$courier->shippment->weight}}" />
+                                            <input type="text" name="weight"  class="form-control" required value="{{$courier->shippment->weight}}" />
                                             <span class="input-group-addon ">Kg/Grm</span>
                                         </div>
                                     </div>
