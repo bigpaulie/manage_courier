@@ -25,9 +25,10 @@
        <strong> {{ Session::get('message') }}</strong>
     </div>
     @endif
+    <section class="panel">
     <div class="panel-body">
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="form-group">
                     <label class="control-label">From Date</label>
                     <div class="input-group mb-md">
@@ -36,12 +37,11 @@
                         </span>
                         <date-picker v-model="from_date" :config="{format: 'MM/DD/YYYY'}"></date-picker>
 
-                        {{--<input type="text" data-plugin-datepicker class="form-control" name="from_date" v-model="from_date">--}}
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="form-group">
                     <label class="control-label">End Date</label>
                     <div class="input-group mb-md">
@@ -49,15 +49,13 @@
                             <i class="fa fa-calendar"></i>
                         </span>
                         <date-picker v-model="end_date" :config="{format: 'MM/DD/YYYY'}"></date-picker>
-                        {{--<input type="text" data-plugin-datepicker class="form-control" name="end_date" v-model="end_date">--}}
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="form-group">
                     <label class="control-label">Status</label>
-                    {{--{!! Form::select('status', $status, old('status'), ['class'=>'form-control','placeholder' => 'Select Status','v-model'=>'status_id']); !!}--}}
                     <select class="form-control" v-model="status_id">
                         <option value="">Select Status</option>
                         @foreach($status as $statu)
@@ -67,8 +65,25 @@
                     </select>
                 </div>
             </div>
+
+
+            @if(Auth::user()->user_type == 'admin')
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="control-label">Agent Name</label>
+                        <input type="text"  class="form-control" name="agent_name" v-model="agent_name" v-on:keyup.enter="onEnter">
+                    </div>
+                </div>
+            @endif
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="control-label">Traking Number</label>
+                    <input type="text"  class="form-control" name="tracking_number" v-model="traking_number" v-on:keyup.enter="onEnter">
+                </div>
+            </div>
             @if(Auth::user()->user_type == 'agent')
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label class="control-label text-bold">Total Charge: <span class="text-primary">{{$total_charge}}</span></label>
                         </div>
@@ -83,20 +98,7 @@
 
         </div>
         <div class="row">
-            @if(Auth::user()->user_type == 'admin')
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label class="control-label">Agent Name</label>
-                    <input type="text"  class="form-control" name="agent_name" v-model="agent_name" v-on:keyup.enter="onEnter">
-                </div>
-            </div>
-            @endif
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label class="control-label">Traking Number</label>
-                    <input type="text"  class="form-control" name="tracking_number" v-model="traking_number" v-on:keyup.enter="onEnter">
-                </div>
-            </div>
+
 
             <div class="col-md-6">
                 <div class="form-group">
@@ -107,8 +109,8 @@
             </div>
 
         </div>
-
-        </div>
+    </div>
+    </section>
 
     <section class="panel">
         <header class="panel-heading">
