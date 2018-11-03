@@ -102,7 +102,7 @@
                             </li>
                         </ul>
                     </li>
-                    <?php $nav_array = ['expense_types','status','package_types','service_types', 'content_types','courier_services']; ?>
+                    <?php $nav_array = ['expense_types','status','package_types','service_types', 'content_types','courier_services','banks']; ?>
 
                     <li class="nav-parent @if(in_array($controller_name, $nav_array))nav-expanded nav-active @endif">
                         <a>
@@ -110,6 +110,13 @@
                             <span>Masters</span>
                         </a>
                         <ul class="nav nav-children">
+
+                            <li @if($controller_name == 'banks')class="nav-active" @endif>
+                                <a href="/admin/banks">
+                                    Banks
+                                </a>
+                            </li>
+
                             <li @if($controller_name == 'expense_types')class="nav-active" @endif>
                                 <a href="/admin/expense_types">
                                     Expense Types

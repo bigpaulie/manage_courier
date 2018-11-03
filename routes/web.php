@@ -58,6 +58,8 @@ Route::group(['middleware' => array('auth')], function() {
         Route::resource('service_types', 'ServicetypeController');
         Route::resource('content_types', 'ContenttypeController');
         Route::resource('courier_services', 'CourierServiceController');
+        Route::resource('banks', 'BankController');
+
 
 
     });
