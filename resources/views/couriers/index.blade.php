@@ -67,6 +67,19 @@
                     </select>
                 </div>
             </div>
+            @if(Auth::user()->user_type == 'agent')
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label text-bold">Total Charge: <span class="text-primary">{{$total_charge}}</span></label>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label text-bold">Total Payout: <span class="text-primary">{{$total_payout}}</span></label>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label text-bold">Grand Total: <span class="@if($grand_total < 0) text-danger @else text-success @endif">{{$grand_total}}</span></label>
+                        </div>
+                    </div>
+            @endif
 
         </div>
         <div class="row">

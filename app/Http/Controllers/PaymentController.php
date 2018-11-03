@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Bank;
+use App\Models\Payment;
+use Validator;
 
 class PaymentController extends Controller
 {
@@ -13,7 +16,10 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $data=[];
+        $payments= Payment::OrderBy('created_at','desc')
+                             ->paginate(10);
+        $data['payments']=$payments;
+        $data['payment_types']=['cheque'=>'Cheque','cash'=>'Cash','net_banking'=>'Net Banking'];
         return view('admin.payments.index',$data);
     }
 
@@ -24,7 +30,8 @@ class PaymentController extends Controller
      */
     public function create()
     {
-        $data=[];
+        $data['banks']=Bank::pluck('name', 'id')->toArray();
+        $data['payment_types']=['cheque'=>'Cheque','cash'=>'Cash','net_banking'=>'Net Banking'];
         return view('admin.payments.create',$data);
     }
 
@@ -36,7 +43,82 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+
+        $fields_array = [
+            'user_id' => 'required',
+            'amount' => 'required',
+            'payment_by' => 'required',
+            'payment_date' => 'required',
+
+
+        ];
+        if($request->payment_by == 'cash'){
+
+            $cash_fields = ['receiver_cash_name'=>'required',
+            ];
+
+            $fields_array = $fields_array+$cash_fields;
+        }
+
+        if($request->payment_by == 'cheque'){
+
+            $cheque_fields = [
+                'cheque_no'=>'required',
+                'cheque_date'=>'required',
+
+            ];
+
+            $fields_array = $fields_array+$cheque_fields;
+        }
+
+        if($request->payment_by == 'net_banking'){
+
+            $net_banking_fields = ['transaction_id'=>'required',
+
+            ];
+
+            $fields_array = $fields_array+$net_banking_fields;
+        }
+
+        $validator = Validator::make($request->all(),$fields_array );
+
+        if ($validator->fails()) {
+            return redirect()->route('payments.create')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+
+        $input = $request->all();
+        $payment = new Payment();
+        $payment->user_id = $input['user_id'];
+        $payment->bank_id = $input['bank_id'];
+        $payment->payment_date = date('Y-m-d',strtotime($input['payment_date']));
+        $payment->payment_by = $input['payment_by'];
+        $payment->amount = $input['amount'];
+        $payment->tds = $input['tds'];
+        $payment->remark = $input['remark'];
+        if($request->payment_by == 'cash'){
+            $payment->reciver_name = $input['receiver_cash_name'];
+        }
+
+        if($request->payment_by == 'cheque'){
+            $payment->cheque_bank_name = $input['cheque_bank_name'];
+            $payment->reference_no = $input['reference_no'];
+            $payment->cheque_no = $input['cheque_no'];
+            $payment->cheque_date = date('Y-m-d',strtotime($input['cheque_date']));
+        }
+
+        if($request->payment_by == 'net_banking'){
+            $payment->reciver_name = $input['net_banking_name'];
+            $payment->transaction_id = $input['transaction_id'];
+        }
+        $payment->save();
+
+        $request->session()->flash('message', 'Payment has been added successfully!');
+
+        return redirect()->route('payments.index');
     }
 
     /**
@@ -58,7 +140,13 @@ class PaymentController extends Controller
      */
     public function edit($id)
     {
-        //
+        $payment= Payment::find($id);
+
+        $data['banks']=Bank::pluck('name', 'id')->toArray();
+        $data['payment_types']=['cheque'=>'Cheque','cash'=>'Cash','net_banking'=>'Net Banking'];
+        $data['payment']=$payment;
+
+        return view('admin.payments.edit',$data);
     }
 
     /**
@@ -70,7 +158,80 @@ class PaymentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $fields_array = [
+            'user_id' => 'required',
+            'amount' => 'required',
+            'payment_by' => 'required',
+            'payment_date' => 'required',
+
+
+        ];
+        if($request->payment_by == 'cash'){
+
+            $cash_fields = ['receiver_cash_name'=>'required',
+            ];
+
+            $fields_array = $fields_array+$cash_fields;
+        }
+
+        if($request->payment_by == 'cheque'){
+
+            $cheque_fields = [
+                'cheque_no'=>'required',
+                'cheque_date'=>'required',
+
+            ];
+
+            $fields_array = $fields_array+$cheque_fields;
+        }
+
+        if($request->payment_by == 'net_banking'){
+
+            $net_banking_fields = ['transaction_id'=>'required',
+
+            ];
+
+            $fields_array = $fields_array+$net_banking_fields;
+        }
+
+        $validator = Validator::make($request->all(),$fields_array );
+
+        if ($validator->fails()) {
+            return redirect()->route('payments.create')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+
+        $input = $request->all();
+        $payment = Payment::find($id);
+        $payment->user_id = $input['user_id'];
+        $payment->bank_id = $input['bank_id'];
+        $payment->payment_date = date('Y-m-d',strtotime($input['payment_date']));
+        $payment->payment_by = $input['payment_by'];
+        $payment->amount = $input['amount'];
+        $payment->tds = $input['tds'];
+        $payment->remark = $input['remark'];
+        if($request->payment_by == 'cash'){
+            $payment->reciver_name = $input['receiver_cash_name'];
+        }
+
+        if($request->payment_by == 'cheque'){
+            $payment->cheque_bank_name = $input['cheque_bank_name'];
+            $payment->reference_no = $input['reference_no'];
+            $payment->cheque_no = $input['cheque_no'];
+            $payment->cheque_date = date('Y-m-d',strtotime($input['cheque_date']));
+        }
+
+        if($request->payment_by == 'net_banking'){
+            $payment->reciver_name = $input['net_banking_name'];
+            $payment->transaction_id = $input['transaction_id'];
+        }
+        $payment->save();
+
+        $request->session()->flash('message', 'Payment has been updated successfully!');
+
+        return redirect()->route('payments.index');
     }
 
     /**
@@ -81,6 +242,8 @@ class PaymentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Payment::where('id',$id)->delete();
+        \Session::flash('message', 'Payment has been deleted successfully!');
+        return redirect()->route('payments.index');
     }
 }

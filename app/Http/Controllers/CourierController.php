@@ -16,6 +16,8 @@ use App\Models\Notification;
 use App\Models\User;
 use App\Models\Courier_service;
 use App\Models\Courier_charge;
+use App\Models\Payment;
+
 
 
 
@@ -37,6 +39,12 @@ class CourierController extends Controller
         $data['accepted_status_id']=Status::where('code_name',"accepted")->first()->id;
         $data['shipped_status_id']=Status::where('code_name',"shipped")->first()->id;
         $data['courier_companies']=Courier_service::pluck('name','id')->toArray();
+        if(\Auth::user()->user_type == 'agent'){
+            $data['total_charge']= Courier_charge::where('user_id',\Auth::user()->id)->sum('total');
+            $data['total_payout']= Payment::where('user_id',\Auth::user()->id)->sum('amount');
+            $data['grand_total']= $data['total_payout'] - $data['total_charge'];
+
+        }
         return view('couriers.index',$data);
     }
 

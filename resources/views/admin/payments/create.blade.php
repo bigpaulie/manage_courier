@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 @section('date-styles')
     {!! Html::style("/assets/vendor/bootstrap-datepicker/css/datepicker3.css") !!}
-    <link rel="stylesheet" href="/assets/vendor/select2/select2.css" />
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css' rel='stylesheet' type='text/css'>
 
 @endsection
 
@@ -27,7 +27,7 @@
     </header>
 
     <!-- start: page -->
-    <form id="frmcourier" action="{{route('expenses.store')}}" class="form-horizontal form-bordered" method="POST">
+    <form id="frmcourier" action="{{route('payments.store')}}" class="form-horizontal form-bordered" method="POST">
         {{csrf_field()}}
         <div class="row">
             <div class="col-md-12">
@@ -35,7 +35,7 @@
                 <section class="panel">
                     <header class="panel-heading">
 
-                        <h2 class="panel-title">Expense Details</h2>
+                        <h2 class="panel-title">Payment Details</h2>
 
 
                     </header>
@@ -43,83 +43,25 @@
                         <div class="row">
                             <div class="col-md-6">
 
-                                <div class="form-group @if ($errors->has('expense_type_id')) has-error @endif">
+                                <div class="form-group @if ($errors->has('user_id')) has-error @endif">
                                     <label class="col-sm-4 control-label">Agent Name: </label>
                                     <div class="col-sm-8">
 
-                                        <select data-plugin-selectTwo class="form-control populate" data-plugin-options='{ "minimumInputLength": 2 }'>
-                                            <optgroup label="Alaskan/Hawaiian Time Zone">
-                                                <option value="AK">Alaska</option>
-                                                <option value="HI">Hawaii</option>
-                                            </optgroup>
-                                            <optgroup label="Pacific Time Zone">
-                                                <option value="CA">California</option>
-                                                <option value="NV">Nevada</option>
-                                                <option value="OR">Oregon</option>
-                                                <option value="WA">Washington</option>
-                                            </optgroup>
-                                            <optgroup label="Mountain Time Zone">
-                                                <option value="AZ">Arizona</option>
-                                                <option value="CO">Colorado</option>
-                                                <option value="ID">Idaho</option>
-                                                <option value="MT">Montana</option><option value="NE">Nebraska</option>
-                                                <option value="NM">New Mexico</option>
-                                                <option value="ND">North Dakota</option>
-                                                <option value="UT">Utah</option>
-                                                <option value="WY">Wyoming</option>
-                                            </optgroup>
-                                            <optgroup label="Central Time Zone">
-                                                <option value="AL">Alabama</option>
-                                                <option value="AR">Arkansas</option>
-                                                <option value="IL">Illinois</option>
-                                                <option value="IA">Iowa</option>
-                                                <option value="KS">Kansas</option>
-                                                <option value="KY">Kentucky</option>
-                                                <option value="LA">Louisiana</option>
-                                                <option value="MN">Minnesota</option>
-                                                <option value="MS">Mississippi</option>
-                                                <option value="MO">Missouri</option>
-                                                <option value="OK">Oklahoma</option>
-                                                <option value="SD">South Dakota</option>
-                                                <option value="TX">Texas</option>
-                                                <option value="TN">Tennessee</option>
-                                                <option value="WI">Wisconsin</option>
-                                            </optgroup>
-                                            <optgroup label="Eastern Time Zone">
-                                                <option value="CT">Connecticut</option>
-                                                <option value="DE">Delaware</option>
-                                                <option value="FL">Florida</option>
-                                                <option value="GA">Georgia</option>
-                                                <option value="IN">Indiana</option>
-                                                <option value="ME">Maine</option>
-                                                <option value="MD">Maryland</option>
-                                                <option value="MA">Massachusetts</option>
-                                                <option value="MI">Michigan</option>
-                                                <option value="NH">New Hampshire</option>
-                                                <option value="NJ">New Jersey</option>
-                                                <option value="NY">New York</option>
-                                                <option value="NC">North Carolina</option>
-                                                <option value="OH">Ohio</option>
-                                                <option value="PA">Pennsylvania</option>
-                                                <option value="RI">Rhode Island</option>
-                                                <option value="SC">South Carolina</option>
-                                                <option value="VT">Vermont</option>
-                                                <option value="VA">Virginia</option>
-                                                <option value="WV">West Virginia</option>
-                                            </optgroup>
+                                        <select  class="form-control populate" id="agentSelect" name="user_id">
+
                                         </select>
-                                        @if ($errors->has('expense_type_id'))
-                                            <label for="expense_type_id" class="error">{{ $errors->first('expense_type_id') }}</label>
+                                        @if ($errors->has('user_id'))
+                                            <label for="user_id" class="error">{{ $errors->first('user_id') }}</label>
                                         @endif
                                     </div>
                                 </div>
-                                <div class="form-group @if ($errors->has('party_name')) has-error @endif">
-                                    <label class="col-sm-4 control-label">Party Name: </label>
+                                <div class="form-group @if ($errors->has('amount')) has-error @endif">
+                                    <label class="col-sm-4 control-label">Payment Amount: </label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" name="party_name" value="{{old('party_name')}}">
+                                        <input type="text" class="form-control" name="amount" value="{{old('amount')}}">
 
-                                        @if ($errors->has('party_name'))
-                                            <label for="party_name" class="error">{{ $errors->first('party_name') }}</label>
+                                        @if ($errors->has('amount'))
+                                            <label for="amount" class="error">{{ $errors->first('amount') }}</label>
                                         @endif
                                     </div>
                                 </div>
@@ -127,7 +69,7 @@
                                 <div class="form-group @if ($errors->has('payment_by')) has-error @endif">
                                     <label class="col-sm-4 control-label">Payment By: </label>
                                     <div class="col-sm-8">
-                                        {{--{!! Form::select('payment_by', $payment_types, 'cash', ['class'=>'form-control mb-md','placeholder' => 'Select Payment by','v-model'=>'payment_type','@change'=>'showPaymentDetails']); !!}--}}
+                                        {!! Form::select('payment_by', $payment_types, 'cash', ['class'=>'form-control mb-md','placeholder' => 'Select Payment by','v-model'=>'payment_type','@change'=>'showPaymentDetails']); !!}
                                         @if ($errors->has('payment_by'))
                                             <label for="payment_by" class="error">{{ $errors->first('payment_by') }}</label>
                                         @endif
@@ -135,24 +77,37 @@
                                     </div>
                                 </div>
 
+
+
                             </div>
 
                             <div class="col-md-6">
 
-                                <div class="form-group @if ($errors->has('expense_date')) has-error @endif">
-                                    <label class="col-sm-4 control-label">Expense Date: </label>
+                                <div class="form-group @if ($errors->has('payment_date')) has-error @endif">
+                                    <label class="col-sm-4 control-label">Payment Date: </label>
                                     <div class="col-sm-8">
-                                        <input type="text" data-plugin-datepicker  name="expense_date" class="form-control" value="{{date('m/d/Y')}}">
+                                        <input type="text" data-plugin-datepicker  name="payment_date" class="form-control" value="{{date('m/d/Y')}}">
 
-                                        @if ($errors->has('expense_date'))
-                                            <label for="expense_date" class="error">{{ $errors->first('expense_date') }}</label>
+                                        @if ($errors->has('payment_date'))
+                                            <label for="payment_date" class="error">{{ $errors->first('payment_date') }}</label>
                                         @endif
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-4 control-label">Debited From: </label>
+                                    <label class="col-sm-4 control-label">TDS: </label>
                                     <div class="col-sm-8">
-                                        <input type="text" name="debited_from" class="form-control"  value="{{old('debited_from')}}" placeholder="Bank Name">
+                                        <input type="text" name="tds" class="form-control"  value="{{old('tds')}}" placeholder="">
+                                    </div>
+                                </div>
+
+                                <div class="form-group @if ($errors->has('bank_id')) has-error @endif">
+                                    <label class="col-sm-4 control-label">Deposited in Bank: </label>
+                                    <div class="col-sm-8">
+                                        {!! Form::select('bank_id', $banks, 'cash', ['class'=>'form-control mb-md','placeholder' => 'Select Bank Name']); !!}
+                                        @if ($errors->has('bank_id'))
+                                            <label for="payment_by" class="error">{{ $errors->first('bank_id') }}</label>
+                                        @endif
+
                                     </div>
                                 </div>
 
@@ -172,7 +127,7 @@
                 <section class="panel">
                     <header class="panel-heading">
 
-                        <h2 class="panel-title">Payment Details</h2>
+                        <h2 class="panel-title">@{{payment_name}} Details</h2>
 
                     </header>
                     <div class="panel-body">
@@ -184,7 +139,7 @@
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control" name="receiver_cash_name" value="{{old('receiver_cash_name')}}">
                                         @if ($errors->has('receiver_cash_name'))
-                                            <label for="expense_date" class="error">Receiver Name field is required.</label>
+                                            <label for="receiver_cash_name" class="error">Receiver Name field is required.</label>
                                         @endif
                                     </div>
                                 </div>
@@ -193,19 +148,7 @@
 
                             </div>
 
-                            <div class="col-md-6">
 
-                                <div class="form-group @if ($errors->has('cash_amount')) has-error @endif">
-                                    <label class="col-sm-4 control-label">Amount: </label>
-                                    <div class="col-sm-8">
-                                        <input type="number" name="cash_amount" class="form-control"  value="{{old('cash_amount')}}">
-                                        @if ($errors->has('cash_amount'))
-                                            <label for="cash_amount" class="error">Amount Name field is required.</label>
-                                        @endif
-                                    </div>
-                                </div>
-
-                            </div>
                         </div>
 
                         <div class="row"  v-show="cheque_details">
@@ -221,13 +164,13 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group @if ($errors->has('cheque_amount')) has-error @endif">
-                                    <label class="col-sm-4 control-label">Amount: </label>
+                                <div class="form-group @if ($errors->has('cheque_bank_name')) has-error @endif">
+                                    <label class="col-sm-4 control-label">Bank Name: </label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" name="cheque_amount" value="{{old('cheque_amount')}}">
+                                        <input type="text" class="form-control" name="cheque_bank_name" value="{{old('cheque_bank_name')}}">
 
-                                        @if ($errors->has('cheque_amount'))
-                                            <label for="cheque_amount" class="error">Amount Name field is required.</label>
+                                        @if ($errors->has('cheque_bank_name'))
+                                            <label for="cheque_bank_name" class="error">Amount Name field is required.</label>
                                         @endif
                                     </div>
                                 </div>
@@ -248,13 +191,13 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group @if ($errors->has('cheque_name')) has-error @endif">
-                                    <label class="col-sm-4 control-label">Cheque Name: </label>
+                                <div class="form-group @if ($errors->has('reference_no')) has-error @endif">
+                                    <label class="col-sm-4 control-label">Reference No#: </label>
                                     <div class="col-sm-8">
-                                        <input type="text"  name="cheque_name" class="form-control" value="{{old('cheque_name')}}" >
+                                        <input type="text"  name="reference_no" class="form-control" value="{{old('reference_no')}}" >
 
-                                        @if ($errors->has('cheque_name'))
-                                            <label for="cheque_name" class="error">{{ $errors->first('cheque_name') }}</label>
+                                        @if ($errors->has('reference_no'))
+                                            <label for="reference_no" class="error">{{ $errors->first('reference_no') }}</label>
                                         @endif
                                     </div>
                                 </div>
@@ -275,17 +218,6 @@
                                         @endif
                                     </div>
                                 </div>
-
-                                <div class="form-group @if ($errors->has('net_banking_amount')) has-error @endif">
-                                    <label class="col-sm-4 control-label">Amount: </label>
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control" name="net_banking_amount" value="{{old('net_banking_amount')}}">
-                                        @if ($errors->has('net_banking_amount'))
-                                            <label for="net_banking_amount" class="error">Amount Name field is required.</label>
-                                        @endif
-                                    </div>
-                                </div>
-
 
 
                             </div>
@@ -329,7 +261,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-4 control-label">Remarks: </label>
                                     <div class="col-sm-8">
-                                        <textarea name="description" rows="5" cols="100">{{old('description')}}</textarea>
+                                        <textarea name="remark" rows="5" cols="100">{{old('remark')}}</textarea>
                                     </div>
                                 </div>
 
@@ -363,6 +295,29 @@
 
         jQuery(document).ready(function($) {
 
+            $("#agentSelect").select2({
+                placeholder: "Select a Agent Name",
+                allowClear: true,
+                minimumInputLength:2,
+                ajax: {
+                    url: "/api/get_agent_name",
+                    type: "post",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            searchTerm: params.term // search term
+                        };
+                    },
+                    processResults: function (response) {
+                        return {
+                            results: response
+                        };
+                    },
+                    cache: true
+                }
+            });
+
         });
         var old_payment_by = "{{old('payment_by')}}";
         var paymentby ='cash';
@@ -376,6 +331,7 @@
                 net_banking:false,
                 cheque_details:false,
                 payment_type:paymentby,
+                payment_name:"Cash"
 
             },
             created(){
@@ -383,14 +339,17 @@
                     this.cash_details =true;
                     this.net_banking =false;
                     this.cheque_details =false;
+                    this.payment_name="Cash";
                 }else if(this.payment_type == 'cheque'){
                     this.cash_details =false;
                     this.net_banking =false;
                     this.cheque_details =true;
+                    this.payment_name="Cheque";
                 }else if(this.payment_type == 'net_banking'){
                     this.cash_details =false;
                     this.net_banking =true;
                     this.cheque_details =false;
+                    this.payment_name="Net Banking";
                 }
             },
 
@@ -403,14 +362,17 @@
                         this.cash_details =true;
                         this.net_banking =false;
                         this.cheque_details =false;
+                         this.payment_name="Cash";
                      }else if(this.payment_type == 'cheque'){
                          this.cash_details =false;
                          this.net_banking =false;
                          this.cheque_details =true;
+                         this.payment_name="Cheque";
                      }else if(this.payment_type == 'net_banking'){
                          this.cash_details =false;
                          this.net_banking =true;
                          this.cheque_details =false;
+                         this.payment_name="Net Banking";
                      }
                 },
 
