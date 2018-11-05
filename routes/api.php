@@ -23,6 +23,8 @@ Route::post('/update_notification_status','NotificationController@updateNotifica
 Route::get('/getCouriers','CourierController@getCouriers')->name('getCouriers');
 Route::post('/save_courier_charge','CourierController@saveCourierCharge')->name('save_courier_charge');
 Route::post('/get_agent_name','UserController@getAgentName')->name('get_agent_name');
+Route::post('/update_pickup_status','CourierController@update_pickup_status')->name('update_pickup_status');
+
 
 
 

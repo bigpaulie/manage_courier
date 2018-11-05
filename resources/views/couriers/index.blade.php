@@ -154,6 +154,36 @@
     </section>
     @endif
 
+    @if(Auth::user()->user_type == 'agent')
+        <section class="panel">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <form class="form-inline">
+                            <div class="form-group">
+                                {{--<label class="" for="exampleInputUsername2">Pickup/Drop</label>--}}
+                                <select class="form-control" v-model="pickup_status">
+                                    <option value="">Select Pickup/Drop</option>
+                                    <option value="drop">Drop</option>
+                                    <option value="pickup">Pickup</option>
+
+                                </select>
+                            </div>
+
+                            <div class="clearfix visible-xs mb-sm"></div>
+
+                            <button type="button" class="btn btn-primary" @click="changeCourierStatus">Submit</button>
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+    @endif
+
     <section class="panel">
         <header class="panel-heading">
 
@@ -346,6 +376,7 @@
                 total_amount:"NA",
                 total_charge:"NA",
                 total:"NA",
+                pickup_status:""
 
             },
             created(){
@@ -366,8 +397,8 @@
                     this.allSelected = !this.allSelected;
                     if (this.allSelected) {
 
-                        for (courier in this.couriers) {
-                            this.courierIds.push(this.couriers[courier].id.toString());
+                        for (courier in this.couriers.data) {
+                            this.courierIds.push(this.couriers.data[courier].id.toString());
                         }
                     }
                 },
@@ -488,6 +519,28 @@
                     $.magnificPopup.close();
 
                 },
+                changeCourierStatus:function(){
+                        if(this.courierIds.length > 0){
+                            var pickup_status = this.pickup_status;
+                            if(pickup_status != ""){
+
+                                var pickup_data ={courierIds:this.courierIds,pickup_status:pickup_status};
+                                axios.post('/api/update_pickup_status', pickup_data)
+                                    .then(function (response) {
+                                        window.location.reload();
+                                    })
+                                    .catch(function (error) {
+                                        //currentObj.output = error;
+                                    });
+
+                            }else{
+                                alert("Please Select Pickup/Drop status.");
+                            }
+
+                        }else{
+                            alert("Please Select Courier");
+                        }
+                }
 
 
 

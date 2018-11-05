@@ -725,4 +725,17 @@ class CourierController extends Controller
         \Session::flash('message', 'Courier has been importeded successfully!');
         return redirect('/'.\Auth::user()->user_type.'/couriers');
     }
+
+    public function update_pickup_status(Request $request){
+
+        $courierIds = $request->courierIds;
+        $pickup_status = $request->pickup_status;
+        foreach ($courierIds as $courierId){
+            $shippment = Shippment::where('courier_id',$courierId)->first();
+            if($shippment != null){
+                $shippment->courier_status= strtolower($pickup_status);
+                $shippment->save();
+            }
+        }
+    }
 }
