@@ -42,6 +42,8 @@ Route::group(['middleware' => array('auth')], function() {
         Route::put('/update_password/{user_id}', 'UserController@updatePassword');
         Route::get('/store_city', 'UserController@storeCity')->name('admin.store_city');
         Route::get('/create_courier_csv','CourierController@createCourierCsv')->name('createCourierCsv');
+        Route::post('/import_courier_csv','CourierController@importCourierCSv')->name('couriers.import-csv');
+
 
 
         Route::resource('agents', 'AgentController');

@@ -89,8 +89,10 @@
 {!! Html::script("/assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js") !!}
 {!! Html::script("/assets/vendor/magnific-popup/magnific-popup.js") !!}
 {!! Html::script("/assets/vendor/jquery-placeholder/jquery.placeholder.js") !!}
+{!! Html::script("/assets/vendor/bootstrap-colorpicker/js/bootstrap-colorpicker.js") !!}
+{!! Html::script("/assets/vendor/bootstrap-fileupload/bootstrap-fileupload.min.js") !!}
 
-    {!! Html::script("/assets/vendor/bootstrap-colorpicker/js/bootstrap-colorpicker.js") !!}
+
     {{--{!! Html::script("/assets/vendor/select2/select2.js") !!}--}}
 
     <script src='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js'></script>

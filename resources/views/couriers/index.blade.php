@@ -1,4 +1,8 @@
 @extends('layouts.admin')
+@section('date-styles')
+{!! Html::style("/assets/vendor/bootstrap-fileupload/bootstrap-fileupload.min.css") !!}
+
+@endsection
 
 @section('content')
 
@@ -111,6 +115,44 @@
         </div>
     </div>
     </section>
+    @if(Auth::user()->user_type == 'admin')
+      <section class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <form action="{{route('couriers.import-csv')}}" class="form-horizontal form-bordered"  enctype="multipart/form-data" method="POST">
+                        {{csrf_field()}}
+                         <div class="form-group">
+                        <label class="col-md-2 control-label">Upload Courier CSV</label>
+                        <div class="col-md-5">
+                            <div class="fileupload fileupload-new" data-provides="fileupload"><input type="hidden">
+                                <div class="input-append">
+                                    <div class="uneditable-input">
+                                        <i class="fa fa-file fileupload-exists"></i>
+                                        <span class="fileupload-preview"></span>
+                                    </div>
+                                    <span class="btn btn-default btn-file">
+																<span class="fileupload-exists">Change</span>
+																<span class="fileupload-new">Select CSV</span>
+																<input type="file" name="courier_csv">
+															</span>
+                                    <a href="#" class="btn btn-default fileupload-exists" data-dismiss="fileupload">Remove</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> Import CSV</button>
+
+                        </div>
+                    </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+    @endif
 
     <section class="panel">
         <header class="panel-heading">
@@ -187,9 +229,15 @@
                         </div>
                     </td>
                 </tr>
+                <?php $user_type = Auth::user()->user_type;
+                        $colspan=6;
+                      if($user_type == 'admin'){
+                          $colspan =7;
+                      }
+                ?>
 
                 <tr v-if="typeof couriers.data != 'undefined' && couriers.data.length > 0">
-                    <td colspan="7">
+                    <td colspan="{{$colspan}}">
 
                     </td>
                     <td>
@@ -204,9 +252,9 @@
                         <label><strong class="text-primary">Total: @{{total}}</strong></label>
 
                     </td>
-                    {{--<td>--}}
+                    <td>
 
-                    {{--</td>--}}
+                    </td>
 
                 </tr>
 
