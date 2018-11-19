@@ -108,6 +108,7 @@ class CourierController extends Controller
         $input['user_id']= \Auth::user()->id;
         $status = Status::where('code_name','pending')->first();
         $input['status_id']=$status->id;
+        $input['unique_name']=$this->getCourierUniqueName(\Auth::user()->id);
         $courier = Courier::create($input);
         $courier_id = $courier->id;
 
@@ -161,10 +162,10 @@ class CourierController extends Controller
         $data['package_types']=Package_type::pluck('name', 'id')->toArray();
         $data['content_types']=Content_type::pluck('name', 'id')->toArray();
         $data['service_types']=Service_type::pluck('name', 'id')->toArray();
-        $data['s_states']=State::where('country_id',$courier->s_country)->get();
-        $data['s_cities']=City::where('state_id',$courier->s_state)->get();
-        $data['r_states']=State::where('country_id',$courier->r_country)->get();
-        $data['r_cities']=City::where('state_id',$courier->r_state)->get();
+//        $data['s_states']=State::where('country_id',$courier->s_country)->get();
+//        $data['s_cities']=City::where('state_id',$courier->s_state)->get();
+//        $data['r_states']=State::where('country_id',$courier->r_country)->get();
+//        $data['r_cities']=City::where('state_id',$courier->r_state)->get();
         $data['courier']=$courier;
 
         return view('couriers.edit',$data);
@@ -425,11 +426,11 @@ class CourierController extends Controller
         foreach ($records as $courier){
 
             $s_country = ($courier->sender_country != null)?$courier->sender_country->name:"";
-            $s_state = ($courier->sender_state != null)?$courier->sender_state->state_name:"";
-            $s_city = ($courier->sender_city != null)?$courier->sender_city->city_name:"";
+            $s_state = ($courier->s_state != null)?$courier->s_state:"";
+            $s_city = ($courier->s_city != null)?$courier->s_city:"";
             $r_country = ($courier->receiver_country != null)?$courier->receiver_country->name:"";
-            $r_state = ($courier->receiver_state != null)?$courier->receiver_state->state_name:"";
-            $r_city = ($courier->receiver_city != null)?$courier->receiver_city->city_name:"";
+            $r_state = ($courier->r_state != null)?$courier->r_state:"";
+            $r_city = ($courier->r_city != null)?$courier->r_city:"";
             $shipped=null;
             $amount=0;
             $pickup_charge=0;
@@ -737,5 +738,21 @@ class CourierController extends Controller
                 $shippment->save();
             }
         }
+    }
+
+    public function getCourierUniqueName($user_id){
+        $user = User::find($user_id);
+        $user_unique_name = $user->profile->unique_name;
+        if(empty($user_unique_name)){
+            $user_unique_name = strtoupper(substr($user->profile->first_name, 0, 2));
+        }
+        $user_couriers_count = Courier::where('user_id',$user_id)->count();
+        $code = '1';
+        if($user_couriers_count > 0){
+          $code = $user_couriers_count+1;
+        }
+        $courier_unique_name = $user_unique_name."000".$code;
+        return $courier_unique_name;
+
     }
 }

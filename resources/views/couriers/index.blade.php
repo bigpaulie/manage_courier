@@ -212,7 +212,7 @@
 
                 <tr v-for="(courier, index) in couriers.data">
                     <td><input type="checkbox" @click="select" class="checkbox-custom chekbox-primary" v-model="courierIds" :value="courier.id"></td>
-                    <td data-title="Id">@{{courier.id}}</td>
+                    <td data-title="Id">@{{courier.unique_name}}</td>
                     <td data-title="Agent Name" v-if="user_type == 'admin'">@{{courier.agent.name}}</td>
                     <td data-title="Traking Number" class="text-right">
                         <span v-if="courier.tracking_no == null">NA</span>

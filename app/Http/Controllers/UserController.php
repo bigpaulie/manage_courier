@@ -50,8 +50,8 @@ class UserController extends Controller
         $profile = User::find($id);
         $countries = Country::get();
         $data['countries']=$countries;
-        $data['states']=State::where('country_id',$profile->profile->country_id)->get();
-        $data['cities']=City::where('state_id',$profile->profile->state_id)->get();
+        //$data['states']=State::where('country_id',$profile->profile->country_id)->get();
+        //$data['cities']=City::where('state_id',$profile->profile->state_id)->get();
         $data['profile']=$profile;
         return view('users.profile',$data);
     }

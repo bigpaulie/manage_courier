@@ -62,6 +62,7 @@ class AgentController extends Controller
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email|max:255|unique:users',
+            'unique_name' => 'required|unique:user_profiles',
             'phone' => 'required',
             'gender' => 'required',
             'address' => 'required',
@@ -92,6 +93,7 @@ class AgentController extends Controller
 
         $user_profile= new User_profile();
         $user_profile->user_id = $user_id;
+        $user_profile->unique_name = $input['unique_name'];
         $user_profile->company_name = $input['company_name'];
         $user_profile->first_name = $input['first_name'];
         $user_profile->last_name = $input['last_name'];
@@ -131,8 +133,8 @@ class AgentController extends Controller
         $agent = User::find($id);
         $data['countries']=$countries;
         $data['agent']=$agent;
-        $data['states']=State::where('country_id',$agent->profile->country_id)->get();
-        $data['cities']=City::where('state_id',$agent->profile->state_id)->get();
+       // $data['states']=State::where('country_id',$agent->profile->country_id)->get();
+       // $data['cities']=City::where('state_id',$agent->profile->state_id)->get();
 
         return view('admin.agents.edit',$data);
     }
@@ -148,6 +150,7 @@ class AgentController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
+
             'company_name' => 'required',
             'first_name' => 'required',
             'last_name' => 'required',

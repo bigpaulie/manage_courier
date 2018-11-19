@@ -74,7 +74,7 @@
                         <div class="form-group @if ($errors->has('s_country')) has-error @endif">
                             <label class="col-sm-4 control-label">Country: </label>
                             <div class="col-sm-8">
-                                <select class="form-control mb-md" id="s_country" name="s_country" v-model="s_country" @change="getStates('sender')">
+                                <select class="form-control mb-md" id="s_country" name="s_country" v-model="s_country" >
                                     <option value="">Select Country</option>
                                     <option  v-for="country in countries" :value="country.id">@{{country.name}}</option>
                                 </select>
@@ -87,11 +87,14 @@
                         <div class="form-group @if ($errors->has('s_state')) has-error  @endif">
                             <label class="col-sm-4 control-label">State: </label>
                             <div class="col-sm-8">
-                                <select class="form-control mb-md" id="s_state" name="s_state" v-model="s_state" @change="getCities('sender')">
-                                    <option value="">Select State</option>
-                                    <option  v-for="state in s_states" :value="state.id">@{{state.state_code}}</option>
-                                </select>
-                                @if ($errors->has('s_state'))
+                                {{--<select class="form-control mb-md" id="s_state" name="s_state" v-model="s_state" @change="getCities('sender')">--}}
+                                    {{--<option value="">Select State</option>--}}
+                                    {{--<option  v-for="state in s_states" :value="state.id">@{{state.state_code}}</option>--}}
+                                {{--</select>--}}
+
+                                <input type="text" name="s_state" class="form-control" value="{{$courier->s_state}}">
+
+                            @if ($errors->has('s_state'))
                                     <label for="s_state" class="error">{{ $errors->first('s_state') }}</label>
                                 @endif
                             </div>
@@ -100,11 +103,14 @@
                         <div class="form-group @if ($errors->has('s_city')) has-error  @endif">
                             <label class="col-sm-4 control-label">City: </label>
                             <div class="col-sm-8">
-                                <select class="form-control mb-md" id="s_city" name="s_city" v-model="s_city">
-                                    <option value="">Select City</option>
-                                    <option  v-for="city in s_cities" :value="city.id">@{{city.city_name}}</option>
-                                </select>
-                                @if ($errors->has('s_city'))
+                                {{--<select class="form-control mb-md" id="s_city" name="s_city" v-model="s_city">--}}
+                                    {{--<option value="">Select City</option>--}}
+                                    {{--<option  v-for="city in s_cities" :value="city.id">@{{city.city_name}}</option>--}}
+                                {{--</select>--}}
+
+                            <input type="text" name="s_city" class="form-control" value="{{$courier->s_city}}">
+
+                            @if ($errors->has('s_city'))
                                     <label for="s_city" class="error">{{ $errors->first('s_city') }}</label>
                                 @endif
                             </div>
@@ -184,7 +190,7 @@
                         <div class="form-group @if ($errors->has('r_country')) has-error @endif">
                             <label class="col-sm-4 control-label">Country: </label>
                             <div class="col-sm-8">
-                                <select class="form-control mb-md" id="r_country" name="r_country" v-model="r_country" @change="getStates('reciver')">
+                                <select class="form-control mb-md" id="r_country" name="r_country" v-model="r_country" >
                                     <option value="">Select Country</option>
                                     <option  v-for="country in countries" :value="country.id">@{{country.name}}</option>
                                 </select>
@@ -197,11 +203,14 @@
                         <div class="form-group @if ($errors->has('r_state')) has-error @endif">
                             <label class="col-sm-4 control-label">State: </label>
                             <div class="col-sm-8">
-                                <select class="form-control mb-md" id="r_state" name="r_state" v-model="r_state" @change="getCities('reciver')">
-                                    <option value="">Select State</option>
-                                    <option  v-for="rstate in r_states" :value="rstate.id">@{{rstate.state_code}}</option>
-                                </select>
-                                @if ($errors->has('r_state'))
+                                {{--<select class="form-control mb-md" id="r_state" name="r_state" v-model="r_state" @change="getCities('reciver')">--}}
+                                    {{--<option value="">Select State</option>--}}
+                                    {{--<option  v-for="rstate in r_states" :value="rstate.id">@{{rstate.state_code}}</option>--}}
+                                {{--</select>--}}
+
+                                <input type="text" name="r_state" class="form-control" value="{{$courier->r_state}}">
+
+                            @if ($errors->has('r_state'))
                                     <label for="r_state" class="error">{{ $errors->first('r_state') }}</label>
                                 @endif
                             </div>
@@ -210,11 +219,14 @@
                         <div class="form-group @if ($errors->has('r_city')) has-error @endif">
                             <label class="col-sm-4 control-label">City: </label>
                             <div class="col-sm-8">
-                                <select class="form-control mb-md" id="r_city" name="r_city" v-model="r_city">
-                                    <option value="">Select City</option>
-                                    <option  v-for="r_city in r_cities" :value="r_city.id">@{{r_city.city_name}}</option>
-                                </select>
-                                @if ($errors->has('r_city'))
+                                {{--<select class="form-control mb-md" id="r_city" name="r_city" v-model="r_city">--}}
+                                    {{--<option value="">Select City</option>--}}
+                                    {{--<option  v-for="r_city in r_cities" :value="r_city.id">@{{r_city.city_name}}</option>--}}
+                                {{--</select>--}}
+
+                                <input type="text" name="r_city" class="form-control" value="{{$courier->r_city}}">
+
+                            @if ($errors->has('r_city'))
                                     <label for="r_city" class="error">{{ $errors->first('r_city') }}</label>
                                 @endif
                             </div>
@@ -382,16 +394,11 @@
             data:{
                 countries:@json($countries),
 
-                s_states:@json($s_states),
-                s_cities:@json($s_cities),
+
                 s_country:'{{$courier->s_country}}',
-                s_state:"{{$courier->s_state}}",
-                s_city:"{{$courier->s_city}}",
-                r_states:@json($r_states),
-                r_cities:@json($r_cities),
+
                 r_country:"{{$courier->r_country}}",
-                r_state:"{{$courier->r_state}}",
-                r_city:"{{$courier->r_city}}",
+
             },
             created(){
                 //console.log(this.countries);

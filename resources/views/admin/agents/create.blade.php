@@ -32,6 +32,17 @@
                 <div class="panel-body">
                     <form action="{{route('agents.store')}}" class="form-horizontal form-bordered" method="POST">
                         {{csrf_field()}}
+
+                        <div class="form-group  @if ($errors->has('unique_name')) has-error  @endif">
+                            <label class="col-md-3 control-label" for="inputDefault">Unique Name</label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control text-capitalize" id="unique_name" name="unique_name" value="{{old('unique_name')}}">
+                                @if ($errors->has('unique_name'))
+                                    <label for="unique_name" class="error">{{ $errors->first('unique_name') }}</label>
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="form-group  @if ($errors->has('company_name')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">Company Name</label>
                             <div class="col-md-6">
@@ -115,7 +126,7 @@
                         <div class="form-group @if ($errors->has('country_id')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">Country</label>
                             <div class="col-md-6">
-                                <select class="form-control mb-md" id="country_id" name="country_id" v-model="country_id" @change="getStates">
+                                <select class="form-control mb-md" id="country_id" name="country_id" v-model="country_id">
                                     <option value="">Select Country</option>
                                     <option  v-for="country in countries" :value="country.id">@{{country.name}}</option>
                                 </select>
@@ -128,11 +139,14 @@
                         <div class="form-group @if ($errors->has('state_id')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">State</label>
                             <div class="col-md-6">
-                                <select class="form-control mb-md" id="state_id" name="state_id" v-model="state_id" @change="getCities">
-                                    <option value="">Select State</option>
-                                    <option  v-for="state in states" :value="state.id">@{{state.state_name}}</option>
-                                </select>
-                                @if ($errors->has('state_id'))
+                                {{--<select class="form-control mb-md" id="state_id" name="state_id" v-model="state_id" @change="getCities">--}}
+                                    {{--<option value="">Select State</option>--}}
+                                    {{--<option  v-for="state in states" :value="state.id">@{{state.state_name}}</option>--}}
+                                {{--</select>--}}
+
+                                <input type="text" class="form-control" id="state_id" name="state_id" value="{{old('state_id')}}">
+
+                            @if ($errors->has('state_id'))
                                     <label for="state_id" class="error">{{ $errors->first('state_id') }}</label>
                                 @endif
                             </div>
@@ -142,11 +156,14 @@
                         <div class="form-group @if ($errors->has('city_id')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">City</label>
                             <div class="col-md-6">
-                                <select class="form-control mb-md" id="city_id" name="city_id">
-                                    <option value="">Select City</option>
-                                    <option  v-for="city in cities" :value="city.id">@{{city.city_name}}</option>
-                                </select>
-                                @if ($errors->has('city_id'))
+                                {{--<select class="form-control mb-md" id="city_id" name="city_id">--}}
+                                    {{--<option value="">Select City</option>--}}
+                                    {{--<option  v-for="city in cities" :value="city.id">@{{city.city_name}}</option>--}}
+                                {{--</select>--}}
+
+                            <input type="text" class="form-control" id="city_id" name="city_id" value="{{old('city_id')}}">
+
+                            @if ($errors->has('city_id'))
                                     <label for="city_id" class="error">{{ $errors->first('city_id') }}</label>
                                 @endif
                             </div>

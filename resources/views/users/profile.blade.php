@@ -117,7 +117,7 @@
                     <div class="form-group @if ($errors->has('country_id')) has-error  @endif">
                         <label class="col-md-3 control-label" for="inputDefault">Country</label>
                         <div class="col-md-6">
-                            <select class="form-control mb-md" id="country_id" name="country_id" v-model="country_id" @change="getStates">
+                            <select class="form-control mb-md" id="country_id" name="country_id" v-model="country_id" >
                                 <option value="0">Select Country</option>
                                 <option  v-for="country in countries" :value="country.id">@{{country.name}}</option>
                             </select>
@@ -130,11 +130,14 @@
                     <div class="form-group @if ($errors->has('state_id')) has-error  @endif">
                         <label class="col-md-3 control-label" for="inputDefault">State</label>
                         <div class="col-md-6">
-                            <select class="form-control mb-md" id="state_id" name="state_id" v-model="state_id" @change="getCities">
-                                <option value="0">Select State</option>
-                                <option  v-for="state in states" :value="state.id">@{{state.state_name}}</option>
-                            </select>
-                            @if ($errors->has('state_id'))
+                            {{--<select class="form-control mb-md" id="state_id" name="state_id" v-model="state_id" @change="getCities">--}}
+                                {{--<option value="0">Select State</option>--}}
+                                {{--<option  v-for="state in states" :value="state.id">@{{state.state_name}}</option>--}}
+                            {{--</select>--}}
+
+                            <input type="text" class="form-control" id="state_id" name="state_id" value="{{$profile->profile->state_id}}">
+
+                        @if ($errors->has('state_id'))
                                 <label for="state_id" class="error">{{ $errors->first('state_id') }}</label>
                             @endif
                         </div>
@@ -144,12 +147,15 @@
                     <div class="form-group @if ($errors->has('city_id')) has-error  @endif">
                         <label class="col-md-3 control-label" for="inputDefault">City</label>
                         <div class="col-md-6">
-                            <select class="form-control mb-md" id="city_id" name="city_id" v-model="city_id">
-                                <option value="0">Select City</option>
-                                <option  v-for="city in cities" :value="city.id">@{{city.city_name}}</option>
+                            {{--<select class="form-control mb-md" id="city_id" name="city_id" v-model="city_id">--}}
+                                {{--<option value="0">Select City</option>--}}
+                                {{--<option  v-for="city in cities" :value="city.id">@{{city.city_name}}</option>--}}
 
-                            </select>
-                            @if ($errors->has('city_id'))
+                            {{--</select>--}}
+
+                            <input type="text" class="form-control" id="city_id" name="city_id" value="{{$profile->profile->city_id}}">
+
+                        @if ($errors->has('city_id'))
                                 <label for="city_id" class="error">{{ $errors->first('city_id') }}</label>
                             @endif
                         </div>
@@ -165,6 +171,7 @@
                             @endif
                         </div>
                     </div>
+                    <br>
 
 
                     <footer class="panel-footer center">
@@ -197,13 +204,9 @@
         const oapp = new Vue({
             el:'#app',
             data:{
-                countries:@json($countries),
+               countries:@json($countries),
+               country_id:'{{$profile->profile->country_id}}',
 
-                states:@json($states),
-                cities:@json($cities),
-                country_id:'{{$profile->profile->country_id}}',
-                state_id:'{{$profile->profile->state_id}}',
-                city_id:'{{$profile->profile->city_id}}'
             },
             created(){
                 //console.log(this.countries);

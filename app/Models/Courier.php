@@ -18,7 +18,7 @@ class Courier extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'user_id', 'status_id', 'tracking_no','s_name',
+        'user_id','unique_name', 'status_id', 'tracking_no','s_name',
         's_company', 's_address1', 's_address2','s_phone',
         's_country', 's_state', 's_city','s_email','s_zip_code',
         'r_name', 'r_company', 'r_address1','r_address2',
