@@ -152,6 +152,7 @@ class AgentController extends Controller
         $validator = Validator::make($request->all(), [
 
             'company_name' => 'required',
+            'unique_name' => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email|max:255|unique:users,email,'.$id,
@@ -179,6 +180,7 @@ class AgentController extends Controller
         $user_profile = User_profile::where('user_id',$id)->first();
         if($user_profile != null){
             $user_profile->company_name = $input['company_name'];
+            $user_profile->unique_name = $input['unique_name'];
             $user_profile->first_name = $input['first_name'];
             $user_profile->last_name = $input['last_name'];
             $user_profile->phone = $input['phone'];

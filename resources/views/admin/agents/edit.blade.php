@@ -35,7 +35,7 @@
                         <div class="form-group @if ($errors->has('unique_name')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">Unique Name</label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control text-capitalize"  disabled id="unique_name" name="unique_name" value="{{$agent->profile->unique_name}}">
+                                <input type="text" class="form-control text-capitalize"  id="unique_name" name="unique_name" value="{{$agent->profile->unique_name}}">
                                 @if ($errors->has('unique_name'))
                                     <label for="unique_name" class="error">{{ $errors->first('unique_name') }}</label>
                                 @endif
