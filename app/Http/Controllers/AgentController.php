@@ -149,10 +149,11 @@ class AgentController extends Controller
     public function update(Request $request, $id)
     {
 
+        $user_profile_id = $request->user_profile_id;
         $validator = Validator::make($request->all(), [
 
             'company_name' => 'required',
-            'unique_name' => 'required',
+            'unique_name' => 'required|unique:user_profiles,unique_name,'.$user_profile_id,
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email|max:255|unique:users,email,'.$id,

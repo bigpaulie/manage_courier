@@ -32,6 +32,7 @@
                 <div class="panel-body">
                     {!! Form::model($agent,['method' => 'PATCH', 'action' => ['AgentController@update', $agent->id ] ]) !!}
                     {{csrf_field()}}
+                    <input type="hidden" name="user_profile_id" value="{{$agent->profile->id}}">
                         <div class="form-group @if ($errors->has('unique_name')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">Unique Name</label>
                             <div class="col-md-6">
