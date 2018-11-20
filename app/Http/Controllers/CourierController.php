@@ -65,6 +65,7 @@ class CourierController extends Controller
         $data['user_data']= $user_data;
         $data['s_states']=State::where('country_id',$user_data->profile->country_id)->get();
         $data['s_cities']=City::where('state_id',$user_data->profile->state_id)->get();
+        $data['courier_unique_no'] = $this->getCourierUniqueName(\Auth::user()->id);
         return view('couriers.create',$data);
     }
 

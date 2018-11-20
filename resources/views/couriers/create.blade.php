@@ -167,6 +167,16 @@
 
                         </header>
                         <div class="panel-body">
+
+
+                            <div class="form-group ">
+                                <label class="col-sm-4 control-label">Courier No: </label>
+                                <div class="col-sm-8">
+                                        <label class="control-label text-primary"><strong>{{$courier_unique_no}}</strong></label>
+                                </div>
+                            </div>
+
+
                             <div class="form-group @if ($errors->has('r_name')) has-error  @endif">
                                 <label class="col-sm-4 control-label">Name: </label>
                                 <div class="col-sm-8">
