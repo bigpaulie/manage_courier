@@ -24,6 +24,10 @@ Route::get('/getCouriers','CourierController@getCouriers')->name('getCouriers');
 Route::post('/save_courier_charge','CourierController@saveCourierCharge')->name('save_courier_charge');
 Route::post('/get_agent_name','UserController@getAgentName')->name('get_agent_name');
 Route::post('/update_pickup_status','CourierController@update_pickup_status')->name('update_pickup_status');
+Route::post('/get_user_name','UserController@getUserName')->name('get_user_name');
+Route::get('/generate_report','ReportController@generateReport')->name('generate_report');
+
+
 
 
 

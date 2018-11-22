@@ -43,6 +43,7 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/store_city', 'UserController@storeCity')->name('admin.store_city');
         Route::get('/create_courier_csv','CourierController@createCourierCsv')->name('createCourierCsv');
         Route::post('/import_courier_csv','CourierController@importCourierCSv')->name('couriers.import-csv');
+        Route::get('/generate_barcode/{id}','CourierController@generateBarcode')->name('admin.generate_barcode');
 
 
 
@@ -51,6 +52,7 @@ Route::group(['middleware' => array('auth')], function() {
         Route::resource('couriers', 'CourierController');
         Route::resource('expenses', 'ExpenseController');
         Route::resource('payments', 'PaymentController');
+        Route::resource('reports', 'ReportController');
 
 
         // Master Routes
@@ -71,6 +73,8 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/dashboard', 'UserController@agent_dashboard')->name('agent.dashboard');
         Route::get('/profile/{id}', 'UserController@profile')->name('agent.profile');
         Route::get('/change_password', 'UserController@change_password')->name('agent.change_password');
+        Route::get('/generate_barcode/{id}','CourierController@generateBarcode')->name('agent.generate_barcode');
+
 
         Route::resource('couriers', 'CourierController');
     });
@@ -80,7 +84,11 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/dashboard', 'UserController@store_dashboard')->name('store.dashboard');
         Route::get('/profile/{id}', 'UserController@profile')->name('store.profile');
         Route::get('/change_password', 'UserController@change_password')->name('store.change_password');
+        Route::get('/generate_barcode/{id}','CourierController@generateBarcode')->name('store.generate_barcode');
+
         Route::resource('expenses', 'ExpenseController');
+        Route::resource('couriers', 'CourierController');
+
 
     });
 

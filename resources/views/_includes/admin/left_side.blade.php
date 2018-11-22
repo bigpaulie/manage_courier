@@ -74,33 +74,12 @@
                         </a>
 
                     </li>
-                    <li class="">
-                        <a>
+                    <li @if($controller_name == 'reports')class="nav-active nav-expanded" @endif>
+                        <a href="/admin/reports">
                             <i class="fa fa-file" aria-hidden="true"></i>
                             <span>Reports</span>
                         </a>
-                        <ul class="nav nav-children">
-                            <li class="nav-active">
-                                <a href="layouts-default.html">
-                                    Default
-                                </a>
-                            </li>
-                            <li>
-                                <a href="layouts-boxed.html">
-                                    Boxed
-                                </a>
-                            </li>
-                            <li>
-                                <a href="layouts-menu-collapsed.html">
-                                    Menu Collapsed
-                                </a>
-                            </li>
-                            <li>
-                                <a href="layouts-scroll.html">
-                                    Scroll
-                                </a>
-                            </li>
-                        </ul>
+
                     </li>
                     <?php $nav_array = ['expense_types','status','package_types','service_types', 'content_types','courier_services','banks']; ?>
 
@@ -191,6 +170,14 @@
                             <a href="/store/dashboard">
                                 <i class="fa fa-home" aria-hidden="true"></i>
                                 <span>Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li @if($controller_name == 'couriers')class="nav-active nav-expanded" @endif>
+                            <a href="/store/couriers">
+
+                                <i class="fa fa-envelope" aria-hidden="true"></i>
+                                <span>Couriers</span>
                             </a>
                         </li>
                         <li @if($controller_name == 'expenses')class="nav-active nav-expanded" @endif>

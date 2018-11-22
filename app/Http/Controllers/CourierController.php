@@ -39,7 +39,7 @@ class CourierController extends Controller
         $data['accepted_status_id']=Status::where('code_name',"accepted")->first()->id;
         $data['shipped_status_id']=Status::where('code_name',"shipped")->first()->id;
         $data['courier_companies']=Courier_service::pluck('name','id')->toArray();
-        if(\Auth::user()->user_type == 'agent'){
+        if(\Auth::user()->user_type == 'agent' || \Auth::user()->user_type == 'store'){
             $data['total_charge']= Courier_charge::where('user_id',\Auth::user()->id)->sum('total');
             $data['total_payout']= Payment::where('user_id',\Auth::user()->id)->sum('amount');
             $data['grand_total']= $data['total_payout'] - $data['total_charge'];
@@ -110,6 +110,7 @@ class CourierController extends Controller
         $status = Status::where('code_name','pending')->first();
         $input['status_id']=$status->id;
         $input['unique_name']=$this->getCourierUniqueName(\Auth::user()->id);
+        $input['barcode_no']= rand();
         $courier = Courier::create($input);
         $courier_id = $courier->id;
 
@@ -282,17 +283,18 @@ class CourierController extends Controller
         $user_id= $input['user_id'];
         $user_type = $input['user_type'];
 
-
+        $courier_joins = Courier::with(['agent','status','shippment','courier_charge','receiver_country']);
         if($type == 'all'){
             $where = [];
-            if($user_type == 'agent'){
+            if($user_type == 'agent' || $user_type == 'store'){
                 $where[] = ['couriers.user_id', $user_id];
             }
-            $couriers= Courier::with(['agent','status','shippment','courier_charge'])
-                ->whereDate('updated_at','>=', date('Y-m-d'))
-                ->whereDate('updated_at', '<=',date('Y-m-d'))
-                ->where($where)
-                ->OrderBy('updated_at','desc');
+
+            $couriers= $courier_joins
+                    ->whereDate('updated_at','>=', date('Y-m-d'))
+                    ->whereDate('updated_at', '<=',date('Y-m-d'))
+                    ->where($where)
+                    ->OrderBy('updated_at','desc');
         }else{
             $where = [];
             if($user_type == 'agent'){
@@ -301,18 +303,18 @@ class CourierController extends Controller
 
             if ($traking_number !="" ) {
                 $where[] = ['couriers.tracking_no', $traking_number];
-                $couriers= Courier::with(['agent','status','shippment','courier_charge'])
+                $couriers=  $courier_joins
                                     ->where($where);
             }
             if ($status_id !="" ) {
                 $where[] = ['couriers.status_id', $status_id];
 
-                $couriers= Courier::with(['agent','status','shippment','courier_charge'])
+                $couriers= $courier_joins
                                     ->where($where);
             }
             if ($agent_name !="" ) {
 
-                $couriers= Courier::with(['agent','status','shippment','courier_charge'])
+                $couriers= $courier_joins
                                     ->where($where)
                                     ->whereHas('agent',function ($query) use($agent_name){
                                         $query->where('name', 'like', "%{$agent_name}%");
@@ -321,7 +323,7 @@ class CourierController extends Controller
 
             if($from_date !="" && $end_date != ""){
 
-                $couriers= Courier::with(['agent','status','shippment','courier_charge'])
+                $couriers= $courier_joins
                                     ->whereDate('updated_at','>=', $from_date)
                                     ->whereDate('updated_at', '<=',$end_date)
                                     ->where($where);
@@ -755,5 +757,11 @@ class CourierController extends Controller
         $courier_unique_name = $user_unique_name."000".$code;
         return $courier_unique_name;
 
+    }
+    public function generateBarcode($id){
+
+        $courier= Courier::find($id);
+        $data['courier']=$courier;
+        return view('couriers.barcode',$data);
     }
 }

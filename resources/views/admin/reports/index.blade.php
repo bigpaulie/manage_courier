@@ -1,0 +1,219 @@
+@extends('layouts.admin')
+@section('date-styles')
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css' rel='stylesheet' type='text/css'>
+
+@endsection
+
+@section('content')
+
+    <header class="page-header">
+        <h2>Manage Reports</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="index.html">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+
+                <li><span>Reports</span></li>
+            </ol>
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"></a>
+        </div>
+    </header>
+
+    <section class="panel">
+        <div class="panel-body">
+            <div class="row">
+
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">Name</label>
+                        <select  class="form-control populate" id="userSelect" name="user_id">
+
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                       <button type="button" class="btn btn-success" @click="searchCouriers"><i class="fa fa-search"></i> Search</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <section class="panel">
+        <header class="panel-heading">
+
+            <h2 class="panel-title">Couriers</h2>
+        </header>
+        <div class="panel-body">
+            <table class="table table-no-more table-bordered table-striped mb-none">
+                <thead>
+                <tr>
+                    <th class="text-right">Id</th>
+                    <th>Agent Name</th>
+                    <th>Customer Name</th>
+                    <th class="text-right">T-Id</th>
+                    <th class="text-right">Status</th>
+                    <th class="text-right">Shipped</th>
+                    <th class="text-right hidden-xs hidden-sm">Country</th>
+                    <th>Amount</th>
+                    <th>Pickup Charge</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(courier, index) in couriers.data">
+                    <td data-title="Id">@{{courier.unique_name}}</td>
+                    <td data-title="Agent Name">@{{courier.agent.name}}</td>
+                    <td data-title="Customer Name">@{{ courier.r_name }}</td>
+                    <td data-title="Traking Number" class="text-right">
+                        <span v-if="courier.tracking_no == null">NA</span>
+                        <span v-if="courier.tracking_no != null"><a href="javascript:void(0);">@{{courier.tracking_no}}</a></span>
+
+                    </td>
+
+                    <td data-title="Status" class="text-right hidden-xs hidden-sm">
+                            <span v-bind:style="{ color:courier.status.color_code  }">@{{ courier.status.name }}</span>
+                    </td>
+
+                    <td data-title="Shipped">
+                        <span v-if="courier.courier_charge != null && courier.courier_charge.courier_service != null">@{{courier.courier_charge.courier_service.name | exists }}</span>
+                        <span v-if="courier.courier_charge == null || courier.courier_charge.courier_service == null">NA</span>
+
+                    </td>
+
+                    <td data-title="Country" class="text-right hidden-xs hidden-sm">@{{courier.receiver_country.name }}</td>
+                    <td data-title="Amount"><span v-if="courier.courier_charge != null">@{{courier.courier_charge.amount | exists }}</span> <span v-if="courier.courier_charge == null">NA</span></td>
+                    <td data-title="Pickup Charge"><span v-if="courier.courier_charge != null">@{{courier.courier_charge.pickup_charge | exists }}</span><span v-if="courier.courier_charge == null">NA</span></td>
+                    <td data-title="Total"><span v-if="courier.courier_charge != null">@{{courier.courier_charge.total | exists }}</span><span v-if="courier.courier_charge == null">NA</span></td>
+
+                </tr>
+
+                <tr v-if="typeof couriers.data != 'undefined' && couriers.data.length > 0">
+                    <td colspan="7">
+
+                    </td>
+                    <td>
+                        <label><strong class="text-primary">Total Amount: @{{total_amount}}</strong></label>
+                    </td>
+                    <td>
+                        <label><strong class="text-primary">Total Charge: @{{total_charge}}</strong></label>
+
+                    </td>
+
+                    <td>
+                        <label><strong class="text-primary">Total: @{{total}}</strong></label>
+
+                    </td>
+
+
+                </tr>
+
+
+
+                </tbody>
+            </table>
+        </div>
+
+
+
+    </section>
+    <!-- end: page -->
+
+
+@endsection
+
+
+
+@section('scripts')
+    <script type="text/javascript">
+
+        jQuery(document).ready(function($) {
+
+            $("#userSelect").select2({
+                placeholder: "Search User Name",
+                allowClear: true,
+                minimumInputLength:2,
+                ajax: {
+                    url: "/api/get_user_name",
+                    type: "post",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            searchTerm: params.term // search term
+                        };
+                    },
+                    processResults: function (response) {
+                        return {
+                            results: response
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+        });
+
+
+        const oapp = new Vue({
+            el:'#app',
+
+            data:{
+                couriers:{},
+
+
+            },
+            created(){
+
+
+            },
+
+
+            methods: {
+
+
+                searchCouriers(page=1){
+
+                    var user_id = $("#userSelect").val();
+                    var page_no =1;
+
+                    let searchURL = '/api/generate_report?page='+page_no+'&user_id='+user_id;
+
+                    axios.get(searchURL).then(response => {
+                    this.couriers = response.data.courier_data;
+                    this.total_amount = response.data.total_amount;
+                    this.total_charge = response.data.total_pickup_charge;
+                    this.total = response.data.total;
+                });
+
+                },
+
+
+
+            },
+
+            computed: {
+
+
+            },
+
+
+
+
+        });
+
+
+    </script>
+
+
+@endsection

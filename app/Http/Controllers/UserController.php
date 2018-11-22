@@ -170,4 +170,20 @@ class UserController extends Controller
         }
         return $user_data;
     }
+
+    public function getUserName(Request $request){
+        $input = $request->all();
+        $search_key = $input['searchTerm'];
+        $users = User::where('name','like',"%{$search_key}%")
+            ->where('user_type','<>','admin')
+            ->orderBy('name','asc')->get();
+        $user_data=[];
+        foreach ($users as $user){
+            $temp=[];
+            $temp['id']= $user->id;
+            $temp['text']= $user->name." - ".$user->profile->company_name;
+            $user_data[]=$temp;
+        }
+        return $user_data;
+    }
 }

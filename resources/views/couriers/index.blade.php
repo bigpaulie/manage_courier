@@ -86,7 +86,7 @@
                     <input type="text"  class="form-control" name="tracking_number" v-model="traking_number" v-on:keyup.enter="onEnter">
                 </div>
             </div>
-            @if(Auth::user()->user_type == 'agent')
+            @if(Auth::user()->user_type == 'agent' || Auth::user()->user_type == 'store')
                     <div class="col-md-2">
                         <div class="form-group">
                             <label class="control-label text-bold">Total Charge: <span class="text-primary">{{$total_charge}}</span></label>
@@ -115,7 +115,7 @@
         </div>
     </div>
     </section>
-    @if(Auth::user()->user_type == 'admin')
+    @if(Auth::user()->user_type == 'admin' || Auth::user()->user_type == 'store')
       <section class="panel">
         <div class="panel-body">
             <div class="row">
@@ -154,7 +154,7 @@
     </section>
     @endif
 
-    @if(Auth::user()->user_type == 'agent')
+    @if(Auth::user()->user_type == 'agent' || Auth::user()->user_type == 'store')
         <section class="panel">
             <div class="panel-body">
                 <div class="row">
@@ -197,10 +197,11 @@
                     <th><input type="checkbox" class="checkbox-custom chekbox-primary"  @click="selectAll" v-model="allSelected"></th>
                     <th class="text-right">Id</th>
                     <th v-if="user_type == 'admin'">Agent Name</th>
+                    <th>Customer Name</th>
                     <th class="text-right">T-Id</th>
                     <th class="text-right">Status</th>
                     <th class="text-right">Shipped</th>
-                    <th class="text-right hidden-xs hidden-sm">Pickup/Drop</th>
+                    <th class="text-right hidden-xs hidden-sm">Country</th>
                     <th>Amount</th>
                     <th>Pickup Charge</th>
                     <th>Total</th>
@@ -214,6 +215,7 @@
                     <td><input type="checkbox" @click="select" class="checkbox-custom chekbox-primary" v-model="courierIds" :value="courier.id"></td>
                     <td data-title="Id">@{{courier.unique_name}}</td>
                     <td data-title="Agent Name" v-if="user_type == 'admin'">@{{courier.agent.name}}</td>
+                    <td data-title="Customer Name">@{{ courier.r_name }}</td>
                     <td data-title="Traking Number" class="text-right">
                         <span v-if="courier.tracking_no == null">NA</span>
                         <span v-if="courier.tracking_no != null"><a href="javascript:void(0);">@{{courier.tracking_no}}</a></span>
@@ -235,7 +237,7 @@
                         <span v-if="courier.courier_charge == null || courier.courier_charge.courier_service == null">NA</span>
 
                     </td>
-                    <td data-title="Pickup/Drop" class="text-right hidden-xs hidden-sm">@{{courier.shippment.courier_status | capitalize}}</td>
+                    <td data-title="Country" class="text-right hidden-xs hidden-sm">@{{courier.receiver_country.name }}</td>
                     <td data-title="Amount"><span v-if="courier.courier_charge != null">@{{courier.courier_charge.amount | exists }}</span> <span v-if="courier.courier_charge == null">NA</span></td>
                     <td data-title="Pickup Charge"><span v-if="courier.courier_charge != null">@{{courier.courier_charge.pickup_charge | exists }}</span><span v-if="courier.courier_charge == null">NA</span></td>
                     <td data-title="Total"><span v-if="courier.courier_charge != null">@{{courier.courier_charge.total | exists }}</span><span v-if="courier.courier_charge == null">NA</span></td>
@@ -248,21 +250,22 @@
                         {{--@endif--}}
 
                         <a href="javascript:void(0);" @click="editCourier(courier.id)" class=""><i class="fa fa-pencil"></i></a>
+                        <a href="javascript:void(0);" @click="generateBarocode(courier.id)" class=""><i class="fa fa-barcode"></i></a>
 
 
                     </td>
                 </tr>
 
-                <tr v-if="typeof couriers.data != 'undefined' && couriers.data.length == 0"><td colspan="11">
+                <tr v-if="typeof couriers.data != 'undefined' && couriers.data.length == 0"><td colspan="12">
                         <div class="alert alert-danger">
                             <strong>Oh snap!</strong> No Couriers Found.
                         </div>
                     </td>
                 </tr>
                 <?php $user_type = Auth::user()->user_type;
-                        $colspan=6;
+                        $colspan=7;
                       if($user_type == 'admin'){
-                          $colspan =7;
+                          $colspan =8;
                       }
                 ?>
 
@@ -437,6 +440,11 @@
                 editCourier(id){
 
                     window.location.href ="/"+this.user_type+"/couriers/"+id+"/edit";
+                },
+
+                generateBarocode(id){
+                    window.location.href ="/"+this.user_type+"/generate_barcode/"+id;
+
                 },
 
                 createCourierCsv(page=1){
