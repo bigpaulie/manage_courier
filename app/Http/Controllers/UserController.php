@@ -41,7 +41,12 @@ class UserController extends Controller
 
     public function store_dashboard(){
 
-        $data=[];
+        $status = Status::all();
+        $courier_status = Courier::select(array('couriers.status_id', \DB::raw('COUNT(*) as status_count')))
+            ->where('user_id',\Auth::user()->id)
+            ->groupBy('couriers.status_id')->get();
+        $data['status']=$status;
+        $data['courier_status']=$courier_status;
         return view('store.dashboard',$data);
     }
 

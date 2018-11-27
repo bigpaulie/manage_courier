@@ -1,6 +1,5 @@
 @extends('layouts.admin')
 @section('date-styles')
-    <link href='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css' rel='stylesheet' type='text/css'>
 
 @endsection
 
@@ -29,14 +28,6 @@
             <div class="row">
 
 
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label class="control-label">Name</label>
-                        <select  class="form-control populate" id="userSelect" name="user_id">
-
-                        </select>
-                    </div>
-                </div>
 
                 <div class="col-md-3">
                     <div class="form-group">
@@ -165,32 +156,6 @@
 @section('scripts')
     <script type="text/javascript">
 
-        jQuery(document).ready(function($) {
-
-            $("#userSelect").select2({
-                placeholder: "Search User Name",
-                allowClear: true,
-                minimumInputLength:2,
-                ajax: {
-                    url: "/api/get_user_name",
-                    type: "post",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            searchTerm: params.term // search term
-                        };
-                    },
-                    processResults: function (response) {
-                        return {
-                            results: response
-                        };
-                    },
-                    cache: true
-                }
-            });
-
-        });
 
         Vue.filter('exists', function (value) {
             if (!value) return 'NA'
@@ -206,6 +171,7 @@
                 couriers:{},
                 from_date:"{{date('m/d/Y')}}",
                 end_date:"{{date('m/d/Y')}}",
+                user_id:"{{$user_id}}"
 
             },
             created(){
@@ -219,10 +185,9 @@
 
                 searchCouriers(page=1){
 
-                    var user_id = $("#userSelect").val();
                     var page_no =1;
 
-                    let searchURL = '/api/generate_report?page='+page_no+'&user_id='+user_id;
+                    let searchURL = '/api/generate_report?page='+page_no+'&user_id='+this.user_id;
                     searchURL+='&from_date='+this.from_date+'&end_date='+this.end_date
 
                     axios.get(searchURL).then(response => {

@@ -151,14 +151,6 @@
                             </a>
                         </li>
 
-                        <li class="">
-                            <a>
-                                <i class="fa fa-file" aria-hidden="true"></i>
-                                <span>Reports</span>
-                            </a>
-
-                        </li>
-
                     </ul>
                 </nav>
             @endif
@@ -186,8 +178,8 @@
                                 <span>Expenses</span>
                             </a>
                         </li>
-                        <li class="">
-                            <a>
+                        <li @if($controller_name == 'reports')class="nav-active nav-expanded" @endif>
+                            <a href="/store/reports">
                                 <i class="fa fa-file" aria-hidden="true"></i>
                                 <span>Reports</span>
                             </a>

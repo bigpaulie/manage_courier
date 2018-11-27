@@ -300,7 +300,7 @@
                 allowClear: true,
                 minimumInputLength:2,
                 ajax: {
-                    url: "/api/get_agent_name",
+                    url: "/api/get_user_name",
                     type: "post",
                     dataType: 'json',
                     delay: 250,

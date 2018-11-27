@@ -46,7 +46,7 @@
 
                     <th class="text-right hidden-xs hidden-sm">Zip Code</th>
                     <th class="text-right hidden-xs hidden-sm">Created</th>
-                    <th class="text-right">Actions</th>
+                    {{--<th class="text-right">Actions</th>--}}
                 </tr>
                 </thead>
                 <tbody>
@@ -66,14 +66,14 @@
                     </td>
                     <td data-title="Zip Code" class="text-right hidden-xs hidden-sm">{{$agent->profile->zip_code}}</td>
                     <td data-title="Created" class="text-right hidden-xs hidden-sm">{{date('d-M-Y',strtotime($agent->created_at))}}</td>
-                    <td data-title="Actions" class="text-right actions">
+                    {{--<td data-title="Actions" class="text-right actions">--}}
 
-                        {!! Form::model($agent,['method' => 'DELETE', 'action' => ['AgentController@destroy', $agent->id ], 'id'=>'frmdeleteAgent_'.$agent->id ]) !!}
-                          <button class="delete-row" type="button" onclick="deleteAgents('{{$agent->id}}')"><i class="fa fa-trash-o"></i></button>
-                        {!! Form::close() !!}
-                        <a href="{{route('agents.edit',$agent->id)}}" style="float:right" ><i class="fa fa-pencil"></i></a>
+                        {{--{!! Form::model($agent,['method' => 'DELETE', 'action' => ['AgentController@destroy', $agent->id ], 'id'=>'frmdeleteAgent_'.$agent->id ]) !!}--}}
+                          {{--<button class="delete-row" type="button" onclick="deleteAgents('{{$agent->id}}')"><i class="fa fa-trash-o"></i></button>--}}
+                        {{--{!! Form::close() !!}--}}
+                        {{--<a href="{{route('agents.edit',$agent->id)}}" style="float:right" ><i class="fa fa-pencil"></i></a>--}}
 
-                    </td>
+                    {{--</td>--}}
                 </tr>
                 @endforeach
                 </tbody>

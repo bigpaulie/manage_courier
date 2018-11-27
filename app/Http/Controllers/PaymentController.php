@@ -16,12 +16,53 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $payments= Payment::OrderBy('created_at','desc')
-                             ->paginate(10);
-        $data['payments']=$payments;
+//        $payments= Payment::OrderBy('created_at','desc')
+//                             ->paginate(10);
+//        $data['payments']=$payments;
         $data['payment_types']=['cheque'=>'Cheque','cash'=>'Cash','net_banking'=>'Net Banking'];
         return view('admin.payments.index',$data);
     }
+
+
+    public function getPayments(Request $request){
+
+        $input = $request->all();
+        $user_id= isset($input['user_id'])?$input['user_id']:"";
+        $from_date = isset($input['from_date'])?date('Y-m-d',strtotime($input['from_date'])):'';
+        $end_date = isset($input['end_date'])?date('Y-m-d',strtotime($input['end_date'])):'';
+        $type = isset($input['type'])?$input['type']:'';
+        if($user_id > 0){
+            $where[] = ['payments.user_id', $user_id];
+
+        }
+
+        if($type == 'all'){
+         $payments= Payment::with('agent')->OrderBy('created_at','desc');
+        }
+
+        else if( $user_id > 0 && $from_date !="" && $end_date != ""){
+
+            $payments= Payment::with('agent')->OrderBy('updated_at','desc')
+                ->whereDate('payment_date','>=', $from_date)
+                ->whereDate('payment_date', '<=',$end_date)
+                ->where($where);
+
+        }else{
+
+            $payments= Payment::with('agent')->OrderBy('updated_at','desc')
+                ->whereDate('payment_date','>=', $from_date)
+                ->whereDate('payment_date', '<=',$end_date);
+
+        }
+
+        $payment_data = $payments->paginate(50);
+        $response_data['payment_data']=$payment_data;
+
+        return response()->json($response_data);
+
+
+    }
+
 
     /**
      * Show the form for creating a new resource.

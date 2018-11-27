@@ -49,7 +49,7 @@
                                             </div>
                                         </div>
                                         <div class="summary-footer">
-                                            <a class="text-uppercase" href="/admin/couriers">(view all)</a>
+                                            <a class="text-uppercase" href="/agent/couriers">(view all)</a>
                                         </div>
                                     </div>
                                 </div>
