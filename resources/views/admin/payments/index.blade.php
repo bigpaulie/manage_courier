@@ -216,7 +216,7 @@
 
                 getPaymentType:function(type){
 
-                   return type;
+                    return this.payment_types[type];
                 },
 
 

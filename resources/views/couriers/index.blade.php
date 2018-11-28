@@ -228,7 +228,7 @@
                             <option v-for=" (status, key) in status_master" :value="status.id" v-bind:style="{ color:status.color_code  }">@{{ status.name }}</option>
                         </select>
                         @endif
-                        @if(Auth::user()->user_type == 'agent')
+                        @if(Auth::user()->user_type == 'agent' || Auth::user()->user_type == 'store')
                                 <span v-bind:style="{ color:courier.status.color_code  }">@{{ courier.status.name }}</span>
                         @endif
                     </td>

@@ -297,7 +297,7 @@ class CourierController extends Controller
                     ->OrderBy('updated_at','desc');
         }else{
             $where = [];
-            if($user_type == 'agent'){
+            if($user_type == 'agent' || $user_type == 'store'){
                 $where[] = ['couriers.user_id', $user_id];
             }
 
@@ -324,9 +324,9 @@ class CourierController extends Controller
             if($from_date !="" && $end_date != ""){
 
                 $couriers= $courier_joins
-                                    ->whereDate('updated_at','>=', $from_date)
-                                    ->whereDate('updated_at', '<=',$end_date)
-                                    ->where($where);
+                    ->whereDate('updated_at','>=', $from_date)
+                    ->whereDate('updated_at', '<=',$end_date)
+                    ->where($where);
             }
 
         }
@@ -359,7 +359,7 @@ class CourierController extends Controller
         $current_timestamp = date("Y-m-d-H-i-s")."_courier";
         $file_path = storage_path()."/".$current_timestamp.'.csv';
         $writer = \CsvWriter::create($file_path);
-        $writer->writeLine(['Courier Id','Agent Name', 'Status', 'Tracking No',
+        $writer->writeLine(['Courier Id','Unique Name','Agent Name', 'Status', 'Tracking No',
                             'Shipped','Pickup/Drop','Amount','Pickup Charge',
                              'Total','Sender Name',
                              'Sender Company', 'Sender Address1','Sender Address2',
@@ -384,7 +384,7 @@ class CourierController extends Controller
 
         if($type == 'all'){
             $where = [];
-            if($user_type == 'agent'){
+            if($user_type == 'agent' || $user_type == 'store'){
                 $where[] = ['couriers.user_id', $user_id];
             }
             $couriers= Courier::with(['agent','status','shippment','courier_charge'])
@@ -451,6 +451,7 @@ class CourierController extends Controller
             $pickup = ucfirst($courier->shippment->courier_status);
             $temp = [
                 $courier->id,
+                $courier->unique_name,
                 $courier->agent->name,
                 $courier->status->name,
                 $courier->tracking_no,
@@ -561,40 +562,41 @@ class CourierController extends Controller
                if($i >0 ){
 
                    $courier_id = $line[0];
+                   $unique_name = $line[1];
+                   $agent_name = $line[2];
+                   $status = $line[3];
+                   $tracking_no = $line[4];
+                   $shipped = $line[5];
+                   $pickup_drop = $line[6];
+                   $amount = $line[7];
 
-                   $agent_name = $line[1];
-                   $status = $line[2];
-                   $tracking_no = $line[3];
-                   $shipped = $line[4];
-                   $pickup_drop = $line[5];
-                   $amount = $line[6];
-
-                   $pickup_charge = $line[7];
-                   $total = $line[8];
-                   $s_name = $line[9];
-                   $s_company = $line[10];
-                   $s_address1 = $line[11];
-                   $s_address2 = $line[12];
-                   $s_phone = $line[13];
-                   $s_country = $line[14];
-                   $s_state = $line[15];
-                   $s_city = $line[16];
-                   $s_email = $line[17];
-                   $r_name = $line[18];
-                   $r_comapny = $line[19];
-                   $r_address1 = $line[20];
-                   $r_address2 = $line[21];
-                   $r_phone = $line[22];
-                   $r_country = $line[23];
-                   $r_state = $line[24];
-                   $r_city = $line[25];
-                   $r_zip_code = $line[26];
-                   $r_email = $line[27];
-                   $description = $line[28];
+                   $pickup_charge = $line[8];
+                   $total = $line[9];
+                   $s_name = $line[10];
+                   $s_company = $line[11];
+                   $s_address1 = $line[12];
+                   $s_address2 = $line[13];
+                   $s_phone = $line[14];
+                   $s_country = $line[15];
+                   $s_state = $line[16];
+                   $s_city = $line[17];
+                   $s_email = $line[18];
+                   $r_name = $line[19];
+                   $r_comapny = $line[20];
+                   $r_address1 = $line[21];
+                   $r_address2 = $line[22];
+                   $r_phone = $line[23];
+                   $r_country = $line[24];
+                   $r_state = $line[25];
+                   $r_city = $line[26];
+                   $r_zip_code = $line[27];
+                   $r_email = $line[28];
+                   $description = $line[29];
 
                    $courier = Courier::find($courier_id);
-                   if($courier != null){
 
+                   if($courier != null){
+                        //update the record
                        $status_data = Status::where('name',$status)->first();
                        if($status_data !=null){
                            $courier->status_id = $status_data->id;
@@ -616,17 +618,14 @@ class CourierController extends Controller
                        }
 
                        if(!empty($s_state)){
-                           $state_data = State::where('state_name',$s_state)->first();
-                           if($state_data != null){
-                               $courier->s_state = $state_data->id;
-                           }
+
+                           $courier->s_state = $s_state;
+
                        }
 
                        if(!empty($s_city)){
-                           $city_data = City::where('city_name',$s_city)->first();
-                           if($city_data != null){
-                               $courier->s_city = $city_data->id;
-                           }
+
+                           $courier->s_city = $s_city;
                        }
 
                        $courier->s_email = $s_email;
@@ -647,17 +646,11 @@ class CourierController extends Controller
                        }
 
                        if(!empty($r_state)){
-                           $state_data = State::where('state_name',$r_state)->first();
-                           if($state_data != null){
-                               $courier->r_state = $state_data->id;
-                           }
+                               $courier->r_state = $r_state;
                        }
 
                        if(!empty($r_city)){
-                           $city_data = City::where('city_name',$r_city)->first();
-                           if($city_data != null){
-                               $courier->r_city = $city_data->id;
-                           }
+                         $courier->r_city = $r_city;
                        }
 
                        $courier->save();
@@ -716,6 +709,66 @@ class CourierController extends Controller
                            }
 
                        }
+
+                   }
+                   else{
+                       // Create new record
+                       $courier= new Courier();
+
+                       $courier->unique_name=$this->getCourierUniqueName(\Auth::user()->id);
+                       $courier->barcode_no= rand();
+                       $status_data = Status::where('name',$status)->first();
+                       if($status_data !=null){
+                           $courier->status_id = $status_data->id;
+                       }
+                       $courier->tracking_no = $tracking_no;
+                       $courier->s_name = $s_name;
+                       $courier->s_company = $s_company;
+                       $courier->s_address1 = $s_address1;
+                       $courier->s_address2 = $s_address2;
+                       $courier->s_phone = $s_phone;
+                       if(!empty($s_country)){
+                           $country_data = Country::where('name',$s_country)->first();
+                           if($country_data != null){
+                               $courier->s_country = $country_data->id;
+                           }
+                       }
+                       if(!empty($s_state)){
+
+                           $courier->s_state = $s_state;
+                       }
+
+                       if(!empty($s_city)){
+
+                           $courier->s_city = $s_city;
+                       }
+                       $courier->s_email = $s_email;
+                       $courier->r_name = $r_name;
+                       $courier->r_company = $r_comapny;
+                       $courier->r_address1 = $r_address1;
+                       $courier->r_address2 = $r_address2;
+                       $courier->r_phone = $r_phone;
+                       $courier->r_zip_code = $r_zip_code;
+                       $courier->r_email = $r_email;
+                       $courier->description = $description;
+                       if(!empty($r_country)){
+                           $country_data = Country::where('name',$r_country)->first();
+                           if($country_data != null){
+                               $courier->r_country = $country_data->id;
+                           }
+                       }
+
+                       if(!empty($r_state)){
+                           $courier->r_state = $r_state;
+                       }
+
+                       if(!empty($r_city)){
+                           $courier->r_city = $r_city;
+                       }
+
+                       $courier->save();
+
+
 
                    }
 

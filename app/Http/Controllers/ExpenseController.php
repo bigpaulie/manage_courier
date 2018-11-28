@@ -18,16 +18,59 @@ class ExpenseController extends Controller
     {
         $user_type = \Auth::user()->user_type;
         if($user_type == 'admin'){
-            $expenses= Expense::OrderBy('created_at','desc')
-                                ->paginate(10);
+            $data=[];
+            return view('expenses.index',$data);
         }else if($user_type == 'store'){
-            $expenses= Expense::where('user_id',\Auth::user()->id)
-                                ->OrderBy('created_at','desc')
-                                ->paginate(10);
+
+            $data['user_id']=\Auth::user()->id;
+            return view('expenses.store_expenses',$data);
         }
 
-        $data['expenses']=$expenses;
-        return view('expenses.index',$data);
+
+    }
+
+
+    public function getExpenses(Request $request){
+
+        $input = $request->all();
+        $user_id= isset($input['user_id'])?$input['user_id']:"";
+        $from_date = isset($input['from_date'])?date('Y-m-d',strtotime($input['from_date'])):'';
+        $end_date = isset($input['end_date'])?date('Y-m-d',strtotime($input['end_date'])):'';
+        $type = isset($input['type'])?$input['type']:'';
+        if($user_id > 0){
+            $where[] = ['expenses.user_id', $user_id];
+
+        }
+
+        if($type == 'all'){
+            $expenses= Expense::with(['expense_type','store'])->OrderBy('created_at','desc');
+        }
+
+        else if( $user_id > 0 && $from_date !="" && $end_date != ""){
+
+            $expenses= Expense::with(['expense_type','store'])->OrderBy('updated_at','desc')
+                ->whereDate('expense_date','>=', $from_date)
+                ->whereDate('expense_date', '<=',$end_date)
+                ->where($where);
+
+        }else if($from_date !="" && $end_date != ""){
+
+            $expenses= Expense::with(['expense_type','store'])
+                                                ->OrderBy('updated_at','desc')
+                                                ->whereDate('expense_date','>=', $from_date)
+                                                ->whereDate('expense_date', '<=',$end_date);
+
+        }else if( $user_id > 0){
+            $expenses= Expense::with(['expense_type','store'])->OrderBy('updated_at','desc')
+                               ->where($where);
+        }
+
+        $expense_data = $expenses->paginate(50);
+        $response_data['expense_data']=$expense_data;
+
+        return response()->json($response_data);
+
+
     }
 
     /**

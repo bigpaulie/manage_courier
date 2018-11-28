@@ -27,6 +27,8 @@ Route::post('/update_pickup_status','CourierController@update_pickup_status')->n
 Route::post('/get_user_name','UserController@getUserName')->name('get_user_name');
 Route::get('/generate_report','ReportController@generateReport')->name('generate_report');
 Route::get('/getpayments','PaymentController@getPayments')->name('getpayments');
+Route::get('/getexpenses','ExpenseController@getExpenses')->name('getexpenses');
+
 
 
 

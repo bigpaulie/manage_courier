@@ -16,9 +16,7 @@ class PaymentController extends Controller
      */
     public function index()
     {
-//        $payments= Payment::OrderBy('created_at','desc')
-//                             ->paginate(10);
-//        $data['payments']=$payments;
+
         $data['payment_types']=['cheque'=>'Cheque','cash'=>'Cash','net_banking'=>'Net Banking'];
         return view('admin.payments.index',$data);
     }

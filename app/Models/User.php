@@ -34,6 +34,8 @@ class User extends Authenticatable
     ];
 
     public function profile(){
-        return $this->hasOne('App\Models\User_profile');
+        return $this->hasOne('App\Models\User_profile')->with('store');
     }
+
+
 }

@@ -39,6 +39,7 @@
                 <tr>
                     <th class="text-right">Unique Name</th>
                     <th>Company Name</th>
+                    <th>Store Name</th>
                     <th class="hidden-xs hidden-sm">Name</th>
                     <th class="text-right">Email</th>
                     <th class="text-right hidden-xs hidden-sm">Phone</th>
@@ -56,6 +57,15 @@
                     <td data-title="Unique Name" class="text-right">{{$agent->profile->unique_name}}</td>
 
                     <td data-title="Company Name">{{$agent->profile->company_name}}</td>
+                    <td data-title="Store Name">
+
+                        @if($agent->profile->store != null)
+                            {{$agent->profile->store->name}}
+                            ({{$agent->profile->store->profile->company_name}})
+                        @endif
+
+                    </td>
+
                     <td data-title="Name" class="hidden-xs hidden-sm">{{$agent->profile->first_name}} {{$agent->profile->last_name}}</td>
                     <td data-title="Email" class="text-right">{{$agent->email}}</td>
                     <td data-title="Phone" class="text-right hidden-xs hidden-sm">{{$agent->profile->phone}}</td>

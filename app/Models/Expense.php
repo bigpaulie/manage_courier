@@ -14,4 +14,8 @@ class Expense extends Model
     public function expense_type(){
         return $this->belongsTo('App\Models\Expense_type','expense_type_id','id');
     }
+
+    public function store(){
+        return $this->belongsTo('App\Models\User','user_id','id')->with('profile');
+    }
 }

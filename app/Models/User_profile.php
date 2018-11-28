@@ -15,4 +15,8 @@ class User_profile extends Model
     public function country(){
         return $this->belongsTo('App\Models\Country','country_id','id');
     }
+
+    public function store(){
+        return $this->belongsTo('App\Models\User','store_id','id');
+    }
 }

@@ -52,6 +52,23 @@
                                 @endif
                             </div>
                         </div>
+
+                        <div class="form-group  @if ($errors->has('store_id')) has-error  @endif">
+                            <label class="col-md-3 control-label" for="inputDefault">Store Name</label>
+                            <div class="col-md-6">
+                                <select name="store_id" class="form-control">
+                                    <option id="">Select Store</option>
+                                    @foreach($stores as $store)
+                                        <option value="{{$store->id}}">{{$store->name}} ({{$store->profile->company_name}})</option>
+                                    @endforeach
+                                </select>
+                                @if ($errors->has('store_id'))
+                                    <label for="store_id" class="error">{{ $errors->first('store_id') }}</label>
+                                @endif
+                            </div>
+                        </div>
+
+
                         <div class="form-group @if ($errors->has('first_name')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">First Name</label>
                             <div class="col-md-6">

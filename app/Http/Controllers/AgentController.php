@@ -42,8 +42,8 @@ class AgentController extends Controller
     public function create()
     {
         $countries = Country::get();
-
-        $data=['countries'=>$countries];
+        $data['countries']=$countries;
+        $data['stores']=User:: where('user_type','store')->get();
         return view('admin.agents.create',$data);
     }
 
@@ -58,6 +58,7 @@ class AgentController extends Controller
 
 
         $validator = Validator::make($request->all(), [
+            'store_id' => 'required',
             'company_name' => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
@@ -94,6 +95,7 @@ class AgentController extends Controller
         $user_profile= new User_profile();
         $user_profile->user_id = $user_id;
         $user_profile->unique_name = $input['unique_name'];
+        $user_profile->store_id = $input['store_id'];
         $user_profile->company_name = $input['company_name'];
         $user_profile->first_name = $input['first_name'];
         $user_profile->last_name = $input['last_name'];
@@ -132,6 +134,7 @@ class AgentController extends Controller
         $countries = Country::get();
         $agent = User::find($id);
         $data['countries']=$countries;
+        $data['stores']=User:: where('user_type','store')->get();
         $data['agent']=$agent;
        // $data['states']=State::where('country_id',$agent->profile->country_id)->get();
        // $data['cities']=City::where('state_id',$agent->profile->state_id)->get();

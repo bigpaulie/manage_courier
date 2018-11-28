@@ -2,7 +2,6 @@
 
 @section('date-styles')
 
-    <link href='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css' rel='stylesheet' type='text/css'>
 @endsection
 
 @section('content')
@@ -26,9 +25,9 @@
     </header>
 
     @if (Session::has('message'))
-    <div class="alert alert-success">
-       <strong> {{ Session::get('message') }}</strong>
-    </div>
+        <div class="alert alert-success">
+            <strong> {{ Session::get('message') }}</strong>
+        </div>
     @endif
 
     <section class="panel">
@@ -36,14 +35,7 @@
             <div class="row">
 
 
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label class="control-label">Name</label>
-                        <select  class="form-control populate" id="userSelect" name="user_id">
 
-                        </select>
-                    </div>
-                </div>
 
                 <div class="col-md-3">
                     <div class="form-group">
@@ -88,14 +80,14 @@
     <section class="panel">
         <header class="panel-heading">
 
-                <a href="{{url(Auth::user()->user_type.'/expenses/create')}}" class="btn btn-primary pull-right">Create Expense</a>
-                <h2 class="panel-title">Manage Expenses</h2>
+            <a href="{{url(Auth::user()->user_type.'/expenses/create')}}" class="btn btn-primary pull-right">Create Expense</a>
+            <h2 class="panel-title">Manage Expenses</h2>
         </header>
         <div class="panel-body">
             <table class="table table-no-more table-bordered table-striped mb-none">
                 <thead>
                 <tr>
-                    <th>Store Name</th>
+
                     <th>Party Name</th>
                     <th>Amount</th>
                     <th class="hidden-xs hidden-sm">Expense Type</th>
@@ -109,7 +101,6 @@
 
 
                 <tr v-for="(expense, index) in expenses.data">
-                    <td data-title="Store Name">@{{expense.store.name}} (@{{expense.store.profile.company_name}})</td>
                     <td data-title="Party Name">@{{expense.party_name}}</td>
                     <td data-title="Amount" class="hidden-xs hidden-sm">@{{expense.amount}}</td>
                     <td data-title="Expense Type" class="text-right">@{{expense.expense_type.name}}</td>
@@ -120,7 +111,7 @@
 
                         {{--@if(Auth::user()->user_type == 'admin')--}}
                         {{--{!! Form::model($expense,['method' => 'DELETE', 'action' => ['ExpenseController@destroy', $expense->id ], 'id'=>'frmdeleteexpense_'.$expense->id ]) !!}--}}
-                          {{--<button class="delete-row" type="button" onclick="deleteExpense('{{$expense->id}}')"><i class="fa fa-trash-o"></i></button>--}}
+                        {{--<button class="delete-row" type="button" onclick="deleteExpense('{{$expense->id}}')"><i class="fa fa-trash-o"></i></button>--}}
                         {{--{!! Form::close() !!}--}}
                         {{--@endif--}}
 
@@ -145,45 +136,20 @@
     <script>
         function deleteExpense(expense_id){
 
-        var status= confirm('Are you sure want to delete this expense?');
-         if(status == true){
+            var status= confirm('Are you sure want to delete this expense?');
+            if(status == true){
 
-             event.preventDefault();
-             document.getElementById('frmdeleteexpense_'+expense_id).submit();
-             return true;
-         }else{
-             return false;
-         }
+                event.preventDefault();
+                document.getElementById('frmdeleteexpense_'+expense_id).submit();
+                return true;
+            }else{
+                return false;
+            }
 
 
         }
 
-        jQuery(document).ready(function($) {
 
-            $("#userSelect").select2({
-                placeholder: "Search Store Name",
-                allowClear: true,
-                minimumInputLength:2,
-                ajax: {
-                    url: "/api/get_user_name",
-                    type: "post",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            searchTerm: params.term // search term
-                        };
-                    },
-                    processResults: function (response) {
-                        return {
-                            results: response
-                        };
-                    },
-                    cache: true
-                }
-            });
-
-        });
 
         const oapp = new Vue({
             el:'#app',
@@ -193,11 +159,12 @@
 
                 from_date:"{{date('m/d/Y')}}",
                 end_date:"{{date('m/d/Y')}}",
+                user_id:"{{$user_id}}"
 
             },
             created(){
-
-                let searchURL = '/api/getexpenses?type=all';
+                let page_no =1;
+                let searchURL = '/api/getexpenses?page='+page_no+'&user_id='+this.user_id;
                 axios.get(searchURL).then(response => {
                     this.expenses = response.data.expense_data;
 
@@ -225,7 +192,7 @@
 
                 editExpense(id){
 
-                    window.location.href ="/admin/expenses/"+id+"/edit";
+                    window.location.href ="/store/expenses/"+id+"/edit";
                 },
 
                 getPaymentType:function(type){
