@@ -36,6 +36,24 @@
                 <div class="panel-body">
                    {{Form::open(['url' => 'admin/profile/'.$profile->id, 'method' => 'put'])}}
                         {{csrf_field()}}
+                    @if($profile->user_type == 'agent')
+                    <div class="form-group @if ($errors->has('store_id')) has-error  @endif">
+                        <label class="col-md-3 control-label" for="inputDefault">Store Name</label>
+                        <div class="col-md-6">
+                            <select name="store_id" class="form-control">
+                                <option id="">Select Store</option>
+                                @foreach($stores as $store)
+                                    <option value="{{$store->id}}" @if($store->id == $profile->profile->store_id) {{"selected"}} @endif>{{$store->name}} ({{$store->profile->company_name}})</option>
+                                @endforeach
+                            </select>
+
+                            @if ($errors->has('store_id'))
+                                <label for="company_name" class="error">{{ $errors->first('store_id') }}</label>
+                            @endif
+                        </div>
+                    </div>
+                    @endif
+
                     <div class="form-group @if ($errors->has('company_name')) has-error  @endif">
                         <label class="col-md-3 control-label" for="inputDefault">Company Name</label>
                         <div class="col-md-6">

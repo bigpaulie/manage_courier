@@ -55,6 +55,7 @@ class UserController extends Controller
         $profile = User::find($id);
         $countries = Country::get();
         $data['countries']=$countries;
+        $data['stores']=User:: where('user_type','store')->get();
         //$data['states']=State::where('country_id',$profile->profile->country_id)->get();
         //$data['cities']=City::where('state_id',$profile->profile->state_id)->get();
         $data['profile']=$profile;
@@ -94,6 +95,9 @@ class UserController extends Controller
         }
         $user_profile = User_profile::where('user_id',$id)->first();
         if($user_profile != null){
+            if($user->user_type == 'agent'){
+                $user_profile->store_id = $input['store_id'];
+            }
             $user_profile->company_name = $input['company_name'];
             $user_profile->first_name = $input['first_name'];
             $user_profile->last_name = $input['last_name'];
