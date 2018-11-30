@@ -1,6 +1,8 @@
 @extends('layouts.admin')
 @section('date-styles')
 {!! Html::style("/assets/vendor/bootstrap-fileupload/bootstrap-fileupload.min.css") !!}
+<link href='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css' rel='stylesheet' type='text/css'>
+
 
 @endsection
 
@@ -75,7 +77,9 @@
                 <div class="col-md-2">
                     <div class="form-group">
                         <label class="control-label">Agent Name</label>
-                        <input type="text"  class="form-control" name="agent_name" v-model="agent_name" v-on:keyup.enter="onEnter">
+                        <select  class="form-control populate" id="userSelect" name="user_id">
+
+                        </select>
                     </div>
                 </div>
             @endif
@@ -341,6 +345,29 @@
 
         jQuery(document).ready(function($) {
 
+            $("#userSelect").select2({
+                placeholder: "Search Store Name",
+                allowClear: true,
+                minimumInputLength:2,
+                ajax: {
+                    url: "/api/get_user_name",
+                    type: "post",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            searchTerm: params.term // search term
+                        };
+                    },
+                    processResults: function (response) {
+                        return {
+                            results: response
+                        };
+                    },
+                    cache: true
+                }
+            });
+
         });
 
         Vue.filter('capitalize', function (value) {
@@ -414,10 +441,11 @@
                 searchCouriers(page = 1){
 
                     this.filter_type="filter";
+                    var agent_id = $("#userSelect").val();
 
                     let searchURL = '/api/getCouriers?page='+page+'&type=filter&traking_number='+this.traking_number;
                     searchURL+='&from_date='+this.from_date+'&end_date='+this.end_date
-                    searchURL+='&agent_name='+this.agent_name+'&status_id='+this.status_id
+                    searchURL+='&agent_name='+agent_id+'&status_id='+this.status_id
                     searchURL+='&user_type='+this.user_type+'&user_id='+this.user_id
                     axios.get(searchURL).then(response => {
                         this.couriers = response.data.courier_data;
@@ -449,9 +477,10 @@
 
                 createCourierCsv(page=1){
 
+                    var agent_id = $("#userSelect").val();
                     let csvURL = '/admin/create_courier_csv?page='+page+'&type='+this.filter_type+'&traking_number='+this.traking_number;
                     csvURL+='&from_date='+this.from_date+'&end_date='+this.end_date
-                    csvURL+='&agent_name='+this.agent_name+'&status_id='+this.status_id
+                    csvURL+='&agent_name='+agent_id+'&status_id='+this.status_id
                     csvURL+='&user_type='+this.user_type+'&user_id='+this.user_id
                     window.location.href=csvURL;
 
