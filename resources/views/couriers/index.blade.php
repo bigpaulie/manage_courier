@@ -74,9 +74,9 @@
 
 
             @if(Auth::user()->user_type == 'admin')
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-group">
-                        <label class="control-label">Agent Name</label>
+                        <label class="control-label">Agent/Store Name</label>
                         <select  class="form-control populate" id="userSelect" name="user_id">
 
                         </select>
