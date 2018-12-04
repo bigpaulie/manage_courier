@@ -172,6 +172,14 @@
                                 <span>Couriers</span>
                             </a>
                         </li>
+
+                         <li @if($controller_name == 'agents')class="nav-active nav-expanded" @endif>
+                        <a href="/store/agents">
+                            <i class="fa fa-users" aria-hidden="true"></i>
+                            <span>Agents</span>
+                        </a>
+
+                    </li>
                         <li @if($controller_name == 'expenses')class="nav-active nav-expanded" @endif>
                             <a href="/store/expenses">
                                 <i class="fa fa-money" aria-hidden="true"></i>

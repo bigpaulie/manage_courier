@@ -89,6 +89,8 @@ Route::group(['middleware' => array('auth')], function() {
         Route::resource('expenses', 'ExpenseController');
         Route::resource('couriers', 'CourierController');
         Route::resource('reports', 'ReportController');
+        Route::resource('agents', 'AgentController');
+
 
 
     });

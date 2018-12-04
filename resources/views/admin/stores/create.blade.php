@@ -8,7 +8,7 @@
         <div class="right-wrapper pull-right">
             <ol class="breadcrumbs">
                 <li>
-                    <a href="index.html">
+                    <a href="javascript:void(0);">
                         <i class="fa fa-home"></i>
                     </a>
                 </li>
@@ -81,7 +81,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group @if ($errors->has('gender')) has-error  @endif">
+                       <!--  <div class="form-group @if ($errors->has('gender')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputSuccess">Gender</label>
                             <div class="col-md-6">
 
@@ -100,7 +100,7 @@
                             @if ($errors->has('gender'))
                                 <label for="gender" class="error">{{ $errors->first('gender') }}</label>
                             @endif
-                        </div>
+                        </div> -->
 
                         <div class="form-group @if ($errors->has('address')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">Address</label>
@@ -115,7 +115,7 @@
                         <div class="form-group @if ($errors->has('country_id')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">Country</label>
                             <div class="col-md-6">
-                                <select class="form-control mb-md" id="country_id" name="country_id" v-model="country_id" @change="getStates">
+                                <select class="form-control mb-md" id="country_id" name="country_id" v-model="country_id">
                                     <option value="">Select Country</option>
                                     <option  v-for="country in countries" :value="country.id">@{{country.name}}</option>
                                 </select>
@@ -128,10 +128,13 @@
                         <div class="form-group @if ($errors->has('state_id')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">State</label>
                             <div class="col-md-6">
-                                <select class="form-control mb-md" id="state_id" name="state_id" v-model="state_id" @change="getCities">
+                               <!--  <select class="form-control mb-md" id="state_id" name="state_id" v-model="state_id" @change="getCities">
                                     <option value="">Select State</option>
                                     <option  v-for="state in states" :value="state.id">@{{state.state_name}}</option>
-                                </select>
+                                </select> -->
+
+                                <input type="text" class="form-control" id="state_id" name="state_id" value="{{ old('state_id', 'Gujrat')}}" >
+
                                 @if ($errors->has('state_id'))
                                     <label for="state_id" class="error">{{ $errors->first('state_id') }}</label>
                                 @endif
@@ -142,10 +145,12 @@
                         <div class="form-group @if ($errors->has('city_id')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">City</label>
                             <div class="col-md-6">
-                                <select class="form-control mb-md" id="city_id" name="city_id">
+                               <!--  <select class="form-control mb-md" id="city_id" name="city_id">
                                     <option value="">Select City</option>
                                     <option  v-for="city in cities" :value="city.id">@{{city.city_name}}</option>
-                                </select>
+                                </select> -->
+                                <input type="text" class="form-control" id="city_id" name="city_id" value="{{old('city_id')}}">
+
                                 @if ($errors->has('city_id'))
                                     <label for="city_id" class="error">{{ $errors->first('city_id') }}</label>
                                 @endif
@@ -198,7 +203,7 @@
 
                 states:null,
                 cities:null,
-                country_id:"",
+                country_id:"{{old('country_id',$india_country_id)}}",
                 state_id:"",
             },
             created(){

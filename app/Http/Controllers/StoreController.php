@@ -40,6 +40,7 @@ class StoreController extends Controller
         $countries = Country::get();
 
         $data=['countries'=>$countries];
+        $data['india_country_id']= Country::where('code','IN')->first()->id;
         return view('admin.stores.create',$data);
     }
 
@@ -57,12 +58,12 @@ class StoreController extends Controller
             'last_name' => 'required',
             'email' => 'required|email|max:255|unique:users',
             'phone' => 'required',
-            'gender' => 'required',
+            //'gender' => 'required',
             'address' => 'required',
             'country_id' => 'required',
             'state_id' => 'required',
             'city_id' => 'required',
-            'zip_code' => 'required',
+           //'zip_code' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -91,7 +92,7 @@ class StoreController extends Controller
         $user_profile->last_name = $input['last_name'];
         $user_profile->phone = $input['phone'];
         $user_profile->address = $input['address'];
-        $user_profile->gender = $input['gender'];
+       // $user_profile->gender = $input['gender'];
         $user_profile->city_id = $input['city_id'];
         $user_profile->state_id = $input['state_id'];
         $user_profile->country_id = $input['country_id'];

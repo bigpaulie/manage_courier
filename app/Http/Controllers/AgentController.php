@@ -26,11 +26,25 @@ class AgentController extends Controller
     public function index()
     {
 
-        $agents= User::where('user_type','agent')
+       
+        $user_type = \Auth::user()->user_type;
+        if($user_type == 'admin'){
+            $agents= User::where('user_type','agent')
                      ->OrderBy('created_at','desc')
-                     ->paginate(10);
+                     ->paginate(50);
+        }else if($user_type == 'store'){
+
+             $agents= User::where('user_type','agent')
+                            ->whereHas('profile', function ($query) {
+                                            $query->where('store_id',\Auth::user()->id);
+                                        })
+                            ->OrderBy('created_at','desc')
+                     ->paginate(50);
+        }            
+        
 
         $data=['agents'=>$agents];
+
         return view('admin.agents.index',$data);
     }
 
@@ -44,6 +58,7 @@ class AgentController extends Controller
         $countries = Country::get();
         $data['countries']=$countries;
         $data['stores']=User:: where('user_type','store')->get();
+        $data['india_country_id']= Country::where('code','IN')->first()->id;
         return view('admin.agents.create',$data);
     }
 
@@ -65,12 +80,12 @@ class AgentController extends Controller
             'email' => 'required|email|max:255|unique:users',
             'unique_name' => 'required|unique:user_profiles',
             'phone' => 'required',
-            'gender' => 'required',
+          //  'gender' => 'required',
             'address' => 'required',
             'country_id' => 'required',
             'state_id' => 'required',
             'city_id' => 'required',
-            'zip_code' => 'required',
+           // 'zip_code' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -101,7 +116,7 @@ class AgentController extends Controller
         $user_profile->last_name = $input['last_name'];
         $user_profile->phone = $input['phone'];
         $user_profile->address = $input['address'];
-        $user_profile->gender = $input['gender'];
+        //$user_profile->gender = $input['gender'];
         $user_profile->city_id = $input['city_id'];
         $user_profile->state_id = $input['state_id'];
         $user_profile->country_id = $input['country_id'];

@@ -8,7 +8,7 @@
         <div class="right-wrapper pull-right">
             <ol class="breadcrumbs">
                 <li>
-                    <a href="index.html">
+                    <a href="javascript:void(0);">
                         <i class="fa fa-home"></i>
                     </a>
                 </li>
@@ -59,7 +59,7 @@
                                 <select name="store_id" class="form-control">
                                     <option id="">Select Store</option>
                                     @foreach($stores as $store)
-                                        <option value="{{$store->id}}">{{$store->name}} ({{$store->profile->company_name}})</option>
+                                        <option value="{{$store->id}}" @if($store->id == old('store_id')) {{"selected"}} @endif >{{$store->name}} ({{$store->profile->company_name}})</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('store_id'))
@@ -109,7 +109,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group @if ($errors->has('gender')) has-error  @endif">
+                        <!-- <div class="form-group @if ($errors->has('gender')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputSuccess">Gender</label>
                             <div class="col-md-6">
 
@@ -128,7 +128,7 @@
                             @if ($errors->has('gender'))
                                 <label for="gender" class="error">{{ $errors->first('gender') }}</label>
                             @endif
-                        </div>
+                        </div> -->
 
                         <div class="form-group @if ($errors->has('address')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">Address</label>
@@ -161,7 +161,7 @@
                                     {{--<option  v-for="state in states" :value="state.id">@{{state.state_name}}</option>--}}
                                 {{--</select>--}}
 
-                                <input type="text" class="form-control" id="state_id" name="state_id" value="{{old('state_id')}}">
+                                <input type="text" class="form-control" id="state_id" name="state_id" value="{{ old('state_id', 'Gujrat')}}" >
 
                             @if ($errors->has('state_id'))
                                     <label for="state_id" class="error">{{ $errors->first('state_id') }}</label>
@@ -231,7 +231,7 @@
                 pickup_charges: [{weight:0.0,amount:0.0}],
                 states:null,
                 cities:null,
-                country_id:"",
+                country_id:"{{old('country_id',$india_country_id)}}",
                 state_id:"",
             },
             created(){

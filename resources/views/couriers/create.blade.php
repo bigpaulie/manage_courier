@@ -8,7 +8,7 @@
         <div class="right-wrapper pull-right">
             <ol class="breadcrumbs">
                 <li>
-                    <a href="index.html">
+                    <a href="javascript:void(0);">
                         <i class="fa fa-home"></i>
                     </a>
                 </li>
@@ -37,7 +37,7 @@
                             <div class="form-group">
                                 <label class="col-sm-4 control-label">Self Address: </label>
                                 <div class="col-sm-8">
-                                    <input type="checkbox" v-model="self_address" name="self_address" class="checkbox" value="1" @click="fillUserData">
+                                    <input type="checkbox" v-model="self_address" @if(old('self_address') == 1) {{"checked"}} @endif name="self_address" class="checkbox" value="1" @click="fillUserData">
                                 </div>
                             </div>
                             <div class="form-group @if ($errors->has('s_name')) has-error  @endif">
@@ -350,7 +350,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-4 control-label">Pickup: </label>
                                     <div class="col-sm-8">
-                                            <input type="checkbox" name="courier_status" class="" value="pickup">
+                                            <input type="checkbox" name="courier_status" class="" value="pickup" @if('pickup' == old('courier_status')) {{"checked"}} @endif >
 
                                     </div>
                                 </div>
@@ -432,16 +432,26 @@
                 s_city:"",
                 r_states:null,
                 r_cities:null,
-                r_country:"",
+                r_country:"{{old('r_country')}}",
                 r_state:"",
-                self_address:false,
+                self_address:"{{old('self_address',false)}}",
                 s_states:@json($s_states),
                 s_cities:@json($s_cities),
 
 
             },
             created(){
-                //console.log(this.countries);
+               if(this.self_address){
+                         this.s_name = this.user_data.name;
+                         this.s_company = this.user_data.profile.company_name;
+                         this.s_address1 = this.user_data.profile.address;
+                         this.s_phone = this.user_data.profile.phone;
+                         this.s_zip_code = this.user_data.profile.zip_code;
+                         this.s_email = this.user_data.email;
+                         this.s_country = this.user_data.profile.country_id;
+                         this.s_state = this.user_data.profile.state_id;
+                         this.s_city = this.user_data.profile.city_id;
+                     }
             },
 
 
