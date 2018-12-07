@@ -104,7 +104,7 @@
                     <td data-title="Date">@{{ex.payment_date}} @{{ex.expense_date}}</td>
                     <td data-title="Payment Type">@{{ex.payment_by | capitalize}}</td>
 
-                    <td data-title="Payment(Cr.)"><span v-if="ex.tds">@{{ex.amount}}</span></td>
+                    <td data-title="Payment(Cr.)"><span v-if="ex.payment_date">@{{ex.amount}}</span></td>
                     <td data-title="TDS">@{{ex.tds}}</td>
                     <td data-title="Expense(Dr.)"><span v-if="ex.expense_type_id">@{{ex.amount}}</span></td>
                     <td></td>
