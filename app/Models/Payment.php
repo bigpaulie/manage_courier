@@ -14,4 +14,8 @@ class Payment extends Model
     public function agent(){
         return $this->belongsTo('App\Models\User','user_id','id');
     }
+
+     public function user(){
+        return $this->belongsTo('App\Models\User','user_id','id');
+    }
 }

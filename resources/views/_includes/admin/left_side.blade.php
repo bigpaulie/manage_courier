@@ -16,6 +16,7 @@
                 $current_routename =\Route::currentRouteName();
                 $route_arr = explode('.',$current_routename);
                 $controller_name = $route_arr[0];
+
                 $action_name = $route_arr[1];
 
                 $notification_count = \App\Models\Notification::where('status','unread')->count();
@@ -78,6 +79,13 @@
                         <a href="/admin/reports">
                             <i class="fa fa-file" aria-hidden="true"></i>
                             <span>Reports</span>
+                        </a>
+
+                    </li>
+                    <li @if($controller_name == 'payment_expense')class="nav-active nav-expanded" @endif>
+                        <a href="/admin/payment_expense">
+                            <i class="fa fa-file" aria-hidden="true"></i>
+                            <span>Payment/Expense Report</span>
                         </a>
 
                     </li>
@@ -193,6 +201,14 @@
                             </a>
 
                         </li>
+
+                        <li @if($controller_name == 'payment_expense')class="nav-active nav-expanded" @endif>
+                        <a href="/store/payment_expense">
+                            <i class="fa fa-file" aria-hidden="true"></i>
+                            <span>Payment/Expense Report</span>
+                        </a>
+
+                    </li>
 
 
                     </ul>

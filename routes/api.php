@@ -29,6 +29,11 @@ Route::get('/generate_report','ReportController@generateReport')->name('generate
 Route::get('/getpayments','PaymentController@getPayments')->name('getpayments');
 Route::get('/getexpenses','ExpenseController@getExpenses')->name('getexpenses');
 
+Route::get('/generate_payment_expense','ReportController@generatePaymentExpense')->name('generate_report');
+
+
+
+
 
 
 

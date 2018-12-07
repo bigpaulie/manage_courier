@@ -44,9 +44,10 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/create_courier_csv','CourierController@createCourierCsv')->name('createCourierCsv');
         Route::post('/import_courier_csv','CourierController@importCourierCSv')->name('couriers.import-csv');
         Route::get('/generate_barcode/{id}','CourierController@generateBarcode')->name('admin.generate_barcode');
+        Route::get('/payment_expense','ReportController@payment_expense')->name('payment_expense.payment_expense');
 
 
-
+        
         Route::resource('agents', 'AgentController');
         Route::resource('stores', 'StoreController');
         Route::resource('couriers', 'CourierController');
@@ -85,6 +86,8 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/profile/{id}', 'UserController@profile')->name('store.profile');
         Route::get('/change_password', 'UserController@change_password')->name('store.change_password');
         Route::get('/generate_barcode/{id}','CourierController@generateBarcode')->name('store.generate_barcode');
+        Route::get('/payment_expense','ReportController@payment_expense')->name('payment_expense.payment_expense');
+
 
         Route::resource('expenses', 'ExpenseController');
         Route::resource('couriers', 'CourierController');
