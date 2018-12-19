@@ -32,17 +32,19 @@
                 <div class="panel-body">
                     {!! Form::model($store,['method' => 'PATCH', 'action' => ['StoreController@update', $store->id ] ]) !!}
                     {{csrf_field()}}
-                        <div class="form-group @if ($errors->has('company_name')) has-error  @endif">
+                    <input type="hidden" name="user_profile_id" value="{{$store->profile->id}}">
+
+                    <div class="form-group @if ($errors->has('company_name')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">Company Name</label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control text-capitalize" id="company_name" name="company_name" value="{{$store->profile->company_name}}">
+                                <input type="text" class="form-control text-capitalize" id="company_name" name="company_name" value="{{$store->profile->company_name}}" disabled>
                                 @if ($errors->has('company_name'))
                                     <label for="company_name" class="error">{{ $errors->first('company_name') }}</label>
                                 @endif
                             </div>
                         </div>
                         <div class="form-group @if ($errors->has('first_name')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">First Name</label>
+                            <label class="col-md-3 control-label" for="inputDefault">First Name<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control text-capitalize" id="first_name" name="first_name" value="{{$store->profile->first_name}}">
                                 @if ($errors->has('first_name'))
@@ -52,7 +54,7 @@
                         </div>
 
                         <div class="form-group @if ($errors->has('last_name')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">Last Name</label>
+                            <label class="col-md-3 control-label" for="inputDefault">Last Name<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control text-capitalize" id="last_name" name="last_name" value="{{$store->profile->last_name}}">
                                 @if ($errors->has('last_name'))
@@ -62,7 +64,7 @@
                         </div>
 
                         <div class="form-group  @if ($errors->has('email')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">Email</label>
+                            <label class="col-md-3 control-label" for="inputDefault">Email<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control" id="email" name="email" value="{{$store->email}}">
                                 @if ($errors->has('email'))
@@ -72,7 +74,7 @@
                         </div>
 
                         <div class="form-group @if ($errors->has('phone')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">Phone</label>
+                            <label class="col-md-3 control-label" for="inputDefault">Phone<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control" id="phone" name="phone" value="{{$store->profile->phone}}">
                                 @if ($errors->has('phone'))
@@ -81,27 +83,27 @@
                             </div>
                         </div>
 
-                        <div class="form-group @if ($errors->has('gender')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputSuccess">Gender</label>
-                            <div class="col-md-6">
+                        {{--<div class="form-group @if ($errors->has('gender')) has-error  @endif">--}}
+                            {{--<label class="col-md-3 control-label" for="inputSuccess">Gender</label>--}}
+                            {{--<div class="col-md-6">--}}
 
-                                <div class="radio-custom checkbox-inline">
-                                    <input type="radio" id="maleg_ender" name="gender" value="Male" @if($store->profile->gender == 'Male') checked @endif>
-                                    <label for="maleg_ender">Male</label>
-                                </div>
+                                {{--<div class="radio-custom checkbox-inline">--}}
+                                    {{--<input type="radio" id="maleg_ender" name="gender" value="Male" @if($store->profile->gender == 'Male') checked @endif>--}}
+                                    {{--<label for="maleg_ender">Male</label>--}}
+                                {{--</div>--}}
 
-                                <div class="radio-custom checkbox-inline">
-                                    <input type="radio" id="female_gender" name="gender" value="Female" @if($store->profile->gender == 'Female') checked @endif>
-                                    <label for="female_gender">Female</label>
-                                </div>
-                            </div>
-                            @if ($errors->has('gender'))
-                                <label for="gender" class="error">{{ $errors->first('gender') }}</label>
-                            @endif
-                        </div>
+                                {{--<div class="radio-custom checkbox-inline">--}}
+                                    {{--<input type="radio" id="female_gender" name="gender" value="Female" @if($store->profile->gender == 'Female') checked @endif>--}}
+                                    {{--<label for="female_gender">Female</label>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                            {{--@if ($errors->has('gender'))--}}
+                                {{--<label for="gender" class="error">{{ $errors->first('gender') }}</label>--}}
+                            {{--@endif--}}
+                        {{--</div>--}}
 
                         <div class="form-group @if ($errors->has('address')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">Address</label>
+                            <label class="col-md-3 control-label" for="inputDefault">Address<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control" id="address" name="address" value="{{$store->profile->address}}">
                                 @if ($errors->has('address'))
@@ -111,9 +113,9 @@
                         </div>
 
                         <div class="form-group @if ($errors->has('country_id')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">Country</label>
+                            <label class="col-md-3 control-label" for="inputDefault">Country<span class="text-danger">*</span></label>
                             <div class="col-md-6">
-                                <select class="form-control mb-md" id="country_id" name="country_id" v-model="country_id" @change="getStates">
+                                <select class="form-control mb-md" id="country_id" name="country_id" v-model="country_id">
                                     <option value="0">Select Country</option>
                                     <option  v-for="country in countries" :value="country.id">@{{country.name}}</option>
                                 </select>
@@ -124,13 +126,11 @@
                         </div>
 
                         <div class="form-group @if ($errors->has('state_id')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">State</label>
+                            <label class="col-md-3 control-label" for="inputDefault">State<span class="text-danger">*</span></label>
                             <div class="col-md-6">
-                                <select class="form-control mb-md" id="state_id" name="state_id" v-model="state_id" @change="getCities">
-                                    <option value="0">Select State</option>
-                                    <option  v-for="state in states" :value="state.id">@{{state.state_name}}</option>
-                                </select>
-                                @if ($errors->has('state_id'))
+                                <input type="text" class="form-control" id="state_id" name="state_id" value="{{$store->profile->state_id}}" >
+
+                            @if ($errors->has('state_id'))
                                     <label for="state_id" class="error">{{ $errors->first('state_id') }}</label>
                                 @endif
                             </div>
@@ -138,14 +138,16 @@
 
 
                         <div class="form-group @if ($errors->has('city_id')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">City</label>
+                            <label class="col-md-3 control-label" for="inputDefault">City<span class="text-danger">*</span></label>
                             <div class="col-md-6">
-                                <select class="form-control mb-md" id="city_id" name="city_id" v-model="city_id">
-                                    <option value="0">Select City</option>
-                                    <option  v-for="city in cities" :value="city.id">@{{city.city_name}}</option>
+                                {{--<select class="form-control mb-md" id="city_id" name="city_id" v-model="city_id">--}}
+                                    {{--<option value="0">Select City</option>--}}
+                                    {{--<option  v-for="city in cities" :value="city.id">@{{city.city_name}}</option>--}}
 
-                                </select>
-                                @if ($errors->has('city_id'))
+                                {{--</select>--}}
+                                <input type="text" class="form-control" id="city_id" name="city_id" value="{{$store->profile->city_id}}">
+
+                            @if ($errors->has('city_id'))
                                     <label for="city_id" class="error">{{ $errors->first('city_id') }}</label>
                                 @endif
                             </div>

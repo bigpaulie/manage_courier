@@ -11,6 +11,8 @@ use App\Models\User;
 use App\Models\User_profile;
 use Illuminate\Support\Str;
 use App\Mail\WelcomeStore;
+use App\Mail\NewPassword;
+
 use Validator;
 
 class StoreController extends Controller
@@ -57,7 +59,7 @@ class StoreController extends Controller
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email|max:255|unique:users',
-            'phone' => 'required',
+            'phone' => 'required|unique:user_profiles',
             //'gender' => 'required',
             'address' => 'required',
             'country_id' => 'required',
@@ -142,18 +144,19 @@ class StoreController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $user_profile_id = $request->user_profile_id;
         $validator = Validator::make($request->all(), [
-            'company_name' => 'required',
+            //'company_name' => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email|max:255|unique:users,email,'.$id,
-            'phone' => 'required',
-            'gender' => 'required',
+            'phone' => 'required|unique:user_profiles,phone,'.$user_profile_id,
+           // 'gender' => 'required',
             'address' => 'required',
             'country_id' => 'required',
             'state_id' => 'required',
             'city_id' => 'required',
-            'zip_code' => 'required',
+           // 'zip_code' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -164,18 +167,33 @@ class StoreController extends Controller
 
         $input = $request->all();
         $user = User::find($id);
+        $old_email = $user->email;
         if($user != null){
             $user->email = $input['email'];
+            $password_update =0;
+            if($old_email != $input['email']){
+                $random = Str::random(4);
+                $random_password = 'store_'.$random;
+                $user->password = bcrypt($random_password);
+                $password_update =1;
+            }
             $user->save();
+            if($password_update == 1){
+                $user->user_password=$random_password;
+                \Mail::to($user->email)->send(new NewPassword($user));
+
+            }
+
+
         }
         $user_profile = User_profile::where('user_id',$id)->first();
         if($user_profile != null){
-            $user_profile->company_name = $input['company_name'];
+            //$user_profile->company_name = $input['company_name'];
             $user_profile->first_name = $input['first_name'];
             $user_profile->last_name = $input['last_name'];
             $user_profile->phone = $input['phone'];
             $user_profile->address = $input['address'];
-            $user_profile->gender = $input['gender'];
+            //$user_profile->gender = $input['gender'];
             $user_profile->city_id = $input['city_id'];
             $user_profile->state_id = $input['state_id'];
             $user_profile->country_id = $input['country_id'];

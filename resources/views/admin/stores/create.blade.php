@@ -33,7 +33,7 @@
                     <form action="{{route('stores.store')}}" class="form-horizontal form-bordered" method="POST">
                         {{csrf_field()}}
                         <div class="form-group  @if ($errors->has('company_name')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">Company Name</label>
+                            <label class="col-md-3 control-label" for="inputDefault">Company Name<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control text-capitalize" id="company_name" name="company_name" value="{{old('company_name')}}">
                                 @if ($errors->has('company_name'))
@@ -42,7 +42,7 @@
                             </div>
                         </div>
                         <div class="form-group @if ($errors->has('first_name')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">First Name</label>
+                            <label class="col-md-3 control-label" for="inputDefault">First Name<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control text-capitalize" id="first_name" name="first_name" value="{{old('first_name')}}">
                                 @if ($errors->has('first_name'))
@@ -52,7 +52,7 @@
                         </div>
 
                         <div class="form-group @if ($errors->has('last_name')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">Last Name</label>
+                            <label class="col-md-3 control-label" for="inputDefault">Last Name<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control text-capitalize" id="last_name" name="last_name" value="{{old('last_name')}}">
                                 @if ($errors->has('last_name'))
@@ -62,7 +62,7 @@
                         </div>
 
                         <div class="form-group @if ($errors->has('email')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">Email</label>
+                            <label class="col-md-3 control-label" for="inputDefault">Email<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control" id="email" name="email" value="{{old('email')}}">
                                 @if ($errors->has('email'))
@@ -72,7 +72,7 @@
                         </div>
 
                         <div class="form-group @if ($errors->has('phone')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">Phone</label>
+                            <label class="col-md-3 control-label" for="inputDefault">Phone<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control" id="phone" name="phone" value="{{old('phone')}}">
                                 @if ($errors->has('phone'))
@@ -103,7 +103,7 @@
                         </div> -->
 
                         <div class="form-group @if ($errors->has('address')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">Address</label>
+                            <label class="col-md-3 control-label" for="inputDefault">Address<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control" id="address" name="address" value="{{old('address')}}">
                                 @if ($errors->has('address'))
@@ -113,7 +113,7 @@
                         </div>
 
                         <div class="form-group @if ($errors->has('country_id')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">Country</label>
+                            <label class="col-md-3 control-label" for="inputDefault">Country<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                 <select class="form-control mb-md" id="country_id" name="country_id" v-model="country_id">
                                     <option value="">Select Country</option>
@@ -126,7 +126,7 @@
                         </div>
 
                         <div class="form-group @if ($errors->has('state_id')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">State</label>
+                            <label class="col-md-3 control-label" for="inputDefault">State<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                <!--  <select class="form-control mb-md" id="state_id" name="state_id" v-model="state_id" @change="getCities">
                                     <option value="">Select State</option>
@@ -143,7 +143,7 @@
 
 
                         <div class="form-group @if ($errors->has('city_id')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">City</label>
+                            <label class="col-md-3 control-label" for="inputDefault">City<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                <!--  <select class="form-control mb-md" id="city_id" name="city_id">
                                     <option value="">Select City</option>

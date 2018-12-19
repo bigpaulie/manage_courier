@@ -30,13 +30,15 @@
                     <h2 class="panel-title">{{$agent->name}}</h2>
                 </header>
                 <div class="panel-body">
-                    {!! Form::model($agent,['method' => 'PATCH', 'action' => ['AgentController@update', $agent->id ] ]) !!}
+                    {{Form::open(['url' => '/admin/agents/'.$agent->id, 'method' => 'PATCH'])}}
+
+                    {{--{!! Form::model($agent,['method' => 'PATCH', 'action' => ['AgentController@update', $agent->id ] ]) !!}--}}
                     {{csrf_field()}}
                     <input type="hidden" name="user_profile_id" value="{{$agent->profile->id}}">
                         <div class="form-group @if ($errors->has('unique_name')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">Unique Name</label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control text-capitalize"  id="unique_name" name="unique_name" value="{{$agent->profile->unique_name}}">
+                                <input type="text" class="form-control text-capitalize"  id="unique_name" name="unique_name" value="{{$agent->profile->unique_name}}" disabled>
                                 @if ($errors->has('unique_name'))
                                     <label for="unique_name" class="error">{{ $errors->first('unique_name') }}</label>
                                 @endif
@@ -44,9 +46,9 @@
                          </div>
 
                         <div class="form-group @if ($errors->has('company_name')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">Company Name</label>
+                            <label class="col-md-3 control-label" for="inputDefault">Company Name<span class="text-danger">*</span></label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control text-capitalize" id="company_name" name="company_name" value="{{$agent->profile->company_name}}">
+                                <input type="text" class="form-control text-capitalize" id="company_name" name="company_name" value="{{$agent->profile->company_name}}" >
                                 @if ($errors->has('company_name'))
                                     <label for="company_name" class="error">{{ $errors->first('company_name') }}</label>
                                 @endif
@@ -54,12 +56,12 @@
                         </div>
 
                     <div class="form-group  @if ($errors->has('store_id')) has-error  @endif">
-                        <label class="col-md-3 control-label" for="inputDefault">Store Name</label>
+                        <label class="col-md-3 control-label" for="inputDefault">Store Name<span class="text-danger">*</span></label>
                         <div class="col-md-6">
                             <select name="store_id" class="form-control">
                                 <option id="">Select Store</option>
                                 @foreach($stores as $store)
-                                    <option value="{{$store->id}}" @if($store->id == $agent->profile->store_id) {{selected}} @endif>{{$store->name}} ({{$store->profile->company_name}})</option>
+                                    <option value="{{$store->id}}" @if($store->id == $agent->profile->store_id) {{"selected"}} @endif>{{$store->name}} ({{$store->profile->company_name}})</option>
                                 @endforeach
                             </select>
                             @if ($errors->has('store_id'))
@@ -69,7 +71,7 @@
                     </div>
 
                     <div class="form-group @if ($errors->has('first_name')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">First Name</label>
+                            <label class="col-md-3 control-label" for="inputDefault">First Name<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control text-capitalize" id="first_name" name="first_name" value="{{$agent->profile->first_name}}">
                                 @if ($errors->has('first_name'))
@@ -79,7 +81,7 @@
                         </div>
 
                         <div class="form-group @if ($errors->has('last_name')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">Last Name</label>
+                            <label class="col-md-3 control-label" for="inputDefault">Last Name<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control text-capitalize" id="last_name" name="last_name" value="{{$agent->profile->last_name}}">
                                 @if ($errors->has('last_name'))
@@ -89,7 +91,7 @@
                         </div>
 
                         <div class="form-group  @if ($errors->has('email')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">Email</label>
+                            <label class="col-md-3 control-label" for="inputDefault">Email<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control" id="email" name="email" value="{{$agent->email}}">
                                 @if ($errors->has('email'))
@@ -99,7 +101,7 @@
                         </div>
 
                         <div class="form-group @if ($errors->has('phone')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">Phone</label>
+                            <label class="col-md-3 control-label" for="inputDefault">Phone<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control" id="phone" name="phone" value="{{$agent->profile->phone}}">
                                 @if ($errors->has('phone'))
@@ -108,27 +110,27 @@
                             </div>
                         </div>
 
-                        <div class="form-group @if ($errors->has('gender')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputSuccess">Gender</label>
-                            <div class="col-md-6">
+                        {{--<div class="form-group @if ($errors->has('gender')) has-error  @endif">--}}
+                            {{--<label class="col-md-3 control-label" for="inputSuccess">Gender</label>--}}
+                            {{--<div class="col-md-6">--}}
 
-                                <div class="radio-custom checkbox-inline">
-                                    <input type="radio" id="maleg_ender" name="gender" value="Male" @if($agent->profile->gender == 'Male') checked @endif>
-                                    <label for="maleg_ender">Male</label>
-                                </div>
+                                {{--<div class="radio-custom checkbox-inline">--}}
+                                    {{--<input type="radio" id="maleg_ender" name="gender" value="Male" @if($agent->profile->gender == 'Male') checked @endif>--}}
+                                    {{--<label for="maleg_ender">Male</label>--}}
+                                {{--</div>--}}
 
-                                <div class="radio-custom checkbox-inline">
-                                    <input type="radio" id="female_gender" name="gender" value="Female" @if($agent->profile->gender == 'Female') checked @endif>
-                                    <label for="female_gender">Female</label>
-                                </div>
-                            </div>
-                            @if ($errors->has('gender'))
-                                <label for="gender" class="error">{{ $errors->first('gender') }}</label>
-                            @endif
-                        </div>
+                                {{--<div class="radio-custom checkbox-inline">--}}
+                                    {{--<input type="radio" id="female_gender" name="gender" value="Female" @if($agent->profile->gender == 'Female') checked @endif>--}}
+                                    {{--<label for="female_gender">Female</label>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                            {{--@if ($errors->has('gender'))--}}
+                                {{--<label for="gender" class="error">{{ $errors->first('gender') }}</label>--}}
+                            {{--@endif--}}
+                        {{--</div>--}}
 
                         <div class="form-group @if ($errors->has('address')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">Address</label>
+                            <label class="col-md-3 control-label" for="inputDefault">Address<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control" id="address" name="address" value="{{$agent->profile->address}}">
                                 @if ($errors->has('address'))
@@ -138,7 +140,7 @@
                         </div>
 
                         <div class="form-group @if ($errors->has('country_id')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">Country</label>
+                            <label class="col-md-3 control-label" for="inputDefault">Country<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                 <select class="form-control mb-md" id="country_id" name="country_id" v-model="country_id">
                                     <option value="0">Select Country</option>
@@ -151,7 +153,7 @@
                         </div>
 
                         <div class="form-group @if ($errors->has('state_id')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">State</label>
+                            <label class="col-md-3 control-label" for="inputDefault">State<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                 {{--<select class="form-control mb-md" id="state_id" name="state_id" v-model="state_id" @change="getCities">--}}
                                     {{--<option value="0">Select State</option>--}}
@@ -168,7 +170,7 @@
 
 
                         <div class="form-group @if ($errors->has('city_id')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">City</label>
+                            <label class="col-md-3 control-label" for="inputDefault">City<span class="text-danger">*</span></label>
                             <div class="col-md-6">
                                 {{--<select class="form-control mb-md" id="city_id" name="city_id" v-model="city_id">--}}
                                     {{--<option value="0">Select City</option>--}}

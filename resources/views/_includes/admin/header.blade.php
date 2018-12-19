@@ -191,8 +191,8 @@
                     {{--<img src="assets/images/!logged-user.jpg" alt="Joseph Doe" class="img-circle" data-lock-picture="assets/images/!logged-user.jpg" />--}}
                 {{--</figure>--}}
                 <div class="profile-info" data-lock-name="John Doe" data-lock-email="johndoe@okler.com">
-                    <span class="name">{{ucfirst(Auth::user()->name)}} </span>
-                    <span class="role">{{ucfirst(Auth::user()->user_type)}}</span>
+                    <span class="name">{{ucfirst(Auth::user()->profile->company_name)}} </span>
+                    <span class="role">{{ucfirst(Auth::user()->name)}}</span>
                 </div>
 
                 <i class="fa custom-caret"></i>

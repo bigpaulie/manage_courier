@@ -38,17 +38,19 @@
                             <span>Couriers</span>
                         </a>
                     </li>
-                    <li @if($controller_name == 'agents')class="nav-active nav-expanded" @endif>
-                        <a href="/admin/agents">
-                            <i class="fa fa-users" aria-hidden="true"></i>
-                            <span>Agents</span>
-                        </a>
 
-                    </li>
                     <li @if($controller_name == 'stores')class="nav-active nav-expanded" @endif>
                         <a href="/admin/stores">
                             <i class="fa fa-tasks" aria-hidden="true"></i>
                             <span>Stores</span>
+                        </a>
+
+                    </li>
+
+                    <li @if($controller_name == 'agents')class="nav-active nav-expanded" @endif>
+                        <a href="/admin/agents">
+                            <i class="fa fa-users" aria-hidden="true"></i>
+                            <span>Agents</span>
                         </a>
 
                     </li>
