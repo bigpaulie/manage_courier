@@ -59,7 +59,7 @@
                         <label class="col-md-3 control-label" for="inputDefault">Store Name<span class="text-danger">*</span></label>
                         <div class="col-md-6">
                             <select name="store_id" class="form-control">
-                                <option id="">Select Store</option>
+                                <option value="">Select Store</option>
                                 @foreach($stores as $store)
                                     <option value="{{$store->id}}" @if($store->id == $agent->profile->store_id) {{"selected"}} @endif>{{$store->name}} ({{$store->profile->company_name}})</option>
                                 @endforeach
