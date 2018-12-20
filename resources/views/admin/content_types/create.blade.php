@@ -48,6 +48,17 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group @if ($errors->has('name')) has-error  @endif">
+                                    <label class="col-sm-4 control-label">Unit Type: </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="unit_type" value="{{old('unit_type')}}">
+
+                                        @if ($errors->has('unit_type'))
+                                            <label for="name" class="error">{{ $errors->first('unit_type') }}</label>
+                                        @endif
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
 

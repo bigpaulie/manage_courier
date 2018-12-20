@@ -38,7 +38,8 @@
                 <thead>
                 <tr>
                     <th>id</th>
-                    <th>Service Type</th>
+                    <th>Content Type</th>
+                    <th>Unit Type</th>
                     <th class="hidden-xs hidden-sm">Created</th>
                     <th class="text-right">Actions</th>
                 </tr>
@@ -48,7 +49,9 @@
 
                 <tr>
                     <td data-title="Id">{{$content_type->id}}</td>
-                    <td data-title="Expense Type" class="hidden-xs hidden-sm">{{$content_type->name}}</td>
+                    <td data-title="Content Type" class="hidden-xs hidden-sm">{{$content_type->name}}</td>
+                    <td data-title="Unit Type" class="hidden-xs hidden-sm">{{$content_type->unit_type}}</td>
+
                     <td data-title="Created" class="text-right">{{date('d-M-Y',strtotime($content_type->created_at))}}</td>
                     <td data-title="Actions" class="text-right actions">
                         {!! Form::model($content_type,['method' => 'DELETE', 'action' => ['ContenttypeController@destroy', $content_type->id ], 'id'=>'frmdeletcontenttype_'.$content_type->id ]) !!}

@@ -17,6 +17,10 @@ use App\Models\User;
 use App\Models\Courier_service;
 use App\Models\Courier_charge;
 use App\Models\Payment;
+use App\Models\Courier_box;
+use App\Models\Courier_box_item;
+
+
 
 
 
@@ -118,7 +122,7 @@ class CourierController extends Controller
         $shippment->courier_id = $courier_id;
         $shippment->package_type_id = $input['package_type_id'];
         $shippment->service_type_id = $input['service_type_id'];
-        $shippment->content_type_id = $input['content_type_id'];
+        //$shippment->content_type_id = $input['content_type_id'];
         $shippment->weight = $input['weight'];
         $shippment->carriage_value = $input['carriage_value'];
         $shippment->courier_status = isset($input['courier_status'])?$input['courier_status']:"drop";
@@ -135,7 +139,7 @@ class CourierController extends Controller
 
         $request->session()->flash('message', 'Courier has been added successfully!');
 
-        return redirect('/'.\Auth::user()->user_type.'/couriers');
+        return redirect('/'.\Auth::user()->user_type.'/couriers/box_details/'.$courier_id);
     }
 
     /**
@@ -932,5 +936,104 @@ class CourierController extends Controller
         $courier= Courier::find($id);
         $data['courier']=$courier;
         return view('couriers.barcode',$data);
+    }
+
+    public function boxDetails($id){
+
+        $courier= Courier::find($id);
+        if($courier != null){
+            $data['courier']=$courier;
+            $data['content_types']=Content_type::all();
+            $data['content_unints']=Content_type::pluck('unit_type', 'id')->toArray();
+            $data['no_of_boxes']=$courier->no_of_boxes;
+
+            $boxes =[];
+            for($i=1;$i<=$courier->no_of_boxes;$i++){
+                $items['items'][0] = ['item_name'=>"",'item_unit'=>null,'qty'=>null];
+                $boxes[$i]=$items;
+            }
+            $data['boxes']=$boxes;
+            return view('couriers.box_details',$data);
+        }else{
+            abort(404);
+        }
+
+    }
+
+    public function saveBoxDetails(Request $request){
+        $input = $request->all();
+        $courier_id =$input['courier_id'];
+        $courier= Courier::find($courier_id);
+
+
+        if($courier != null){
+
+            $courier_boxes = $input['box'];
+            $shippment_weight = $courier->shippment->weight;
+            $all_boxes_weight = $this->getAllBoxesWeight($courier_boxes);
+
+            if($shippment_weight == $all_boxes_weight){
+
+                foreach ($courier_boxes as $key=> $cb){
+                    $breadth = $cb['breadth'];
+                    $width = $cb['width'];
+                    $height = $cb['height'];
+                    $weight = $cb['weight'];
+                    $box_items = $cb['items'];
+
+                    $courier_box = new Courier_box();
+                    $courier_box->courier_id = $courier_id;
+                    $courier_box->box_name = "Box-".$key;
+                    $courier_box->breadth = $breadth;
+                    $courier_box->width = $width;
+                    $courier_box->height = $height;
+                    $courier_box->weight = $weight;
+                    $courier_box->save();
+                    $courier_box_id = $courier_box->id;
+
+                    foreach ($box_items as $item){
+                        $content_type_id = isset($item['content_type_id'])?$item['content_type_id']:"";
+                        if(!empty($content_type_id)){
+                            $unit_type = $item['unit_type'];
+                            $qty = $item['qty'];
+                            $courier_box_item = new Courier_box_item();
+                            $courier_box_item->courier_id = $courier_id;
+                            $courier_box_item->courier_box_id = $courier_box_id;
+                            $courier_box_item->content_type_id = $content_type_id;
+                            $courier_box_item->unit_type = $unit_type;
+                            $courier_box_item->qty = $qty;
+                            $courier_box_item->save();
+                        }
+
+                    }
+
+
+                }
+                $request->session()->flash('message', 'Courier has been added successfully!');
+                return redirect('/'.\Auth::user()->user_type.'/couriers');
+
+            }else{
+                $request->session()->flash('error_message', 'Courier weight and all boxes weight does not equal!');
+                return redirect('/'.\Auth::user()->user_type.'/couriers/box_details/'.$courier_id);
+            }
+
+
+
+        }else{
+            abort(404);
+        }
+
+
+
+    }
+
+    public function getAllBoxesWeight($courier_boxes){
+        $total_weight=0;
+
+        foreach ($courier_boxes as $box){
+            $total_weight+=$box['weight'];
+        }
+        return $total_weight;
+
     }
 }

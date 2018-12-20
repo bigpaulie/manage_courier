@@ -41,7 +41,7 @@
                                 </div>
                             </div>
                             <div class="form-group @if ($errors->has('s_name')) has-error  @endif">
-                                <label class="col-sm-4 control-label">Name: </label>
+                                <label class="col-sm-4 control-label">Name:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
                                     <input type="text" name="s_name" class="form-control text-capitalize" value="{{old('s_name')}}" v-model="s_name">
                                     @if ($errors->has('s_name'))
@@ -50,7 +50,7 @@
                                 </div>
                             </div>
                             <div class="form-group @if ($errors->has('s_company')) has-error  @endif">
-                                <label class="col-sm-4 control-label">Company Name: </label>
+                                <label class="col-sm-4 control-label">Company Name:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
                                     <input type="text" name="s_company" class="form-control text-capitalize" value="{{old('s_company')}}" v-model="s_company">
                                     @if ($errors->has('s_company'))
@@ -60,7 +60,7 @@
                             </div>
 
                             <div class="form-group @if ($errors->has('s_address1')) has-error  @endif">
-                                <label class="col-sm-4 control-label">Addess1: </label>
+                                <label class="col-sm-4 control-label">Addess1:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
                                     <input type="text" name="s_address1" class="form-control" value="{{old('s_address1')}}" v-model="s_address1">
                                     @if ($errors->has('s_address1'))
@@ -76,7 +76,7 @@
                                 </div>
                             </div>
                             <div class="form-group @if ($errors->has('s_country')) has-error  @endif">
-                                <label class="col-sm-4 control-label">Country: </label>
+                                <label class="col-sm-4 control-label">Country:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
                                     <select class="form-control mb-md" id="s_country" name="s_country" v-model="s_country" >
                                         <option value="">Select Country</option>
@@ -89,7 +89,7 @@
                             </div>
 
                             <div class="form-group @if ($errors->has('s_state')) has-error  @endif">
-                                <label class="col-sm-4 control-label">State: </label>
+                                <label class="col-sm-4 control-label">State:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
                                     {{--<select class="form-control mb-md" id="s_state" name="s_state" v-model="s_state" @change="getCities('sender')">--}}
                                         {{--<option value="">Select State</option>--}}
@@ -105,7 +105,7 @@
                             </div>
 
                             <div class="form-group @if ($errors->has('s_city')) has-error  @endif">
-                                <label class="col-sm-4 control-label">City: </label>
+                                <label class="col-sm-4 control-label">City:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
                                     {{--<select class="form-control mb-md" id="s_city" name="s_city" v-model="s_city">--}}
                                         {{--<option value="">Select City</option>--}}
@@ -178,7 +178,7 @@
 
 
                             <div class="form-group @if ($errors->has('r_name')) has-error  @endif">
-                                <label class="col-sm-4 control-label">Name: </label>
+                                <label class="col-sm-4 control-label">Name:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
                                     <input type="text" name="r_name" class="form-control text-capitalize" value="{{old('r_name')}}">
                                     @if ($errors->has('r_name'))
@@ -187,7 +187,7 @@
                                 </div>
                             </div>
                             <div class="form-group @if ($errors->has('r_company')) has-error  @endif">
-                                <label class="col-sm-4 control-label">Company Name: </label>
+                                <label class="col-sm-4 control-label">Company Name:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
                                     <input type="text" name="r_company" class="form-control text-capitalize" value="{{old('r_company')}}">
                                     @if ($errors->has('r_company'))
@@ -197,7 +197,7 @@
                             </div>
 
                             <div class="form-group @if ($errors->has('r_address1')) has-error  @endif">
-                                <label class="col-sm-4 control-label">Addess1: </label>
+                                <label class="col-sm-4 control-label">Addess1:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
                                     <input type="text" name="r_address1" class="form-control" value="{{old('r_address1')}}">
                                     @if ($errors->has('r_address1'))
@@ -214,7 +214,7 @@
                             </div>
 
                             <div class="form-group @if ($errors->has('r_country')) has-error @endif">
-                                <label class="col-sm-4 control-label">Country: </label>
+                                <label class="col-sm-4 control-label">Country:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
                                     <select class="form-control mb-md" id="r_country" name="r_country" v-model="r_country">
                                         <option value="">Select Country</option>
@@ -227,7 +227,7 @@
                             </div>
 
                             <div class="form-group @if ($errors->has('r_state')) has-error @endif">
-                                <label class="col-sm-4 control-label">State: </label>
+                                <label class="col-sm-4 control-label">State:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
                                     {{--<select class="form-control mb-md" id="r_state" name="r_state" v-model="r_state" @change="getCities('reciver')">--}}
                                         {{--<option value="">Select State</option>--}}
@@ -242,7 +242,7 @@
                             </div>
 
                             <div class="form-group @if ($errors->has('r_city')) has-error @endif">
-                                <label class="col-sm-4 control-label">City: </label>
+                                <label class="col-sm-4 control-label">City:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
                                     {{--<select class="form-control mb-md" id="r_city" name="r_city" >--}}
                                         {{--<option value="">Select City</option>--}}
@@ -307,23 +307,22 @@
                             <div class="col-md-6">
 
                                 <div class="form-group">
-                                    <label class="col-sm-4 control-label">Package Type: </label>
+                                    <label class="col-sm-4 control-label">Package Type:<span class="text-danger">*</span> </label>
                                     <div class="col-sm-8">
                                         {!! Form::select('package_type_id', $package_types, old('package_type_id'), ['class'=>'form-control mb-md','placeholder' => 'Select Package Type','required']); !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-4 control-label">Service Type: </label>
+                                    <label class="col-sm-4 control-label">Service Type:<span class="text-danger">*</span> </label>
                                     <div class="col-sm-8">
                                         {!! Form::select('service_type_id', $service_types, old('service_type_id'), ['class'=>'form-control mb-md','placeholder' => 'Select Service Type','required']); !!}
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-4 control-label">Content type: </label>
+                                    <label class="col-sm-4 control-label">No of Boxes:<span class="text-danger">*</span> </label>
                                     <div class="col-sm-8">
-                                        {!! Form::select('content_type_id', $content_types, old('content_type_id'), ['class'=>'form-control mb-md','placeholder' => 'Select Content Type','required']); !!}
-
+                                        <input type="number" min="1" name="no_of_boxes" class="form-control" required value="{{old('no_of_boxes')}}">
                                     </div>
                                 </div>
 
@@ -332,7 +331,7 @@
                             <div class="col-md-6">
 
                                 <div class="form-group">
-                                    <label class="col-sm-4 control-label">Weight: </label>
+                                    <label class="col-sm-4 control-label">Weight:<span class="text-danger">*</span> </label>
                                     <div class="col-sm-8">
                                         <div class="input-group mb-md">
                                             <input type="text" name="weight"  required class="form-control" value="{{old('weight')}}" />
@@ -341,17 +340,18 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-4 control-label">Carriage Value: </label>
+                                    <label class="col-sm-4 control-label">Carriage Value:<span class="text-danger">*</span> </label>
                                     <div class="col-sm-8">
-                                        <input type="number" name="carriage_value" class="form-control" required value="{{old('carriage_value')}}">
+                                        <input type="number" min="1" name="carriage_value" class="form-control" required value="{{old('carriage_value')}}">
                                     </div>
                                 </div>
+
+
 
                                 <div class="form-group">
                                     <label class="col-sm-4 control-label">Pickup: </label>
                                     <div class="col-sm-8">
                                             <input type="checkbox" name="courier_status" class="" value="pickup" @if('pickup' == old('courier_status')) {{"checked"}} @endif >
-
                                     </div>
                                 </div>
 
@@ -398,7 +398,7 @@
         </div>
 
         <footer class="panel-footer center">
-            <button class="btn btn-primary">Submit</button>
+            <button class="btn btn-primary">Next</button>
         </footer>
     </form>
 

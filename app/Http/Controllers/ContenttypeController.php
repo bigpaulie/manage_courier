@@ -39,6 +39,7 @@ class ContenttypeController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
+            'unit_type' => 'required',
 
         ]);
 
@@ -88,6 +89,7 @@ class ContenttypeController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
+            'unit_type' => 'required',
 
         ]);
 
@@ -101,6 +103,7 @@ class ContenttypeController extends Controller
         $content_type = Content_type::find($id);
         if($content_type != null){
             $content_type->name = $input['name'];
+            $content_type->unit_type = $input['unit_type'];
             $content_type->save();
         }
         $request->session()->flash('message', 'Content Type has been updated successfully!');
