@@ -273,6 +273,8 @@ class PaymentController extends Controller
         $payment->amount = $input['amount'];
         $payment->tds = $input['tds'];
         $payment->remark = $input['remark'];
+        $payment->created_by = \Auth::user()->id;
+        $payment->created_user_type = \Auth::user()->user_type;
         if($request->payment_by == 'cash'){
             $payment->reciver_name = $input['receiver_cash_name'];
         }
