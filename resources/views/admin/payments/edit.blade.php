@@ -43,7 +43,7 @@
                                 <div class="col-md-6">
 
                                     <div class="form-group @if ($errors->has('user_id')) has-error @endif">
-                                        <label class="col-sm-4 control-label">Agent Name: </label>
+                                        <label class="col-sm-4 control-label">Agent Name:<span class="text-danger">*</span> </label>
                                         <div class="col-sm-8">
 
                                             <select  class="form-control populate" id="agentSelect" name="user_id">
@@ -55,7 +55,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group @if ($errors->has('amount')) has-error @endif">
-                                        <label class="col-sm-4 control-label">Payment Amount: </label>
+                                        <label class="col-sm-4 control-label">Payment Amount:<span class="text-danger">*</span> </label>
                                         <div class="col-sm-8">
                                             <input type="text" class="form-control" name="amount" value="{{$payment->amount}}">
 
@@ -66,7 +66,7 @@
                                     </div>
 
                                     <div class="form-group @if ($errors->has('payment_by')) has-error @endif">
-                                        <label class="col-sm-4 control-label">Payment By: </label>
+                                        <label class="col-sm-4 control-label">Payment By:<span class="text-danger">*</span> </label>
                                         <div class="col-sm-8">
                                             {!! Form::select('payment_by', $payment_types, 'cash', ['class'=>'form-control mb-md','placeholder' => 'Select Payment by','v-model'=>'payment_type','@change'=>'showPaymentDetails']); !!}
                                             @if ($errors->has('payment_by'))
@@ -83,7 +83,7 @@
                                 <div class="col-md-6">
 
                                     <div class="form-group @if ($errors->has('payment_date')) has-error @endif">
-                                        <label class="col-sm-4 control-label">Payment Date: </label>
+                                        <label class="col-sm-4 control-label">Payment Date:<span class="text-danger">*</span> </label>
                                         <div class="col-sm-8">
                                             <input type="text" data-plugin-datepicker  name="payment_date" class="form-control" value="{{date('m/d/Y',strtotime($payment->payment_date))}}">
 
@@ -134,7 +134,7 @@
                                 <div class="col-md-6">
 
                                     <div class="form-group @if ($errors->has('receiver_cash_name')) has-error @endif">
-                                        <label class="col-sm-4 control-label">Name: </label>
+                                        <label class="col-sm-4 control-label">Name:<span class="text-danger">*</span> </label>
                                         <div class="col-sm-8">
                                             <input type="text" class="form-control" name="receiver_cash_name" value="{{$payment->reciver_name}}">
                                             @if ($errors->has('receiver_cash_name'))
@@ -154,7 +154,7 @@
                                 <div class="col-md-6">
 
                                     <div class="form-group @if ($errors->has('cheque_no')) has-error @endif">
-                                        <label class="col-sm-4 control-label">Cheque No: </label>
+                                        <label class="col-sm-4 control-label">Cheque No:<span class="text-danger">*</span> </label>
                                         <div class="col-sm-8">
                                             <input type="text" class="form-control" name="cheque_no" value="{{$payment->cheque_no}}">
                                             @if ($errors->has('cheque_no'))
@@ -208,7 +208,7 @@
                                 <div class="col-md-6">
 
                                     <div class="form-group @if ($errors->has('transaction_id')) has-error @endif">
-                                        <label class="col-sm-4 control-label">Transaction ID: </label>
+                                        <label class="col-sm-4 control-label">Transaction ID:<span class="text-danger">*</span> </label>
                                         <div class="col-sm-8">
                                             <input type="text" class="form-control" name="transaction_id" value="{{$payment->transaction_id}}">
 
@@ -292,15 +292,23 @@
 
     <script type="text/javascript">
 
+        var user_type = "{{$user_type}}";
+        var logged_user_id = "{{$logged_user_id}}";
+
         jQuery(document).ready(function($) {
 
+            if(user_type == 'admin'){
+                var apiUrl = "/api/get_user_name";
+            }else if(user_type == 'store'){
+                var apiUrl = "/api/get_store_agent?user_store_id="+logged_user_id;
+            }
 
             $("#agentSelect").select2({
                 placeholder: "Select a Agent Name",
                 allowClear: true,
                 minimumInputLength:2,
                 ajax: {
-                    url: "/api/get_user_name",
+                    url: apiUrl,
                     type: "post",
                     dataType: 'json',
                     delay: 250,

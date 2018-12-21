@@ -18,7 +18,11 @@ class PaymentController extends Controller
     {
 
         $data['payment_types']=['cheque'=>'Cheque','cash'=>'Cash','net_banking'=>'Net Banking'];
-        return view('admin.payments.index',$data);
+        $data['user_type']= \Auth::user()->user_type;
+        $data['logged_user_id'] = \Auth::user()->id;
+
+            return view('admin.payments.index',$data);
+
     }
 
 
@@ -29,13 +33,23 @@ class PaymentController extends Controller
         $from_date = isset($input['from_date'])?date('Y-m-d',strtotime($input['from_date'])):'';
         $end_date = isset($input['end_date'])?date('Y-m-d',strtotime($input['end_date'])):'';
         $type = isset($input['type'])?$input['type']:'';
+        $user_type = $input['user_type'];
+
+        $where=[];
+
+        if($user_type == 'store'){
+            $user_store_id = $input['user_store_id'];
+            $where[] = ['payments.created_by', $user_store_id];
+        }
         if($user_id > 0){
             $where[] = ['payments.user_id', $user_id];
 
         }
 
         if($type == 'all'){
-         $payments= Payment::with('agent')->OrderBy('created_at','desc');
+           $payments= Payment::with('agent')
+                                ->where($where)
+                                ->OrderBy('created_at','desc');
         }
 
         else if( $user_id > 0 && $from_date !="" && $end_date != ""){
@@ -48,8 +62,8 @@ class PaymentController extends Controller
         }else{
 
             $payments= Payment::with('agent')->OrderBy('updated_at','desc')
-                ->whereDate('payment_date','>=', $from_date)
-                ->whereDate('payment_date', '<=',$end_date);
+                            ->whereDate('payment_date','>=', $from_date)
+                            ->whereDate('payment_date', '<=',$end_date);
 
         }
 
@@ -71,6 +85,8 @@ class PaymentController extends Controller
     {
         $data['banks']=Bank::pluck('name', 'id')->toArray();
         $data['payment_types']=['cheque'=>'Cheque','cash'=>'Cash','net_banking'=>'Net Banking'];
+        $data['user_type']= \Auth::user()->user_type;
+        $data['logged_user_id'] = \Auth::user()->id;
         return view('admin.payments.create',$data);
     }
 
@@ -123,7 +139,8 @@ class PaymentController extends Controller
         $validator = Validator::make($request->all(),$fields_array );
 
         if ($validator->fails()) {
-            return redirect()->route('payments.create')
+
+              return redirect('/'.\Auth::user()->user_type.'/payments/create')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -138,6 +155,8 @@ class PaymentController extends Controller
         $payment->amount = $input['amount'];
         $payment->tds = $input['tds'];
         $payment->remark = $input['remark'];
+        $payment->created_by = \Auth::user()->id;
+        $payment->created_user_type = \Auth::user()->user_type;
         if($request->payment_by == 'cash'){
             $payment->reciver_name = $input['receiver_cash_name'];
         }
@@ -157,7 +176,7 @@ class PaymentController extends Controller
 
         $request->session()->flash('message', 'Payment has been added successfully!');
 
-        return redirect()->route('payments.index');
+        return redirect('/'.\Auth::user()->user_type.'/payments');
     }
 
     /**
@@ -184,6 +203,8 @@ class PaymentController extends Controller
         $data['banks']=Bank::pluck('name', 'id')->toArray();
         $data['payment_types']=['cheque'=>'Cheque','cash'=>'Cash','net_banking'=>'Net Banking'];
         $data['payment']=$payment;
+        $data['user_type']= \Auth::user()->user_type;
+        $data['logged_user_id'] = \Auth::user()->id;
 
         return view('admin.payments.edit',$data);
     }
@@ -236,7 +257,8 @@ class PaymentController extends Controller
         $validator = Validator::make($request->all(),$fields_array );
 
         if ($validator->fails()) {
-            return redirect()->route('payments.create')
+
+            return redirect('/'.\Auth::user()->user_type.'/payments/'.$id.'/edit')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -270,7 +292,7 @@ class PaymentController extends Controller
 
         $request->session()->flash('message', 'Payment has been updated successfully!');
 
-        return redirect()->route('payments.index');
+        return redirect('/'.\Auth::user()->user_type.'/payments');
     }
 
     /**
@@ -283,6 +305,6 @@ class PaymentController extends Controller
     {
         Payment::where('id',$id)->delete();
         \Session::flash('message', 'Payment has been deleted successfully!');
-        return redirect()->route('payments.index');
+        return redirect('/'.\Auth::user()->user_type.'/payments');
     }
 }

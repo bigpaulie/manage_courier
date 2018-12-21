@@ -28,6 +28,8 @@ Route::post('/get_user_name','UserController@getUserName')->name('get_user_name'
 Route::get('/generate_report','ReportController@generateReport')->name('generate_report');
 Route::get('/getpayments','PaymentController@getPayments')->name('getpayments');
 Route::get('/getexpenses','ExpenseController@getExpenses')->name('getexpenses');
+Route::post('/get_store_agent','UserController@getStoreAgent')->name('get_store_agent');
+
 
 Route::get('/generate_payment_expense','ReportController@generatePaymentExpense')->name('generate_report');
 

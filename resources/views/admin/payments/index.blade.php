@@ -74,7 +74,7 @@
 
 
                 <div class="col-md-3">
-                    <div class="form-group">
+                    <div class="form-group" style="margin-top: 25px;">
                         <button type="button" class="btn btn-success" @click="searchPayments"><i class="fa fa-search"></i> Search</button>
                     </div>
                 </div>
@@ -88,7 +88,7 @@
     <section class="panel">
         <header class="panel-heading">
 
-                <a href="{{route('payments.create')}}" class="btn btn-primary pull-right">Create Payment</a>
+                <a href="{{url(Auth::user()->user_type.'/payments/create')}}" class="btn btn-primary pull-right">Create Payment</a>
                 <h2 class="panel-title">Manage Payments</h2>
         </header>
         <div class="panel-body">
@@ -143,12 +143,21 @@
 
         jQuery(document).ready(function($) {
 
+            var user_type = "{{$user_type}}";
+            var logged_user_id = "{{$logged_user_id}}";
+
+            if(user_type == 'admin'){
+                var apiUrl = "/api/get_user_name";
+            }else if(user_type == 'store'){
+                var apiUrl = "/api/get_store_agent?user_store_id="+logged_user_id;
+            }
+
             $("#userSelect").select2({
                 placeholder: "Search User Name",
                 allowClear: true,
                 minimumInputLength:2,
                 ajax: {
-                    url: "/api/get_user_name",
+                    url: apiUrl,
                     type: "post",
                     dataType: 'json',
                     delay: 250,
@@ -179,11 +188,20 @@
                 payment_types: @json($payment_types),
                 from_date:"{{date('m/d/Y')}}",
                 end_date:"{{date('m/d/Y')}}",
+                user_type:"{{$user_type}}",
+                logged_user_id:"{{$logged_user_id}}"
 
             },
             created(){
+                if(this.user_type == "admin"){
+                    var searchURL = '/api/getpayments?type=all&user_type='+this.user_type;
 
-                let searchURL = '/api/getpayments?type=all';
+                }else if(this.user_type == "store"){
+
+                    var searchURL = '/api/getpayments?type=all&user_type='+this.user_type+'&user_store_id='+this.logged_user_id;
+                }
+
+
                     axios.get(searchURL).then(response => {
                         this.payments = response.data.payment_data;
 
@@ -199,8 +217,16 @@
                     var user_id = $("#userSelect").val();
                     var page_no =1;
 
-                    let searchURL = '/api/getpayments?page='+page_no+'&user_id='+user_id;
-                    searchURL+='&from_date='+this.from_date+'&end_date='+this.end_date
+                    if(this.user_type == "admin"){
+
+                         searchURL = '/api/getpayments?page='+page_no+'&user_id='+user_id+'&user_type='+this.user_type;
+                        searchURL+='&from_date='+this.from_date+'&end_date='+this.end_date
+
+                    } else if(this.user_type == "store"){
+                         searchURL = '/api/getpayments?page='+page_no+'&user_id='+user_id+'&user_type='+this.user_type;
+                        searchURL+='&from_date='+this.from_date+'&end_date='+this.end_date+'&user_store_id='+this.logged_user_id;
+                    }
+
 
                     axios.get(searchURL).then(response => {
                         this.payments = response.data.payment_data;

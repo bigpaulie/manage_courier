@@ -190,6 +190,14 @@
                         </a>
 
                     </li>
+
+                        <li @if($controller_name == 'payments')class="nav-active nav-expanded" @endif>
+                            <a href="/store/payments">
+                                <i class="fa fa-dollar" aria-hidden="true"></i>
+                                <span>Payments</span>
+                            </a>
+
+                        </li>
                         <li @if($controller_name == 'expenses')class="nav-active nav-expanded" @endif>
                             <a href="/store/expenses">
                                 <i class="fa fa-money" aria-hidden="true"></i>
