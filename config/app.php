@@ -162,6 +162,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Wilgucki\Csv\CsvServiceProvider::class,
         Milon\Barcode\BarcodeServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
     ],
 
@@ -217,6 +218,7 @@ return [
         'CsvWriter' => Wilgucki\Csv\Facades\Writer::class,
         'DNS1D' => Milon\Barcode\Facades\DNS1DFacade::class,
         'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
     ],
 

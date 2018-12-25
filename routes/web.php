@@ -25,6 +25,11 @@ Route::get('/welcome_agent', function () {
    // return view('emails.agents.welcome')->with('user',$user);
 });
 
+Route::get('/test', function () {
+    $courier = \App\Models\Courier::find(25);
+    return view('exports.courier')->with('courier',$courier);
+});
+
 
 Auth::routes();
 
@@ -47,8 +52,9 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/payment_expense','ReportController@payment_expense')->name('payment_expense.payment_expense');
         Route::get('/couriers/box_details/{id}', 'CourierController@boxDetails')->name('couriers.box_details');
         Route::post('/save_courier_boxes', 'CourierController@saveBoxDetails');
-
-
+        Route::post('/manifest/create_manifest', 'ManifestController@createManifest');
+        Route::post('/manifest/save_manifest', 'ManifestController@saveManifest');
+        Route::get('/courier_report/{id}','CourierController@courierReport')->name('courierReport');
 
 
         Route::resource('agents', 'AgentController');
@@ -57,6 +63,7 @@ Route::group(['middleware' => array('auth')], function() {
         Route::resource('expenses', 'ExpenseController');
         Route::resource('payments', 'PaymentController');
         Route::resource('reports', 'ReportController');
+        Route::resource('manifest', 'ManifestController');
 
 
         // Master Routes
@@ -67,6 +74,7 @@ Route::group(['middleware' => array('auth')], function() {
         Route::resource('content_types', 'ContenttypeController');
         Route::resource('courier_services', 'CourierServiceController');
         Route::resource('banks', 'BankController');
+        Route::resource('vendors', 'VendorController');
 
 
 
@@ -79,6 +87,7 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/change_password', 'UserController@change_password')->name('agent.change_password');
         Route::get('/generate_barcode/{id}','CourierController@generateBarcode')->name('agent.generate_barcode');
         Route::get('/couriers/box_details/{id}', 'CourierController@boxDetails')->name('couriers.box_details');
+        Route::get('/courier_report/{id}','CourierController@courierReport')->name('courierReport');
 
 
         Route::resource('couriers', 'CourierController');
@@ -92,6 +101,7 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/generate_barcode/{id}','CourierController@generateBarcode')->name('store.generate_barcode');
         Route::get('/payment_expense','ReportController@payment_expense')->name('payment_expense.payment_expense');
         Route::get('/couriers/box_details/{id}', 'CourierController@boxDetails')->name('couriers.box_details');
+        Route::get('/courier_report/{id}','CourierController@courierReport')->name('courierReport');
 
 
         Route::resource('expenses', 'ExpenseController');

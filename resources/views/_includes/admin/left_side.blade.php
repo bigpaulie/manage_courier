@@ -91,7 +91,15 @@
                         </a>
 
                     </li>
-                    <?php $nav_array = ['expense_types','status','package_types','service_types', 'content_types','courier_services','banks']; ?>
+
+                    <li @if($controller_name == 'manifest')class="nav-active nav-expanded" @endif>
+                        <a href="/admin/manifest">
+                            <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                            <span>Manifest</span>
+                        </a>
+
+                    </li>
+                    <?php $nav_array = ['expense_types','status','package_types','service_types', 'content_types','courier_services','banks','vendors']; ?>
 
                     <li class="nav-parent @if(in_array($controller_name, $nav_array))nav-expanded nav-active @endif">
                         <a>
@@ -135,6 +143,11 @@
                             <li @if($controller_name == 'courier_services')class="nav-active" @endif>
                                 <a href="/admin/courier_services">
                                     Courier Services
+                                </a>
+                            </li>
+                            <li @if($controller_name == 'vendors')class="nav-active" @endif>
+                                <a href="/admin/vendors">
+                                    Vendors
                                 </a>
                             </li>
 

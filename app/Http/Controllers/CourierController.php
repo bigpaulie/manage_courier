@@ -19,13 +19,8 @@ use App\Models\Courier_charge;
 use App\Models\Payment;
 use App\Models\Courier_box;
 use App\Models\Courier_box_item;
-
-
-
-
-
-
-
+use App\Exports\CourierExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 
 
@@ -1036,4 +1031,18 @@ class CourierController extends Controller
         return $total_weight;
 
     }
+
+   public function courierReport($id){
+
+       $courier= Courier::find($id);
+       $t="courier_".time().".xlsx";
+       if($courier != null){
+           // $courier_unique_name = $courier->unique_name;
+           return Excel::download(new CourierExport($courier), $t);
+
+       }else {
+           abort(404);
+       }
+    }
+
 }

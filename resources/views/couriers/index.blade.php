@@ -226,15 +226,15 @@
 
                     </td>
                     <td data-title="Status" class="text-right hidden-xs hidden-sm">
-                        @if(Auth::user()->user_type == 'admin')
-                        <select class="form-control" v-bind:style="{ color:courier.status.color_code  }" v-model="courier.status.id" @change="createCharge(courier)" >
-                            <option value="">Select Status</option>
-                            <option v-for=" (status, key) in status_master" :value="status.id" v-bind:style="{ color:status.color_code  }">@{{ status.name }}</option>
-                        </select>
-                        @endif
-                        @if(Auth::user()->user_type == 'agent' || Auth::user()->user_type == 'store')
-                                <span v-bind:style="{ color:courier.status.color_code  }">@{{ courier.status.name }}</span>
-                        @endif
+                        {{--@if(Auth::user()->user_type == 'admin')--}}
+                        {{--<select class="form-control" v-bind:style="{ color:courier.status.color_code  }" v-model="courier.status.id" @change="createCharge(courier)" >--}}
+                            {{--<option value="">Select Status</option>--}}
+                            {{--<option v-for=" (status, key) in status_master" :value="status.id" v-bind:style="{ color:status.color_code  }">@{{ status.name }}</option>--}}
+                        {{--</select>--}}
+                        {{--@endif--}}
+
+                        <span v-bind:style="{ color:courier.status.color_code  }">@{{ courier.status.name }}</span>
+
                     </td>
                     <td data-title="Shipped">
                         <span v-if="courier.courier_charge != null && courier.courier_charge.courier_service != null">@{{courier.courier_charge.courier_service.name | exists }}</span>
@@ -255,6 +255,7 @@
 
                         <a href="javascript:void(0);" @click="editCourier(courier.id)" class=""><i class="fa fa-pencil"></i></a>
                         <a href="javascript:void(0);" @click="generateBarocode(courier.id)" class=""><i class="fa fa-barcode"></i></a>
+                        <a href="javascript:void(0);" @click="courierReport(courier.id)" class=""><i class="fa fa-file-excel-o"></i></a>
 
 
                     </td>
@@ -473,6 +474,9 @@
                 generateBarocode(id){
                     window.location.href ="/"+this.user_type+"/generate_barcode/"+id;
 
+                },
+                courierReport(id){
+                    window.location.href ="/"+this.user_type+"/courier_report/"+id;
                 },
 
                 createCourierCsv(page=1){
