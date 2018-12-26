@@ -24,7 +24,7 @@
     <section class="panel">
         <header class="panel-heading">
 
-            <a href="{{route('manifest.create')}}" class="btn btn-primary pull-right">Create Manifest</a>
+            <a href="{{url(Auth::user()->user_type.'/manifest/create')}}" class="btn btn-primary pull-right">Create Manifest</a>
 
             <h2 class="panel-title">Manage Manifest</h2>
         </header>
@@ -32,7 +32,10 @@
             <table class="table table-no-more table-bordered table-striped mb-none">
                 <thead>
                 <tr>
-                    <th >Id</th>
+                    <th>Id</th>
+                    @if(Auth::user()->user_type == 'admin')
+                         <th>Created By</th>
+                    @endif
                     <th>Vendor Name</th>
                     <th>Manifest Contents</th>
                     <th>Created</th>
@@ -44,7 +47,10 @@
                 <tbody>
                  @foreach($manifests as $manifest)
                      <tr>
-                         <td>{{$manifest->unique_name}}</td>
+                         <td><a href="javascript:void(0);">{{$manifest->unique_name}}</a></td>
+                         @if(Auth::user()->user_type == 'admin')
+                         <td>{{$manifest->store->name}} ({{$manifest->store->profile->company_name}})</td>
+                         @endif
                          <td>{{$manifest->vendor->name}}</td>
                          <td>
                              <ul>

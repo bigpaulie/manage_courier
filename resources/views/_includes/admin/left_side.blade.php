@@ -217,6 +217,14 @@
                                 <span>Expenses</span>
                             </a>
                         </li>
+
+                        <li @if($controller_name == 'manifest')class="nav-active nav-expanded" @endif>
+                            <a href="/store/manifest">
+                                <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                                <span>Manifest</span>
+                            </a>
+
+                        </li>
                         <li @if($controller_name == 'reports')class="nav-active nav-expanded" @endif>
                             <a href="/store/reports">
                                 <i class="fa fa-file" aria-hidden="true"></i>

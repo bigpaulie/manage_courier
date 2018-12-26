@@ -8,7 +8,7 @@ use App\Models\Status;
 use App\Models\Vendor;
 use App\Models\Manifest;
 use App\Models\Manifest_item;
-
+use App\Models\User;
 use Session;
 use Validator;
 
@@ -18,8 +18,17 @@ class ManifestController extends Controller
 
     public function index(){
 
+        if(\Auth::user()->user_type == 'admin'){
 
-        $manifests=Manifest::get();
+            $manifests=Manifest::get();
+        }
+        if(\Auth::user()->user_type == 'store'){
+
+            $logged_user_id = \Auth::user()->id;
+            $manifests=Manifest::where('created_by',$logged_user_id)->get();
+        }
+
+
         $data['manifests'] =$manifests;
         Session::forget('manifest_data');
         return view('admin.manifest.index',$data);
@@ -33,10 +42,32 @@ class ManifestController extends Controller
     public function create()
     {
         $status_id = Status::where('code_name',"pending")->first()->id;
+
+        $user_type = \Auth::user()->user_type;
         $courier_joins = Courier::with(['agent','status','receiver_country']);
-        $couriers= $courier_joins
-            ->where('status_id',$status_id)
-            ->OrderBy('updated_at','desc')->get();
+        if($user_type == 'admin'){
+            $couriers= $courier_joins
+                ->where('status_id',$status_id)
+                ->OrderBy('updated_at','desc')->get();
+        }else if($user_type == 'store'){
+
+            $agents_id= User::where('user_type','agent')
+                ->whereHas('profile', function ($query) {
+                    $query->where('store_id',\Auth::user()->id);
+                })->pluck('id')->toArray();
+
+
+            $agents_id = array_prepend($agents_id, \Auth::user()->id);
+
+            $couriers= $courier_joins
+                ->where('status_id',$status_id)
+                ->whereIn('user_id',$agents_id)
+                ->OrderBy('updated_at','desc')->get();
+        }
+
+
+
+
         $data['vendors']=Vendor::pluck('name','id')->toArray();
         $data['couriers'] =$couriers;
        // dd(Session::get('manifest_data'));
@@ -98,7 +129,9 @@ class ManifestController extends Controller
 
         $request->session()->put('manifest_data', $manifest_data);
 
-        return redirect()->route('manifest.create');
+       // return redirect()->route('manifest.create');
+
+        return redirect('/'.\Auth::user()->user_type.'/manifest/create');
 
 
     }
@@ -112,7 +145,7 @@ class ManifestController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('manifest.create')
+            return redirect('/'.\Auth::user()->user_type.'/manifest/create')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -125,6 +158,8 @@ class ManifestController extends Controller
             $session_bulk_items = isset($manifest_data['bulk_items'])?$manifest_data['bulk_items']:"";
             $manifest = new Manifest();
             $manifest->vendor_id = $input['vendor_id'];
+            $manifest->created_by = \Auth::user()->id;
+            $manifest->created_user_type = \Auth::user()->user_type;
             $manifest->unique_name=$this->getManifestUniqueName();
             $manifest->courier_ids=implode(",",$courier_ids);
             $manifest->content=json_encode($manifest_data);
@@ -160,10 +195,10 @@ class ManifestController extends Controller
                $courier->save();
             }
             $request->session()->flash('message', 'Manifest has been added successfully!');
-            return redirect()->route('manifest.index');
+            return redirect('/'.\Auth::user()->user_type.'/manifest');
         }else{
             $request->session()->flash('error_message', 'Please Create Manifest');
-            return redirect()->route('manifest.create');
+            return redirect('/'.\Auth::user()->user_type.'/manifest/create');
         }
 
     }

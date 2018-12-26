@@ -3,9 +3,14 @@
 <body>
 <table border="1" width="100%" >
     <tr>
-        <td style="color: red; vertical-align: center" colspan="2"><b>INV NO: {{$courier->unique_name}}</b></td>
+        <td style="color: red; vertical-align: center" colspan="2">
+            <b>INV NO: {{$courier->unique_name}}</b>
+        </td>
     </tr>
-    <tr ><td colspan="8" style="vertical-align: center;text-align: center;font-weight: bold;" >INVOICE</td></tr>
+    <tr>
+        <td colspan="3">&nbsp;</td>
+        <td colspan="5"><b>INVOICE</b></td>
+    </tr>
     <tr>
         <td colspan="4">
             <b>SHIPPER:</b>
@@ -136,8 +141,79 @@
     </tr>
     <tr>
         <td>&nbsp;</td>
+        <td colspan="5" style="text-align: center">"UNSOLICITED GIFT - FROM INDIVIDUAL TO INDIVIDUAL"</td>
+
+        <td>US$</td>
+        <td>US$</td>
     </tr>
-    "UNSOLICITED GIFT - FROM INDIVIDUAL TO INDIVIDUAL"
+
+    <tr>
+        <td>&nbsp;</td>
+        <td colspan="3">&nbsp;</td>
+        <td><b>KGS</b></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+    </tr>
+
+    <?php $courier_boxes = $courier->courier_boxes; ?>
+     @foreach($courier_boxes as $key=> $cb)
+      <tr>
+          <td style="text-align: center"><b>Box - {{$key+1}}</b></td>
+          <td>&nbsp;</td>
+          <td colspan="6">&nbsp;</td>
+      </tr>
+    <tr>
+        <td><b>{{$cb->breadth}}*{{$cb->width}}*{{$cb->height}}</b></td>
+        <td colspan="7">&nbsp;</td>
+    </tr>
+       <?php $courier_box_items = $cb->courier_box_items; ?>
+
+        @foreach($courier_box_items as $key=> $cbi)
+
+            <tr>
+                <td></td>
+                <td><b>{{$cbi->content_type->name}}</b></td>
+                <td colspan="3">&nbsp;</td>
+                <td>{{$cbi->qty}}</td>
+                <td></td>
+                <td></td>
+            </tr>
+        @endforeach
+        <tr>
+            <td colspan="8">&nbsp;</td>
+        </tr>
+
+     @endforeach
+
+    <tr>
+        <td colspan="8">&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan="8">THE VALUE IS DECLARED FOR THE CUSTOM PURPOSE ONLY.</td>
+    </tr>
+    <tr>
+        <td colspan="8">&nbsp;</td>
+    </tr>
+
+    <tr>
+        <td><b>FOR,</b></td>
+        <td colspan="4">&nbsp;</td>
+        <td><b>TOTAL US$</b></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan="8">&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan="8">&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan="8"><b>AUTHORISED SIGNATORY</b></td>
+    </tr>
+
+
 </table>
 </body>
 </html>

@@ -66,4 +66,8 @@ class Courier extends Model
     public function receiver_city(){
         return $this->belongsTo('App\Models\City','r_city','id');
     }
+    public function courier_boxes(){
+        return $this->hasMany('App\Models\Courier_box','courier_id')->with('courier_box_items');
+    }
+
 }

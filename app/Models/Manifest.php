@@ -16,4 +16,8 @@ class Manifest extends Model
     public function manifest_items(){
         return $this->hasMany('App\Models\Manifest_item','manifest_id');
     }
+
+    public function store(){
+        return $this->belongsTo('App\Models\User','created_by','id')->with('profile');
+    }
 }
