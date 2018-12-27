@@ -27960,10 +27960,6 @@ Vue.component('pagination', __webpack_require__(167));
 Vue.component('vue-bootstrap-typeahead', __WEBPACK_IMPORTED_MODULE_2_vue_bootstrap_typeahead___default.a);
 
 Vue.use(__WEBPACK_IMPORTED_MODULE_0_vue_bootstrap_datetimepicker___default.a);
-//Vue.use(VueBootstrapTypeahead);
-
-
-//Vue.component('date-picker', VueBootstrapDatetimePicker);
 
 /***/ }),
 /* 139 */
