@@ -21,7 +21,6 @@
     },
     "dependencies": {
         "laravel-vue-pagination": "^2.1.0",
-        "uiv": "^0.27.0",
         "vue-bootstrap-datetimepicker": "^5.0.1",
         "vue-bootstrap-typeahead": "^0.2.6"
     }
