@@ -56,6 +56,14 @@
         .capital{
             text-transform: capitalize;
         }
+        .phone_typeahead div{
+            width: 340px !important;
+        }
+
+        .mfp-content {
+            width:500px;
+            height:300px;
+        }
     </style>
 
 @yield('styles')

@@ -77,11 +77,11 @@ class CourierController extends Controller
     public function store(Request $request)
     {
 
-        $validator = Validator::make($request->all(), [
+       $validator = Validator::make($request->all(), [
             's_name' => 'required',
             's_company' => 'required',
             's_address1' => 'required',
-            //'s_phone' => 'required',
+            's_phone' => 'required',
             's_country' => 'required',
             's_state' => 'required',
             's_city' => 'required',
@@ -1043,6 +1043,30 @@ class CourierController extends Controller
        }else {
            abort(404);
        }
+    }
+
+    public function getSenderPhone(Request $request){
+        $input = $request->all();
+        $search_key = $input['q'];
+
+       $sender_phones =  Courier::where('s_phone','like',"%{$search_key}%")
+                            ->groupBy('s_phone')
+                            ->get();
+        return response()->json($sender_phones);
+
+
+
+    }
+
+    public function getRecipientAddress(Request $request){
+
+        $input = $request->all();
+        $search_key = $input['q'];
+
+        $recipient_details =  Courier::with('receiver_country')->where('s_phone','like',"%{$search_key}%")
+                            ->groupBy('r_name')
+                            ->get();
+        return response()->json($recipient_details);
     }
 
 }

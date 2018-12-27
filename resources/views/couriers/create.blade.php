@@ -1,4 +1,6 @@
 @extends('layouts.admin')
+@section('date-styles')
+@endsection
 
 @section('content')
 
@@ -40,6 +42,39 @@
                                     <input type="checkbox" v-model="self_address" @if(old('self_address') == 1) {{"checked"}} @endif name="self_address" class="checkbox" value="1" @click="fillUserData">
                                 </div>
                             </div>
+
+                            <div class="form-group @if ($errors->has('s_phone')) has-error  @endif">
+                                <label class="col-sm-4 control-label">Phone:<span class="text-danger">*</span> </label>
+                                <div class="col-sm-8">
+                                    {{--<input type="text" name="s_phone" class="form-control" value="{{old('s_phone')}}" v-model="s_phone">--}}
+
+                                    <input type="hidden" name="s_phone" id="senderPhone">
+                                    <vue-bootstrap-typeahead
+                                            v-model="s_phone"
+
+
+                                            :data="senderPhones"
+                                            :serializer="item => item.s_phone"
+                                            @hit="selectedPhone = $event"
+                                            class="phone_typeahead"
+                                            style="width: 330px;"
+                                    >
+
+                                        <template slot="suggestion" slot-scope="{ data, htmlText }">
+                                            <div class="d-flex align-items-center">
+
+                                                <div style="width: 100%">@{{data.s_phone}} <b>(@{{data.s_name}} - @{{data.s_company}})</b></div>
+                                            </div>
+                                        </template>
+
+                                    </vue-bootstrap-typeahead>
+
+                                    @if ($errors->has('s_phone'))
+                                        <label for="s_phone" class="error">{{ $errors->first('s_phone') }}</label>
+                                    @endif
+                                </div>
+                            </div>
+
                             <div class="form-group @if ($errors->has('s_name')) has-error  @endif">
                                 <label class="col-sm-4 control-label">Name:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
@@ -91,10 +126,7 @@
                             <div class="form-group @if ($errors->has('s_state')) has-error  @endif">
                                 <label class="col-sm-4 control-label">State:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
-                                    {{--<select class="form-control mb-md" id="s_state" name="s_state" v-model="s_state" @change="getCities('sender')">--}}
-                                        {{--<option value="">Select State</option>--}}
-                                        {{--<option  v-for="state in s_states" :value="state.id">@{{state.state_code}}</option>--}}
-                                    {{--</select>--}}
+
 
                                     <input type="text" name="s_state" class="form-control" value="{{old('s_state')}}" v-model="s_state">
 
@@ -107,12 +139,7 @@
                             <div class="form-group @if ($errors->has('s_city')) has-error  @endif">
                                 <label class="col-sm-4 control-label">City:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
-                                    {{--<select class="form-control mb-md" id="s_city" name="s_city" v-model="s_city">--}}
-                                        {{--<option value="">Select City</option>--}}
-                                        {{--<option  v-for="city in s_cities" :value="city.id">@{{city.city_name}}</option>--}}
-                                    {{--</select>--}}
-
-                                    <input type="text" name="s_city" class="form-control" value="{{old('s_city')}}" v-model="s_city">
+                                  <input type="text" name="s_city" class="form-control" value="{{old('s_city')}}" v-model="s_city">
 
                                 @if ($errors->has('s_city'))
                                         <label for="s_city" class="error">{{ $errors->first('s_city') }}</label>
@@ -131,15 +158,6 @@
                             {{--</div>--}}
 
 
-                            <div class="form-group @if ($errors->has('s_phone')) has-error  @endif">
-                                <label class="col-sm-4 control-label">Phone: </label>
-                                <div class="col-sm-8">
-                                    <input type="text" name="s_phone" class="form-control" value="{{old('s_phone')}}" v-model="s_phone">
-                                    @if ($errors->has('s_phone'))
-                                        <label for="s_phone" class="error">{{ $errors->first('s_phone') }}</label>
-                                    @endif
-                                </div>
-                            </div>
 
                             <div class="form-group @if ($errors->has('s_email')) has-error  @endif">
                                 <label class="col-sm-4 control-label">Email: </label>
@@ -180,7 +198,7 @@
                             <div class="form-group @if ($errors->has('r_name')) has-error  @endif">
                                 <label class="col-sm-4 control-label">Name:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
-                                    <input type="text" name="r_name" class="form-control text-capitalize" value="{{old('r_name')}}">
+                                    <input type="text" name="r_name" v-model="r_name" class="form-control text-capitalize" value="{{old('r_name')}}">
                                     @if ($errors->has('r_name'))
                                         <label for="r_name" class="error">{{ $errors->first('r_name') }}</label>
                                     @endif
@@ -189,7 +207,7 @@
                             <div class="form-group @if ($errors->has('r_company')) has-error  @endif">
                                 <label class="col-sm-4 control-label">Company Name:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
-                                    <input type="text" name="r_company" class="form-control text-capitalize" value="{{old('r_company')}}">
+                                    <input type="text" name="r_company" v-model="r_company" class="form-control text-capitalize" value="{{old('r_company')}}">
                                     @if ($errors->has('r_company'))
                                         <label for="r_company" class="error">{{ $errors->first('r_company') }}</label>
                                     @endif
@@ -199,7 +217,7 @@
                             <div class="form-group @if ($errors->has('r_address1')) has-error  @endif">
                                 <label class="col-sm-4 control-label">Addess1:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
-                                    <input type="text" name="r_address1" class="form-control" value="{{old('r_address1')}}">
+                                    <input type="text" name="r_address1" v-model="r_address1" class="form-control" value="{{old('r_address1')}}">
                                     @if ($errors->has('r_address1'))
                                         <label for="r_address1" class="error">{{ $errors->first('r_address1') }}</label>
                                     @endif
@@ -209,14 +227,14 @@
                             <div class="form-group">
                                 <label class="col-sm-4 control-label">Addess2: </label>
                                 <div class="col-sm-8">
-                                    <input type="text" name="r_address2" class="form-control" value="{{old('r_address2')}}">
+                                    <input type="text" name="r_address2" v-model="r_address2" class="form-control" value="{{old('r_address2')}}">
                                 </div>
                             </div>
 
                             <div class="form-group @if ($errors->has('r_country')) has-error @endif">
                                 <label class="col-sm-4 control-label">Country:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
-                                    <select class="form-control mb-md" id="r_country" name="r_country" v-model="r_country">
+                                    <select class="form-control mb-md" id="r_country" v-model="r_country" name="r_country" v-model="r_country">
                                         <option value="">Select Country</option>
                                         <option  v-for="country in countries" :value="country.id">@{{country.name}}</option>
                                     </select>
@@ -229,11 +247,8 @@
                             <div class="form-group @if ($errors->has('r_state')) has-error @endif">
                                 <label class="col-sm-4 control-label">State:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
-                                    {{--<select class="form-control mb-md" id="r_state" name="r_state" v-model="r_state" @change="getCities('reciver')">--}}
-                                        {{--<option value="">Select State</option>--}}
-                                        {{--<option  v-for="rstate in r_states" :value="rstate.id">@{{rstate.state_code}}</option>--}}
-                                    {{--</select>--}}
-                                    <input type="text" name="r_state" class="form-control" value="{{old('r_state')}}" >
+
+                                    <input type="text" name="r_state" class="form-control" v-model="r_state" value="{{old('r_state')}}" >
 
                                 @if ($errors->has('r_state'))
                                         <label for="r_state" class="error">{{ $errors->first('r_state') }}</label>
@@ -244,12 +259,7 @@
                             <div class="form-group @if ($errors->has('r_city')) has-error @endif">
                                 <label class="col-sm-4 control-label">City:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
-                                    {{--<select class="form-control mb-md" id="r_city" name="r_city" >--}}
-                                        {{--<option value="">Select City</option>--}}
-                                        {{--<option  v-for="r_city in r_cities" :value="r_city.id">@{{r_city.city_name}}</option>--}}
-                                    {{--</select>--}}
-
-                                    <input type="text" name="r_city" class="form-control" value="{{old('r_city')}}">
+                                    <input type="text" name="r_city" v-model="r_city" class="form-control" value="{{old('r_city')}}">
 
                                 @if ($errors->has('r_city'))
                                         <label for="r_city" class="error">{{ $errors->first('r_city') }}</label>
@@ -260,7 +270,7 @@
                             <div class="form-group @if ($errors->has('r_zip_code')) has-error @endif">
                                 <label class="col-sm-4 control-label">Zip Code: </label>
                                 <div class="col-sm-8">
-                                    <input type="text" name="r_zip_code" class="form-control" value="{{old('r_zip_code')}}">
+                                    <input type="text" name="r_zip_code" v-model="r_zip_code" class="form-control" value="{{old('r_zip_code')}}">
                                     @if ($errors->has('r_zip_code'))
                                         <label for="r_zip_code" class="error">{{ $errors->first('r_zip_code') }}</label>
                                     @endif
@@ -270,7 +280,7 @@
                             <div class="form-group @if ($errors->has('r_phone')) has-error @endif">
                                 <label class="col-sm-4 control-label">Phone: </label>
                                 <div class="col-sm-8">
-                                    <input type="text" name="r_phone" class="form-control" value="{{old('r_phone')}}">
+                                    <input type="text" name="r_phone" v-model="r_phone" class="form-control" value="{{old('r_phone')}}">
                                     @if ($errors->has('r_phone'))
                                         <label for="r_phone" class="error">{{ $errors->first('r_phone') }}</label>
                                     @endif
@@ -282,7 +292,7 @@
                             <div class="form-group @if ($errors->has('r_email')) has-error @endif">
                                 <label class="col-sm-4 control-label">Email: </label>
                                 <div class="col-sm-8">
-                                    <input type="text" name="r_email" class="form-control" value="{{old('r_email')}}">
+                                    <input type="text" name="r_email" v-model="r_email" class="form-control" value="{{old('r_email')}}">
                                     @if ($errors->has('r_email'))
                                         <label for="r_email" class="error">{{ $errors->first('r_email') }}</label>
                                     @endif
@@ -402,7 +412,7 @@
         </footer>
     </form>
 
-
+    @include('couriers.recipient_model')
     <!-- end: page -->
 
 @endsection
@@ -411,13 +421,16 @@
 
     <script type="text/javascript">
 
+
         jQuery(document).ready(function($) {
 
         });
 
         const oapp = new Vue({
             el:'#app',
+
             data:{
+
                 countries:@json($countries),
                 user_data:@json($user_data),
                 s_name:"",
@@ -430,6 +443,14 @@
                 s_country:"",
                 s_state:"",
                 s_city:"",
+                r_name:"",
+                r_company:"",
+                r_address1:"",
+                r_address2:"",
+                r_phone:"",
+                r_zip_code:"",
+                r_email:"",
+                r_city:"",
                 r_states:null,
                 r_cities:null,
                 r_country:"{{old('r_country')}}",
@@ -437,6 +458,11 @@
                 self_address:"{{old('self_address',false)}}",
                 s_states:@json($s_states),
                 s_cities:@json($s_cities),
+                senderPhones:[],
+                repicipentAddress:[],
+                selectedPhone:null,
+                selectedRecipient:null,
+
 
 
             },
@@ -452,6 +478,41 @@
                          this.s_state = this.user_data.profile.state_id;
                          this.s_city = this.user_data.profile.city_id;
                      }
+            },
+
+            watch: {
+                // When the query value changes, fetch new results from
+                // the API - in practice this action should be debounced
+                s_phone(newQuery) {
+                    axios.get(`/api/get_sender_phone?q=${newQuery}`)
+                        .then((res) => {
+                        this.senderPhones = res.data;
+                })
+                    $('#senderPhone').val(newQuery);
+                },
+                selectedPhone(obj){
+                    console.log(obj);
+                    this.s_name = obj.s_name;
+                    this.s_company = obj.s_company;
+                    this.s_address1 = obj.s_address1;
+                    this.s_email = obj.s_email;
+                    this.s_country = obj.s_country;
+                    this.s_state = obj.s_state;
+                    this.s_city = obj.s_city;
+
+                    axios.get(`/api/get_recipient_address?q=${obj.s_phone}`)
+                        .then((res) => {
+                        this.repicipentAddress = res.data;
+                })
+
+                    $.magnificPopup.open({
+                        items: {
+                            src: '#recipientModal'
+                        },
+                        type: 'inline'
+                    });
+
+                }
             },
 
 
@@ -481,6 +542,28 @@
                          this.s_city = "";
 
                      }
+                },
+
+                fillRecipient(){
+                        this.r_name=this.selectedRecipient.r_name;
+                        this.r_company=this.selectedRecipient.r_company;
+                        this.r_address1=this.selectedRecipient.r_address1;
+                        this.r_country=this.selectedRecipient.r_country;
+                        this.r_company=this.selectedRecipient.r_company;
+                        this.r_phone=this.selectedRecipient.r_phone;
+                        this.r_state=this.selectedRecipient.r_state;
+                        this.r_city=this.selectedRecipient.r_city;
+                        this.r_zip_code=this.selectedRecipient.r_zip_code;
+                        this.r_email=this.selectedRecipient.r_email;
+                        $.magnificPopup.close();
+                },
+
+                cancelFillRecipent(){
+                    $.magnificPopup.close();
+                },
+
+                selectRecipient(recipient_data){
+                    this.selectedRecipient =recipient_data;
                 },
 
                 getStates(type){
