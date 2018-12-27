@@ -30,7 +30,6 @@ import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
 
 
 Vue.use(datePicker);
-Vue.use(VueBootstrapTypeahead);
 
 
 
