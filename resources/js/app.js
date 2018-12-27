@@ -24,7 +24,7 @@ Vue.component('pagination', require('laravel-vue-pagination'));
 import datePicker from 'vue-bootstrap-datetimepicker';
 import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
 
-import VueBootstrapTypeahead from 'vue-bootstrap-typeahead';
+// import VueBootstrapTypeahead from 'vue-bootstrap-typeahead';
 
 Vue.component('vue-bootstrap-typeahead', VueBootstrapTypeahead)
 
