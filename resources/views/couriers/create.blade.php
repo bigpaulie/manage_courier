@@ -57,8 +57,8 @@
                                             :serializer="item => item.s_phone"
                                             @hit="selectedPhone = $event"
                                             class="phone_typeahead"
-                                            style="width: 330px;"
-                                    >
+
+                                    />
 
                                         <template slot="suggestion" slot-scope="{ data, htmlText }">
                                             <div class="d-flex align-items-center">
@@ -67,7 +67,7 @@
                                             </div>
                                         </template>
 
-                                    </vue-bootstrap-typeahead>
+
 
                                     @if ($errors->has('s_phone'))
                                         <label for="s_phone" class="error">{{ $errors->first('s_phone') }}</label>
