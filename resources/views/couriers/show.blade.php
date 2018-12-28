@@ -95,11 +95,11 @@
                                 </p>
                                 <p class="mb-none">
                                     <span class="text-dark">TOTAL WEIGHT :</span>
-                                    <span class="value"><b>{{$courier->shippment->weight}} KGS</b></span>
+                                    <span class="value"><b>@if(isset($courier->shippment)){{$courier->shippment->weight}} KGS @endif</b></span>
                                 </p>
                                 <p class="mb-none">
                                     <span class="text-dark text-uppercase">Carriage Value :</span>
-                                    <span class="value"><b>{{$courier->shippment->carriage_value}} </b></span>
+                                    <span class="value"><b>@if(isset($courier->shippment)){{$courier->shippment->carriage_value}} @endif</b></span>
                                 </p>
                             </div>
                         </div>

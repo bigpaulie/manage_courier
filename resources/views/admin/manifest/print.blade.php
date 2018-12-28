@@ -79,7 +79,7 @@
                                     <td>{{$item_courier->s_state}}, {{$item_courier->sender_country->name}}</td>
                                     <td class="text-center">{{$item_courier->r_state}}, {{$item_courier->receiver_country->name}}</td>
                                     <td class="text-center">{{$item_courier->no_of_boxes}}</td>
-                                    <td class="text-center">{{$item_courier->shippment->weight}}</td>
+                                    <td class="text-center">@if(isset($item_courier->shippment)){{$item_courier->shippment->weight}}@endif</td>
                                     <td></td>
                                 </tr>
                             @endforeach
