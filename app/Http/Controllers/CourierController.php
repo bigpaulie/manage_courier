@@ -145,7 +145,14 @@ class CourierController extends Controller
      */
     public function show($id)
     {
-        //
+        $courier= Courier::find($id);
+        if($courier != null){
+            $data['courier']=$courier;
+            return view('couriers.show',$data);
+        }else{
+            abort(404);
+        }
+
     }
 
     /**

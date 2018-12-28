@@ -47,7 +47,7 @@
                 <tbody>
                  @foreach($manifests as $manifest)
                      <tr>
-                         <td><a href="javascript:void(0);">{{$manifest->unique_name}}</a></td>
+                         <td><a href="\{{Auth::user()->user_type}}\manifest\{{$manifest->id}}">{{$manifest->unique_name}}</a></td>
                          @if(Auth::user()->user_type == 'admin')
                          <td>{{$manifest->store->name}} ({{$manifest->store->profile->company_name}})</td>
                          @endif
@@ -65,7 +65,7 @@
                          </td>
                          <td data-title="Created">{{date('d-M-Y',strtotime($manifest->created_at))}}</td>
 
-                         <td><a href="javascript:void(0);"><i class="fa fa-file-excel-o"></i></a></td>
+                         <td><a href="\{{Auth::user()->user_type}}\manifest\print\{{$manifest->id}}"><i class="fa fa-file-excel-o"></i></a></td>
                      </tr>
 
                  @endforeach

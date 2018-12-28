@@ -55,6 +55,7 @@ Route::group(['middleware' => array('auth')], function() {
         Route::post('/manifest/create_manifest', 'ManifestController@createManifest');
         Route::post('/manifest/save_manifest', 'ManifestController@saveManifest');
         Route::get('/courier_report/{id}','CourierController@courierReport')->name('courierReport');
+        Route::get('/manifest/print/{id}','ManifestController@printManifest')->name('manifest.print');
 
 
         Route::resource('agents', 'AgentController');
@@ -102,6 +103,7 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/payment_expense','ReportController@payment_expense')->name('payment_expense.payment_expense');
         Route::get('/couriers/box_details/{id}', 'CourierController@boxDetails')->name('couriers.box_details');
         Route::get('/courier_report/{id}','CourierController@courierReport')->name('courierReport');
+        Route::get('/manifest/print/{id}','ManifestController@printManifest')->name('manifest.print');
 
 
         Route::resource('expenses', 'ExpenseController');

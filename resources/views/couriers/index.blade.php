@@ -217,7 +217,7 @@
 
                 <tr v-for="(courier, index) in couriers.data">
                     <td><input type="checkbox" @click="select" class="checkbox-custom chekbox-primary" v-model="courierIds" :value="courier.id"></td>
-                    <td data-title="Id">@{{courier.unique_name}}</td>
+                    <td data-title="Id"><a href="javascript:void(0);"  @click="showCourier(courier.id)" >@{{courier.unique_name}}</a></td>
                     <td data-title="Agent Name" v-if="user_type == 'admin'">@{{courier.agent.name}}</td>
                     <td data-title="Customer Name">@{{ courier.r_name }}</td>
                     <td data-title="Traking Number" class="text-right">
@@ -254,7 +254,7 @@
                         {{--@endif--}}
 
                         <a href="javascript:void(0);" @click="editCourier(courier.id)" class=""><i class="fa fa-pencil"></i></a>
-                        <a href="javascript:void(0);" @click="generateBarocode(courier.id)" class=""><i class="fa fa-barcode"></i></a>
+                        <a href="javascript:void(0);" @click="showCourier(courier.id)" class=""><i class="fa fa-eye"></i></a>
                         <a href="javascript:void(0);" @click="courierReport(courier.id)" class=""><i class="fa fa-file-excel-o"></i></a>
 
 
@@ -477,6 +477,10 @@
                 },
                 courierReport(id){
                     window.location.href ="/"+this.user_type+"/courier_report/"+id;
+                },
+
+                showCourier(id){
+                    window.location.href ="/"+this.user_type+"/couriers/"+id;
                 },
 
                 createCourierCsv(page=1){

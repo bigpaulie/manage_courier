@@ -75,6 +75,35 @@ class ManifestController extends Controller
 
     }
 
+    public function show($id){
+
+        $manifest= Manifest::find($id);
+        if($manifest != null){
+            $manifest_items = $manifest->manifest_items->where('item_type','item')->toArray();
+            $manifest_bulks = $manifest->manifest_items->where('item_type','bulk')->toArray();
+            $data['manifest']=$manifest;
+            $data['manifest_items']=$manifest_items;
+            $data['manifest_bulks']=$manifest_bulks;
+            return view('admin.manifest.show',$data);
+        }else{
+            abort(404);
+        }
+    }
+
+    public function printManifest($id){
+
+        $manifest= Manifest::find($id);
+        if($manifest != null){
+            $courier_ids = explode(",",$manifest->courier_ids);
+            $manifest_couriers = Courier::whereIn('id',$courier_ids)->get();
+            $data['manifest']=$manifest;
+            $data['manifest_couriers']=$manifest_couriers;
+
+            return view('admin.manifest.print',$data);
+        }else{
+            abort(404);
+        }
+    }
     public function createManifest(Request $request){
 
 
