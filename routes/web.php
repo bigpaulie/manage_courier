@@ -104,6 +104,8 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/couriers/box_details/{id}', 'CourierController@boxDetails')->name('couriers.box_details');
         Route::get('/courier_report/{id}','CourierController@courierReport')->name('courierReport');
         Route::get('/manifest/print/{id}','ManifestController@printManifest')->name('manifest.print');
+        Route::get('/couriers/payment_details/{id}', 'CourierController@paymentDetails')->name('couriers.payment_details');
+        Route::post('/save_courier_payment', 'CourierController@savePaymentDetails');
 
 
         Route::resource('expenses', 'ExpenseController');

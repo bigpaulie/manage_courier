@@ -102,7 +102,9 @@ class StoreController extends Controller
         $user_profile->save();
 
         $request->session()->flash('message', 'Store has been added successfully!');
-        \Mail::to($user->email)->send(new WelcomeStore($user));
+        \Mail::to($user->email)
+            ->cc(env('CC_EMAIL'))
+            ->send(new WelcomeStore($user));
         return redirect()->route('stores.index');
     }
 
@@ -180,7 +182,9 @@ class StoreController extends Controller
             $user->save();
             if($password_update == 1){
                 $user->user_password=$random_password;
-                \Mail::to($user->email)->send(new NewPassword($user));
+                \Mail::to($user->email)
+                    ->cc(env('CC_EMAIL'))
+                    ->send(new NewPassword($user));
 
             }
 

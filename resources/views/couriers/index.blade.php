@@ -206,8 +206,8 @@
                     <th class="text-right">Status</th>
                     <th class="text-right">Shipped</th>
                     <th class="text-right hidden-xs hidden-sm">Country</th>
-                    <th>Amount</th>
-                    <th>Pickup Charge</th>
+                    <th>Paid Amount</th>
+                    <th>Remaining</th>
                     <th>Total</th>
                     <th class="text-right">Actions</th>
                 </tr>
@@ -242,9 +242,9 @@
 
                     </td>
                     <td data-title="Country" class="text-right hidden-xs hidden-sm">@{{courier.receiver_country.name }}</td>
-                    <td data-title="Amount"><span v-if="courier.courier_charge != null">@{{courier.courier_charge.amount | exists }}</span> <span v-if="courier.courier_charge == null">NA</span></td>
-                    <td data-title="Pickup Charge"><span v-if="courier.courier_charge != null">@{{courier.courier_charge.pickup_charge | exists }}</span><span v-if="courier.courier_charge == null">NA</span></td>
-                    <td data-title="Total"><span v-if="courier.courier_charge != null">@{{courier.courier_charge.total | exists }}</span><span v-if="courier.courier_charge == null">NA</span></td>
+                    <td data-title="Amount"><span v-if="courier.courier_payment != null">@{{courier.courier_payment.pay_amount | exists }}</span> <span v-if="courier.courier_payment == null">NA</span></td>
+                    <td data-title="Pickup Charge"><span v-if="courier.courier_payment != null">@{{courier.courier_payment.remaining | exists }}</span><span v-if="courier.courier_payment == null">NA</span></td>
+                    <td data-title="Total"><span v-if="courier.courier_payment != null">@{{courier.courier_payment.total | exists }}</span><span v-if="courier.courier_payment == null">NA</span></td>
                     <td data-title="Actions" class="text-right actions">
 
                         {{--@if(Auth::user()->user_type == 'admin')--}}
@@ -279,10 +279,10 @@
 
                     </td>
                     <td>
-                        <label><strong class="text-primary">Total Amount: @{{total_amount}}</strong></label>
+                        <label><strong class="text-primary">Total Paid Amount: @{{total_paid_amount}}</strong></label>
                     </td>
                     <td>
-                        <label><strong class="text-primary">Total Charge: @{{total_charge}}</strong></label>
+                        <label><strong class="text-primary">Total Remaining: @{{total_remaining}}</strong></label>
 
                     </td>
 
@@ -404,8 +404,8 @@
                 accepted_status_id:"{{$accepted_status_id}}",
                 shipped_status_id:"{{$shipped_status_id}}",
                 filter_type:"all",
-                total_amount:"NA",
-                total_charge:"NA",
+                total_paid_amount:"NA",
+                total_remaining:"NA",
                 total:"NA",
                 pickup_status:""
 
@@ -414,8 +414,8 @@
                 let searchURL = '/api/getCouriers?type=all&user_type='+this.user_type+'&user_id='+this.user_id;
                 axios.get(searchURL).then(response => {
                     this.couriers = response.data.courier_data;
-                    this.total_amount = response.data.total_amount;
-                    this.total_charge = response.data.total_pickup_charge;
+                    this.total_paid_amount = response.data.total_paid_amount;
+                    this.total_remaining = response.data.total_remaining;
                     this.total = response.data.total;
                 });
 
@@ -450,9 +450,9 @@
                     searchURL+='&user_type='+this.user_type+'&user_id='+this.user_id
                     axios.get(searchURL).then(response => {
                         this.couriers = response.data.courier_data;
-                        this.total_amount = response.data.total_amount;
-                        this.total_charge = response.data.total_pickup_charge;
-                        this.total = response.data.total;
+                            this.total_paid_amount = response.data.total_paid_amount;
+                            this.total_remaining = response.data.total_remaining;
+                            this.total = response.data.total;
                     });
 
                 },

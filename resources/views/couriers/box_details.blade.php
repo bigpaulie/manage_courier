@@ -25,6 +25,23 @@
         </div>
     @endif
 
+    <section class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><b>Total Weight:</b> {{$courier->shippment->weight}}</h5>
+                </div>
+                <div class="col-md-4">
+                    <h5><b>No. Of Boxes:</b> {{$courier->no_of_boxes}}</h5>
+                </div>
+                <div class="col-md-4">
+                    <h5><b>Courier Id:</b> {{$courier->unique_name}}</h5>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
     {{Form::open(['url' => 'admin/save_courier_boxes/', 'method' => 'post'])}}
          {{csrf_field()}}
     <input type="hidden" name="courier_id" value="{{$courier->id}}">
@@ -39,7 +56,7 @@
                         <div class="form-group">
                             <label class="control-label">Breadth<span class="text-danger">*</span></label>
                             <div class="input-group ">
-                                <input type="text" :name="'box[' + [b]+'][breadth]'" class="form-control" required>
+                                <input type="text" :name="'box[' + [b]+'][breadth]'" class="form-control" required v-model="box.cb.breadth">
                                 <span class="input-group-addon ">Inch</span>
                             </div>
 
@@ -50,7 +67,7 @@
                         <div class="form-group">
                             <label class="control-label">Width<span class="text-danger">*</span></label>
                             <div class="input-group">
-                                <input type="text" :name="'box[' + [b]+'][width]'" class="form-control" required>
+                                <input type="text" :name="'box[' + [b]+'][width]'" class="form-control" required v-model="box.cb.width">
                                 <span class="input-group-addon ">Inch</span>
                             </div>
                         </div>
@@ -59,7 +76,7 @@
                         <div class="form-group">
                             <label class="control-label">Height<span class="text-danger">*</span></label>
                             <div class="input-group">
-                                <input type="text" :name="'box[' + [b]+'][height]'" class="form-control" required>
+                                <input type="text" :name="'box[' + [b]+'][height]'" class="form-control" required v-model="box.cb.height">
                                 <span class="input-group-addon ">Inch</span>
                             </div>
                         </div>
@@ -68,7 +85,7 @@
                         <div class="form-group">
                             <label class="control-label">Weight<span class="text-danger">*</span></label>
                             <div class="input-group">
-                                 <input type="text" :name="'box[' + [b]+'][weight]'" class="form-control" required>
+                                 <input type="text" :name="'box[' + [b]+'][weight]'" class="form-control" required v-model="box.cb.weight">
                                 <span class="input-group-addon ">Kg/Grm</span>
                             </div>
                         </div>
@@ -103,7 +120,7 @@
                     <div class="col-sm-3">
                         <div class="form-group">
                             <label class="control-label">Qty</label>
-                            <input type="text" :name="'box[' + [b]+'][items]['+[i]+'][qty]'" class="form-control">
+                            <input type="text" :name="'box[' + [b]+'][items]['+[i]+'][qty]'" class="form-control" v-model="item.qty">
                         </div>
                     </div>
                     <div class="col-sm-3" v-if=" i > 0">
@@ -119,7 +136,11 @@
         </section>
 
         <footer class="panel-footer center">
-            <button class="btn btn-primary" type="submit">Submit</button>
+            @if(Auth::user()->user_type == 'store')
+            <button class="btn btn-primary" type="submit">Next</button>
+            @else
+                <button class="btn btn-primary" type="submit">Submit</button>
+            @endif
         </footer>
 
     {!! Form::close() !!}

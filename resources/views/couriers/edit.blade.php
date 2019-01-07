@@ -371,7 +371,7 @@
         </div>
 
         <footer class="panel-footer center">
-            <button class="btn btn-primary">Submit</button>
+            <button class="btn btn-primary">Next</button>
         </footer>
     </form>
 

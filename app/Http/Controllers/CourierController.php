@@ -20,6 +20,8 @@ use App\Models\Payment;
 use App\Models\Courier_box;
 use App\Models\Courier_box_item;
 use App\Exports\CourierExport;
+use App\Models\Courier_payment;
+
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 
@@ -245,13 +247,13 @@ class CourierController extends Controller
         $shippment = Shippment::where('courier_id',$id)->first();
         $shippment->package_type_id = $input['package_type_id'];
         $shippment->service_type_id = $input['service_type_id'];
-        $shippment->content_type_id = $input['content_type_id'];
+        //$shippment->content_type_id = $input['content_type_id'];
         $shippment->weight = $input['weight'];
         $shippment->carriage_value = $input['carriage_value'];
         $shippment->courier_status = isset($input['courier_status'])?$input['courier_status']:"drop";
         $shippment->save();
         $request->session()->flash('message', 'Courier has been updated successfully!');
-        return redirect('/'.\Auth::user()->user_type.'/couriers');
+        return redirect('/'.\Auth::user()->user_type.'/couriers/box_details/'.$id);
     }
 
     /**
@@ -337,20 +339,20 @@ class CourierController extends Controller
         $courier_data = $couriers->paginate(15);
 
         // dd($courier_data->total());
-        $total_amount=0;
-        $total_pickup_charge=0;
+        $total_paid_amount=0;
+        $total_remaining=0;
         $total=0;
          if($courier_data->total() > 0 ){
                 foreach ($courier_data as $c_data){
-                    if($c_data->courier_charge != null){
-                        $total_amount+=$c_data->courier_charge->amount;
-                        $total_pickup_charge+=$c_data->courier_charge->pickup_charge;
-                        $total+=$c_data->courier_charge->total;
+                    if($c_data->courier_payment != null){
+                        $total_paid_amount+=$c_data->courier_payment->pay_amount;
+                        $total_remaining+=$c_data->courier_payment->remaining;
+                        $total+=$c_data->courier_payment->total;
                     }
                 }
          }
-         $response_data['total_amount']=$total_amount;
-         $response_data['total_pickup_charge']=$total_pickup_charge;
+         $response_data['total_paid_amount']=$total_paid_amount;
+         $response_data['total_remaining']=$total_remaining;
          $response_data['total']=$total;
          $response_data['courier_data']=$courier_data;
 
@@ -369,7 +371,7 @@ class CourierController extends Controller
                             'Status',
                             'Package Type',
                             'Service Type',
-                            'Content Type',
+                            //'Content Type',
                             'Weight',
                             'Carriage Value',
                             'Tracking No',
@@ -481,7 +483,7 @@ class CourierController extends Controller
                 $courier->status->name,
                 $package_types[$courier->shippment->package_type_id],
                 $service_types[$courier->shippment->service_type_id],
-                $content_types[$courier->shippment->content_type_id],
+               // $content_types[$courier->shippment->content_type_id],
                 $courier->shippment->weight,
                 $courier->shippment->carriage_value,
                 $courier->tracking_no,
@@ -949,12 +951,42 @@ class CourierController extends Controller
             $data['content_unints']=Content_type::pluck('unit_type', 'id')->toArray();
             $data['no_of_boxes']=$courier->no_of_boxes;
 
-            $boxes =[];
-            for($i=1;$i<=$courier->no_of_boxes;$i++){
-                $items['items'][0] = ['item_name'=>"",'item_unit'=>null,'qty'=>null];
-                $boxes[$i]=$items;
+            $courier_boxes = Courier_box::with('courier_box_items')->where('courier_id',$id)->orderBy('id','asc')->get();
+
+            if($courier_boxes->count() > 0 ){
+
+                $boxes =[];
+                foreach ($courier_boxes as $cbk=> $cb){
+                    $box_key = $cbk+1;
+                    $courier_box_items = $cb->courier_box_items;
+                    if($cb->courier_box_items->count() > 0){
+                        foreach ($courier_box_items as $key=> $cbi){
+                            $boxes[$box_key]['items'][$key] = ['item_name'=>$cbi->content_type_id,'item_unit'=>$cbi->unit_type,'qty'=>$cbi->qty];
+                        }
+                    }else{
+                        $boxes[$box_key]['items'][0] = ['item_name'=>"",'item_unit'=>null,'qty'=>null];
+                    }
+
+                    $boxes[$box_key]['cb']=['breadth'=>$cb->breadth,'width'=>$cb->width,'height'=>$cb->height,'weight'=>$cb->weight];
+
+                }
+
+                $data['boxes']=$boxes;
+
+            }else{
+                $boxes =[];
+                for($i=1;$i<=$courier->no_of_boxes;$i++){
+                    $items['items'][0] = ['item_name'=>"",'item_unit'=>null,'qty'=>null];
+                    $boxes[$i]=$items;
+                    $boxes[$i]['cb']=['breadth'=>"",'width'=>"",'height'=>"",'weight'=>""];
+
+                }
+                $data['boxes']=$boxes;
+
             }
-            $data['boxes']=$boxes;
+
+
+
             return view('couriers.box_details',$data);
         }else{
             abort(404);
@@ -975,6 +1007,12 @@ class CourierController extends Controller
             $all_boxes_weight = $this->getAllBoxesWeight($courier_boxes);
 
             if($shippment_weight == $all_boxes_weight){
+
+                $check_courier_boxes = Courier_box::where('courier_id',$courier_id)->get();
+                if($check_courier_boxes->count() >0){
+                    Courier_box::where('courier_id',$courier_id)->delete();
+                    Courier_box_item::where('courier_id',$courier_id)->delete();
+                }
 
                 foreach ($courier_boxes as $key=> $cb){
                     $breadth = $cb['breadth'];
@@ -1011,8 +1049,13 @@ class CourierController extends Controller
 
 
                 }
-                $request->session()->flash('message', 'Courier has been added successfully!');
-                return redirect('/'.\Auth::user()->user_type.'/couriers');
+                if(\Auth::user()->user_type == 'store'){
+                    return redirect('/store/couriers/payment_details/'.$courier_id);
+                }else{
+                    $request->session()->flash('message', 'Courier has been added successfully!');
+                    return redirect('/'.\Auth::user()->user_type.'/couriers');
+                }
+
 
             }else{
                 $request->session()->flash('error_message', 'Courier weight and all boxes weight does not equal!');
@@ -1029,7 +1072,73 @@ class CourierController extends Controller
 
     }
 
-    public function getAllBoxesWeight($courier_boxes){
+    public function paymentDetails($id){
+
+
+        $courier= Courier::find($id);
+        if($courier != null){
+
+            $courier_payment = Courier_payment::where('courier_id',$id)
+                                                ->where('user_id',\Auth::user()->id)
+                                                ->first();
+            $data['courier']=$courier;
+            if($courier_payment != null){
+                $data['courier_payment']=$courier_payment;
+
+            }else{
+                $courier_payment = new Courier_payment();
+                $courier_payment->total=null;
+                $courier_payment->pay_amount=null;
+                $courier_payment->remaining=null;
+                $courier_payment->discount=null;
+                $courier_payment->payment_date=date('Y-m-d');
+                $data['courier_payment']=$courier_payment;
+
+            }
+
+            return view('couriers.payment_details',$data);
+        }else{
+            abort(404);
+        }
+
+    }
+
+    public function savePaymentDetails(Request $request){
+        $input = $request->all();
+        $courier_id =$input['courier_id'];
+        $validator = Validator::make($request->all(), [
+            'payment_date' => 'required',
+            'pay_amount' => 'required',
+            'total' => 'required',
+
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('/'.\Auth::user()->user_type.'/couriers/payment_details/'.$courier_id)
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $input = $request->all();
+        $input['payment_date']=date('Y-m-d',strtotime($request->payment_date));
+        $couier_payment = Courier_payment::where('courier_id',$courier_id)->first();
+        if($couier_payment != null){
+            $couier_payment->id = $couier_payment->id;
+            $couier_payment->total= $input['total'];
+            $couier_payment->pay_amount= $input['pay_amount'];
+            $couier_payment->remaining= $input['remaining'];
+            $couier_payment->discount= $input['discount'];
+            $couier_payment->payment_date= date('Y-m-d',strtotime($request->payment_date));
+            $couier_payment->save();
+        }else{
+            Courier_payment::create($input);
+        }
+
+        $request->session()->flash('message', 'Courier has been added successfully!');
+        return redirect('/'.\Auth::user()->user_type.'/couriers');
+    }
+
+   public function getAllBoxesWeight($courier_boxes){
         $total_weight=0;
 
         foreach ($courier_boxes as $box){
@@ -1052,7 +1161,7 @@ class CourierController extends Controller
        }
     }
 
-    public function getSenderPhone(Request $request){
+   public function getSenderPhone(Request $request){
         $input = $request->all();
         $search_key = $input['q'];
 
@@ -1065,7 +1174,7 @@ class CourierController extends Controller
 
     }
 
-    public function getRecipientAddress(Request $request){
+   public function getRecipientAddress(Request $request){
 
         $input = $request->all();
         $search_key = $input['q'];

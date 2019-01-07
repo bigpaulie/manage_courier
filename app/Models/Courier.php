@@ -70,4 +70,8 @@ class Courier extends Model
         return $this->hasMany('App\Models\Courier_box','courier_id')->with('courier_box_items');
     }
 
+    public function courier_payment(){
+        return $this->hasOne('App\Models\Courier_payment');
+    }
+
 }

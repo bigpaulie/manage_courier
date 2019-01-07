@@ -156,6 +156,34 @@
 
                  @endforeach
 
+                <div class="invoice-summary">
+                    <div class="row">
+                        <div class="col-sm-4 col-sm-offset-8">
+                            <table class="table h5 text-dark">
+                                <tbody>
+                                <tr class="b-top-none">
+                                    <td colspan="2">Total Paid</td>
+                                    <td class="text-left">@if(isset($courier->courier_payment->pay_amount)) {{$courier->courier_payment->pay_amount}}@else NA @endif</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Remaining</td>
+                                    <td class="text-left">@if(isset($courier->courier_payment->remaining)) {{$courier->courier_payment->remaining}}@else NA @endif</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Discount</td>
+                                    <td class="text-left">@if(isset($courier->courier_payment->discount)) {{$courier->courier_payment->discount}}@else NA @endif</td>
+                                </tr>
+
+                                <tr class="h4">
+                                    <td colspan="2">Total</td>
+                                    <td class="text-left">@if(isset($courier->courier_payment->total)) {{$courier->courier_payment->total}}@else NA @endif</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
 
 
 

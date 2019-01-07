@@ -125,7 +125,9 @@ class AgentController extends Controller
         $user_profile->zip_code = $input['zip_code'];
         $user_profile->save();
         $request->session()->flash('message', 'Agent has been added successfully!');
-        \Mail::to($user->email)->send(new WelcomeAgent($user));
+        \Mail::to($user->email)
+                 ->cc(env('CC_EMAIL'))
+                ->send(new WelcomeAgent($user));
 
         return redirect('/'.\Auth::user()->user_type.'/agents');
     }
@@ -210,7 +212,9 @@ class AgentController extends Controller
             $user->save();
             if($password_update == 1){
                 $user->user_password=$random_password;
-                \Mail::to($user->email)->send(new NewPassword($user));
+                \Mail::to($user->email)
+                     ->cc(env('CC_EMAIL'))
+                    ->send(new NewPassword($user));
 
             }
         }
