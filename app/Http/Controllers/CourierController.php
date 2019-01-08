@@ -21,6 +21,8 @@ use App\Models\Courier_box;
 use App\Models\Courier_box_item;
 use App\Exports\CourierExport;
 use App\Models\Courier_payment;
+use App\Models\User_profile;
+
 
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
@@ -40,12 +42,12 @@ class CourierController extends Controller
         $data['accepted_status_id']=Status::where('code_name',"accepted")->first()->id;
         $data['shipped_status_id']=Status::where('code_name',"shipped")->first()->id;
         $data['courier_companies']=Courier_service::pluck('name','id')->toArray();
-        if(\Auth::user()->user_type == 'agent' || \Auth::user()->user_type == 'store'){
-            $data['total_charge']= Courier_charge::where('user_id',\Auth::user()->id)->sum('total');
-            $data['total_payout']= Payment::where('user_id',\Auth::user()->id)->sum('amount');
-            $data['grand_total']= $data['total_payout'] - $data['total_charge'];
-
-        }
+//        if(\Auth::user()->user_type == 'agent' || \Auth::user()->user_type == 'store'){
+//            $data['total_charge']= Courier_charge::where('user_id',\Auth::user()->id)->sum('total');
+//            $data['total_payout']= Payment::where('user_id',\Auth::user()->id)->sum('amount');
+//            $data['grand_total']= $data['total_payout'] - $data['total_charge'];
+//
+//        }
         return view('couriers.index',$data);
     }
 
@@ -282,6 +284,7 @@ class CourierController extends Controller
     public function getCouriers(Request $request){
 
         $input = $request->all();
+
         $type = isset($input['type'])?$input['type']:'all';
         $traking_number = isset($input['traking_number'])?$input['traking_number']:'';
         $from_date = isset($input['from_date'])?date('Y-m-d',strtotime($input['from_date'])):'';
@@ -291,22 +294,46 @@ class CourierController extends Controller
         $user_id= $input['user_id'];
         $user_type = $input['user_type'];
 
-        $courier_joins = Courier::with(['agent','status','shippment','courier_charge','receiver_country']);
+        $courier_joins = Courier::with(['agent','status','shippment','courier_payment','receiver_country']);
         if($type == 'all'){
-            $where = [];
-            if($user_type == 'agent' || $user_type == 'store'){
-                $where[] = ['couriers.user_id', $user_id];
-            }
 
-            $couriers= $courier_joins
+            if($user_type == 'agent') {
+                $user_ids = [$user_id];
+                $couriers = $courier_joins
+                    ->whereDate('updated_at', '>=', date('Y-m-d'))
+                    ->whereDate('updated_at', '<=', date('Y-m-d'))
+                    ->whereIn('couriers.user_id', $user_ids)
+                    ->OrderBy('updated_at', 'desc');
+            }
+            elseif($user_type == 'store'){
+                $user_ids = User_profile::where('store_id',$user_id)->pluck('user_id')->toArray();
+                array_push($user_ids,[$user_id]);
+                $couriers= $courier_joins
                     ->whereDate('updated_at','>=', date('Y-m-d'))
                     ->whereDate('updated_at', '<=',date('Y-m-d'))
-                    ->where($where)
+                    ->whereIn('couriers.user_id',$user_ids)
                     ->OrderBy('updated_at','desc');
+
+            }else{
+
+                $couriers= $courier_joins
+                                    ->whereDate('updated_at','>=', date('Y-m-d'))
+                                    ->whereDate('updated_at', '<=',date('Y-m-d'))
+                                    ->OrderBy('updated_at','desc');
+            }
+
+
         }else{
             $where = [];
-            if($user_type == 'agent' || $user_type == 'store'){
+            if($user_type == 'agent' ){
                 $where[] = ['couriers.user_id', $user_id];
+            }
+            if($user_type == 'store'){
+
+                $user_ids = User_profile::where('store_id',$user_id)->pluck('user_id')->toArray();
+                array_push($user_ids,[$user_id]);
+                $couriers=  $courier_joins
+                                 ->whereIn('couriers.user_id',$user_ids);
             }
 
             if ($traking_number !="" ) {
@@ -338,7 +365,7 @@ class CourierController extends Controller
         }
         $courier_data = $couriers->paginate(15);
 
-        // dd($courier_data->total());
+
         $total_paid_amount=0;
         $total_remaining=0;
         $total=0;
@@ -1006,7 +1033,7 @@ class CourierController extends Controller
             $shippment_weight = $courier->shippment->weight;
             $all_boxes_weight = $this->getAllBoxesWeight($courier_boxes);
 
-            if($shippment_weight == $all_boxes_weight){
+            if($all_boxes_weight >= $shippment_weight){
 
                 $check_courier_boxes = Courier_box::where('courier_id',$courier_id)->get();
                 if($check_courier_boxes->count() >0){
@@ -1049,13 +1076,8 @@ class CourierController extends Controller
 
 
                 }
-                if(\Auth::user()->user_type == 'store'){
-                    return redirect('/store/couriers/payment_details/'.$courier_id);
-                }else{
-                    $request->session()->flash('message', 'Courier has been added successfully!');
-                    return redirect('/'.\Auth::user()->user_type.'/couriers');
-                }
 
+                    return redirect('/store/couriers/payment_details/'.$courier_id);
 
             }else{
                 $request->session()->flash('error_message', 'Courier weight and all boxes weight does not equal!');
@@ -1106,12 +1128,22 @@ class CourierController extends Controller
     public function savePaymentDetails(Request $request){
         $input = $request->all();
         $courier_id =$input['courier_id'];
-        $validator = Validator::make($request->all(), [
-            'payment_date' => 'required',
-            'pay_amount' => 'required',
-            'total' => 'required',
 
-        ]);
+        if(\Auth::user()->user_type != 'agent'){
+
+            $validator = Validator::make($request->all(), [
+                'payment_date' => 'required',
+                'pay_amount' => 'required',
+                'total' => 'required',
+
+            ]);
+        }else{
+            $validator = Validator::make($request->all(), [
+                'payment_date' => 'required',
+                'total' => 'required',
+            ]);
+        }
+
 
         if ($validator->fails()) {
             return redirect('/'.\Auth::user()->user_type.'/couriers/payment_details/'.$courier_id)

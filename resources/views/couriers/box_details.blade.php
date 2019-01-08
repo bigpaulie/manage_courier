@@ -136,11 +136,9 @@
         </section>
 
         <footer class="panel-footer center">
-            @if(Auth::user()->user_type == 'store')
+
             <button class="btn btn-primary" type="submit">Next</button>
-            @else
-                <button class="btn btn-primary" type="submit">Submit</button>
-            @endif
+           
         </footer>
 
     {!! Form::close() !!}
@@ -165,6 +163,7 @@
                 no_of_boxes:"{{$no_of_boxes}}",
                 boxes: @json($boxes),
                 content_unints:@json($content_unints),
+                total_weight:"{{$courier->shippment->weight}}",
 
             },
 
@@ -180,6 +179,17 @@
                     var itemId =this.boxes[b].items[i].item_name;
                     var item_unit = this.content_unints[itemId];
                     this.boxes[b].items[i].item_unit = item_unit;
+                },
+                checkBoxWeight:function(){
+
+                    //     var ls=0;
+                    // total_box_weight = this.boxes.forEach(function(item) {
+                    //     var tw = ls+parseInt(item.weight);
+                    //     return tw;
+                    // });
+                    //
+                    // console.log(total_box_weight);
+                     return true;
                 }
 
             },

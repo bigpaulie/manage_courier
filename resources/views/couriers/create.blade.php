@@ -51,8 +51,6 @@
                                     <input type="hidden" name="s_phone" id="senderPhone">
                                     <vue-bootstrap-typeahead
                                             v-model="s_phone"
-
-
                                             :data="senderPhones"
                                             :serializer="item => item.s_phone"
                                             @hit="selectedPhone = $event"
@@ -472,7 +470,7 @@
                          this.s_company = this.user_data.profile.company_name;
                          this.s_address1 = this.user_data.profile.address;
                          this.s_phone = this.user_data.profile.phone;
-                         this.s_zip_code = this.user_data.profile.zip_code;
+                         //this.s_zip_code = this.user_data.profile.zip_code;
                          this.s_email = this.user_data.email;
                          this.s_country = this.user_data.profile.country_id;
                          this.s_state = this.user_data.profile.state_id;
@@ -489,6 +487,7 @@
                         this.senderPhones = res.data;
                 })
                     $('#senderPhone').val(newQuery);
+
                 },
                 selectedPhone(obj){
                     console.log(obj);
@@ -525,17 +524,18 @@
                          this.s_company = this.user_data.profile.company_name;
                          this.s_address1 = this.user_data.profile.address;
                          this.s_phone = this.user_data.profile.phone;
-                         this.s_zip_code = this.user_data.profile.zip_code;
+                        // this.s_zip_code = this.user_data.profile.zip_code;
                          this.s_email = this.user_data.email;
                          this.s_country = this.user_data.profile.country_id;
                          this.s_state = this.user_data.profile.state_id;
                          this.s_city = this.user_data.profile.city_id;
+
                      }else{
                          this.s_name = "";
                          this.s_company = "";
                          this.s_address1 = "";
                          this.s_phone = "";
-                         this.s_zip_code = "";
+                        // this.s_zip_code = "";
                          this.s_email = "";
                          this.s_country = "";
                          this.s_state = "";

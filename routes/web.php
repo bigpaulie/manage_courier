@@ -26,8 +26,9 @@ Route::get('/welcome_agent', function () {
 });
 
 Route::get('/test', function () {
-    $courier = \App\Models\Courier::find(25);
-    return view('exports.courier')->with('courier',$courier);
+    echo \Hash::make('agent@123');
+    //$courier = \App\Models\Courier::find(25);
+    //return view('exports.courier')->with('courier',$courier);
 });
 
 
@@ -56,6 +57,12 @@ Route::group(['middleware' => array('auth')], function() {
         Route::post('/manifest/save_manifest', 'ManifestController@saveManifest');
         Route::get('/courier_report/{id}','CourierController@courierReport')->name('courierReport');
         Route::get('/manifest/print/{id}','ManifestController@printManifest')->name('manifest.print');
+
+        Route::get('/reports/walking_customer','ReportController@walkingCustomer')->name('reports.walking_customer');
+        Route::get('/reports/agent_payment','ReportController@agentPayment')->name('reports.agent_payment');
+        Route::get('/reports/payment_expense','ReportController@paymentExpense')->name('reports.payment_expense');
+
+
 
 
         Route::resource('agents', 'AgentController');
@@ -106,6 +113,9 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/manifest/print/{id}','ManifestController@printManifest')->name('manifest.print');
         Route::get('/couriers/payment_details/{id}', 'CourierController@paymentDetails')->name('couriers.payment_details');
         Route::post('/save_courier_payment', 'CourierController@savePaymentDetails');
+        Route::get('/reports/walking_customer','ReportController@walkingCustomer')->name('reports.walking_customer');
+        Route::get('/reports/agent_payment','ReportController@agentPayment')->name('reports.agent_payment');
+        Route::get('/reports/payment_expense','ReportController@paymentExpense')->name('reports.payment_expense');
 
 
         Route::resource('expenses', 'ExpenseController');

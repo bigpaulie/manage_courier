@@ -90,19 +90,19 @@
                     <input type="text"  class="form-control" name="tracking_number" v-model="traking_number" v-on:keyup.enter="onEnter">
                 </div>
             </div>
-            @if(Auth::user()->user_type == 'agent' || Auth::user()->user_type == 'store')
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="control-label text-bold">Total Charge: <span class="text-primary">{{$total_charge}}</span></label>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label text-bold">Total Payout: <span class="text-primary">{{$total_payout}}</span></label>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label text-bold">Grand Total: <span class="@if($grand_total < 0) text-danger @else text-success @endif">{{$grand_total}}</span></label>
-                        </div>
-                    </div>
-            @endif
+            {{--@if(Auth::user()->user_type == 'agent' || Auth::user()->user_type == 'store')--}}
+                    {{--<div class="col-md-2">--}}
+                        {{--<div class="form-group">--}}
+                            {{--<label class="control-label text-bold">Total Charge: <span class="text-primary">{{$total_charge}}</span></label>--}}
+                        {{--</div>--}}
+                        {{--<div class="form-group">--}}
+                            {{--<label class="control-label text-bold">Total Payout: <span class="text-primary">{{$total_payout}}</span></label>--}}
+                        {{--</div>--}}
+                        {{--<div class="form-group">--}}
+                            {{--<label class="control-label text-bold">Grand Total: <span class="@if($grand_total < 0) text-danger @else text-success @endif">{{$grand_total}}</span></label>--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
+            {{--@endif--}}
 
         </div>
         <div class="row">
@@ -159,33 +159,33 @@
     @endif
 
     @if(Auth::user()->user_type == 'agent' || Auth::user()->user_type == 'store')
-        <section class="panel">
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-12">
+        {{--<section class="panel">--}}
+            {{--<div class="panel-body">--}}
+                {{--<div class="row">--}}
+                    {{--<div class="col-md-12">--}}
 
-                        <form class="form-inline">
-                            <div class="form-group">
+                        {{--<form class="form-inline">--}}
+                            {{--<div class="form-group">--}}
                                 {{--<label class="" for="exampleInputUsername2">Pickup/Drop</label>--}}
-                                <select class="form-control" v-model="pickup_status">
-                                    <option value="">Select Pickup/Drop</option>
-                                    <option value="drop">Drop</option>
-                                    <option value="pickup">Pickup</option>
+                                {{--<select class="form-control" v-model="pickup_status">--}}
+                                    {{--<option value="">Select Pickup/Drop</option>--}}
+                                    {{--<option value="drop">Drop</option>--}}
+                                    {{--<option value="pickup">Pickup</option>--}}
 
-                                </select>
-                            </div>
+                                {{--</select>--}}
+                            {{--</div>--}}
 
-                            <div class="clearfix visible-xs mb-sm"></div>
+                            {{--<div class="clearfix visible-xs mb-sm"></div>--}}
 
-                            <button type="button" class="btn btn-primary" @click="changeCourierStatus">Submit</button>
-                        </form>
+                            {{--<button type="button" class="btn btn-primary" @click="changeCourierStatus">Submit</button>--}}
+                        {{--</form>--}}
 
-                    </div>
+                    {{--</div>--}}
 
-                </div>
+                {{--</div>--}}
 
-            </div>
-        </section>
+            {{--</div>--}}
+        {{--</section>--}}
     @endif
 
     <section class="panel">

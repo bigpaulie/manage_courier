@@ -78,18 +78,6 @@ class ReportController extends Controller
 
     }
 
-     public function payment_expense(){
-        $data=[];
-        $user_type = \Auth::user()->user_type;
-        if($user_type == 'admin'){
-            return view('admin.reports.payment_expense',$data);
-
-        }else if($user_type == 'store'){
-            $data['user_id']=\Auth::user()->id;
-            return view('store.reports.payment_expense',$data);
-
-        }
-    }
 
     public function generatePaymentExpense(Request $request){
 
@@ -165,6 +153,47 @@ class ReportController extends Controller
 
         return response()->json($response_data);
 
-
     }
+
+    public function walkingCustomer(){
+
+        $data=[];
+        $user_type = \Auth::user()->user_type;
+        if($user_type == 'admin'){
+            return view('admin.reports.walking_customer',$data);
+
+        }else if($user_type == 'store'){
+            $data['user_id']=\Auth::user()->id;
+            return view('store.reports.walking_customer',$data);
+
+        }
+    }
+
+    public function agentPayment(){
+
+        $data=[];
+        $user_type = \Auth::user()->user_type;
+        if($user_type == 'admin'){
+            return view('admin.reports.agent_payment',$data);
+
+        }else if($user_type == 'store'){
+            $data['user_id']=\Auth::user()->id;
+            return view('store.reports.agent_payment',$data);
+
+        }
+    }
+
+    public function paymentExpense(){
+        $data=[];
+        $user_type = \Auth::user()->user_type;
+        if($user_type == 'admin'){
+            return view('admin.reports.payment_expense',$data);
+
+        }else if($user_type == 'store'){
+            $data['user_id']=\Auth::user()->id;
+            return view('store.reports.payment_expense',$data);
+
+        }
+    }
+
 }

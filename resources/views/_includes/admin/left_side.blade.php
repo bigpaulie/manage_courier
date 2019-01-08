@@ -15,6 +15,7 @@
             <?php
                 $current_routename =\Route::currentRouteName();
                 $route_arr = explode('.',$current_routename);
+
                 $controller_name = $route_arr[0];
 
                 $action_name = $route_arr[1];
@@ -77,20 +78,20 @@
                         </a>
 
                     </li>
-                    <li @if($controller_name == 'reports')class="nav-active nav-expanded" @endif>
-                        <a href="/admin/reports">
-                            <i class="fa fa-file" aria-hidden="true"></i>
-                            <span>Reports</span>
-                        </a>
+                    {{--<li @if($controller_name == 'reports')class="nav-active nav-expanded" @endif>--}}
+                        {{--<a href="/admin/reports">--}}
+                            {{--<i class="fa fa-file" aria-hidden="true"></i>--}}
+                            {{--<span>Reports</span>--}}
+                        {{--</a>--}}
 
-                    </li>
-                    <li @if($controller_name == 'payment_expense')class="nav-active nav-expanded" @endif>
-                        <a href="/admin/payment_expense">
-                            <i class="fa fa-file" aria-hidden="true"></i>
-                            <span>Payment/Expense Report</span>
-                        </a>
+                    {{--</li>--}}
+                    {{--<li @if($controller_name == 'payment_expense')class="nav-active nav-expanded" @endif>--}}
+                        {{--<a href="/admin/payment_expense">--}}
+                            {{--<i class="fa fa-file" aria-hidden="true"></i>--}}
+                            {{--<span>Payment/Expense Report</span>--}}
+                        {{--</a>--}}
 
-                    </li>
+                    {{--</li>--}}
 
                     <li @if($controller_name == 'manifest')class="nav-active nav-expanded" @endif>
                         <a href="/admin/manifest">
@@ -99,7 +100,40 @@
                         </a>
 
                     </li>
-                    <?php $nav_array = ['expense_types','status','package_types','service_types', 'content_types','courier_services','banks','vendors']; ?>
+
+                    <?php $reports_array = ['walking_customer','agent_payment','payment_expense']; ?>
+
+                    <li class="nav-parent @if(in_array($action_name, $reports_array))nav-expanded nav-active @endif">
+                        <a>
+                            <i class="fa fa-file" aria-hidden="true"></i>
+                            <span>Reports</span>
+                        </a>
+                        <ul class="nav nav-children">
+
+                            <li @if($action_name == 'walking_customer')class="nav-active" @endif>
+                                <a href="/admin/reports/walking_customer">
+                                    Walking Customer Payment
+                                </a>
+                            </li>
+
+                            <li @if($action_name == 'agent_payment')class="nav-active" @endif>
+                                <a href="/admin/reports/agent_payment">
+                                    Agent Payment
+                                </a>
+                            </li>
+                            <li @if($action_name == 'payment_expense')class="nav-active" @endif>
+                                <a href="/admin/reports/payment_expense">
+                                    Payment/Expense Report
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+
+
+
+
+                <?php $nav_array = ['expense_types','status','package_types','service_types', 'content_types','courier_services','banks','vendors']; ?>
 
                     <li class="nav-parent @if(in_array($controller_name, $nav_array))nav-expanded nav-active @endif">
                         <a>
@@ -225,21 +259,52 @@
                             </a>
 
                         </li>
-                        <li @if($controller_name == 'reports')class="nav-active nav-expanded" @endif>
-                            <a href="/store/reports">
+
+                        <?php $reports_array = ['walking_customer','agent_payment','payment_expense']; ?>
+
+                        <li class="nav-parent @if(in_array($action_name, $reports_array))nav-expanded nav-active @endif">
+                            <a>
                                 <i class="fa fa-file" aria-hidden="true"></i>
                                 <span>Reports</span>
                             </a>
+                            <ul class="nav nav-children">
 
+                                <li @if($action_name == 'walking_customer')class="nav-active" @endif>
+                                    <a href="/admin/reports/walking_customer">
+                                        Walking Customer Payment
+                                    </a>
+                                </li>
+
+                                <li @if($action_name == 'agent_payment')class="nav-active" @endif>
+                                    <a href="/admin/reports/agent_payment">
+                                        Agent Payment
+                                    </a>
+                                </li>
+                                <li @if($action_name == 'payment_expense')class="nav-active" @endif>
+                                    <a href="/admin/reports/payment_expense">
+                                        Payment/Expense Report
+                                    </a>
+                                </li>
+
+                            </ul>
                         </li>
 
-                        <li @if($controller_name == 'payment_expense')class="nav-active nav-expanded" @endif>
-                        <a href="/store/payment_expense">
-                            <i class="fa fa-file" aria-hidden="true"></i>
-                            <span>Payment/Expense Report</span>
-                        </a>
 
-                    </li>
+                        {{--<li @if($controller_name == 'reports')class="nav-active nav-expanded" @endif>--}}
+                            {{--<a href="/store/reports">--}}
+                                {{--<i class="fa fa-file" aria-hidden="true"></i>--}}
+                                {{--<span>Reports</span>--}}
+                            {{--</a>--}}
+
+                        {{--</li>--}}
+
+                        {{--<li @if($controller_name == 'payment_expense')class="nav-active nav-expanded" @endif>--}}
+                        {{--<a href="/store/payment_expense">--}}
+                            {{--<i class="fa fa-file" aria-hidden="true"></i>--}}
+                            {{--<span>Payment/Expense Report</span>--}}
+                        {{--</a>--}}
+
+                    {{--</li>--}}
 
 
                     </ul>

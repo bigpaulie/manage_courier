@@ -49,7 +49,7 @@
                                 @endif
                             </div>
                         </div>
-
+                        @if(Auth::user()->user_type != 'agent')
                         <div class="form-group  @if ($errors->has('pay_amount')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">Paid Amount<span class="text-danger">*</span></label>
                             <div class="col-md-6">
@@ -59,8 +59,6 @@
                                 @endif
                             </div>
                         </div>
-
-
 
                         <div class="form-group @if ($errors->has('remaining')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">Remaining Amount</label>
@@ -81,6 +79,7 @@
                                 @endif
                             </div>
                         </div>
+                        @endif
 
                         <div class="form-group @if ($errors->has('email')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">Payment Date<span class="text-danger">*</span></label>
