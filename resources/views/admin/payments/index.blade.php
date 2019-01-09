@@ -97,7 +97,6 @@
                 <tr>
                     <th>Agent Name</th>
                     <th>Amount</th>
-                    <th class="hidden-xs hidden-sm">TDS</th>
                     <th class="text-right">Payment Date</th>
                     <th class="text-right hidden-xs hidden-sm">Payment By</th>
                     <th class="text-right">Receiver Name</th>
@@ -107,9 +106,12 @@
                 <tbody>
 
                 <tr v-for="(payment, index) in payments.data">
-                    <td data-title="Agent Name">@{{payment.agent.name}}</td>
+                    <td data-title="Agent Name">
+                        <span v-if="payment.payment_user_type == 'agent_store'">@{{payment.agent.name}}</span>
+                        <span v-if="payment.payment_user_type == 'walking_customer'">@{{payment.walking_customer_name}}</span>
+                    </td>
                     <td data-title="Amount" class="hidden-xs hidden-sm">@{{payment.amount}}</td>
-                    <td data-title="TDS" class="text-right">@{{payment.tds}}</td>
+                   
                     <td data-title="Payment Date" class="text-right hidden-xs hidden-sm">@{{payment.payment_date}}</td>
                     <td data-title="Payment By" class="text-right">@{{getPaymentType(payment.payment_by)}}</td>
                     <td data-title="Receiver Name" class="text-right">@{{payment.reciver_name}}</td>

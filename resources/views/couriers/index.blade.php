@@ -207,7 +207,7 @@
                     <th class="text-right">Shipped</th>
                     <th class="text-right hidden-xs hidden-sm">Country</th>
                     <th>Paid Amount</th>
-                    <th>Remaining</th>
+                    {{--<th>Remaining</th>--}}
                     <th>Total</th>
                     <th class="text-right">Actions</th>
                 </tr>
@@ -243,7 +243,7 @@
                     </td>
                     <td data-title="Country" class="text-right hidden-xs hidden-sm">@{{courier.receiver_country.name }}</td>
                     <td data-title="Amount"><span v-if="courier.courier_payment != null">@{{courier.courier_payment.pay_amount | exists }}</span> <span v-if="courier.courier_payment == null">NA</span></td>
-                    <td data-title="Pickup Charge"><span v-if="courier.courier_payment != null">@{{courier.courier_payment.remaining | exists }}</span><span v-if="courier.courier_payment == null">NA</span></td>
+                    {{--<td data-title="Pickup Charge"><span v-if="courier.courier_payment != null">@{{courier.courier_payment.remaining | exists }}</span><span v-if="courier.courier_payment == null">NA</span></td>--}}
                     <td data-title="Total"><span v-if="courier.courier_payment != null">@{{courier.courier_payment.total | exists }}</span><span v-if="courier.courier_payment == null">NA</span></td>
                     <td data-title="Actions" class="text-right actions">
 
@@ -281,10 +281,10 @@
                     <td>
                         <label><strong class="text-primary">Total Paid Amount: @{{total_paid_amount}}</strong></label>
                     </td>
-                    <td>
-                        <label><strong class="text-primary">Total Remaining: @{{total_remaining}}</strong></label>
+                    {{--<td>--}}
+                        {{--<label><strong class="text-primary">Total Remaining: @{{total_remaining}}</strong></label>--}}
 
-                    </td>
+                    {{--</td>--}}
 
                     <td>
                         <label><strong class="text-primary">Total: @{{total}}</strong></label>

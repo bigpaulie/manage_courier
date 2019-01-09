@@ -1,6 +1,5 @@
 @extends('layouts.admin')
 @section('date-styles')
-    <link href='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css' rel='stylesheet' type='text/css'>
 
 @endsection
 
@@ -28,15 +27,6 @@
         <div class="panel-body">
             <div class="row">
 
-
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label class="control-label">Agent Name</label>
-                        <select  class="form-control populate" id="agentSelect" name="user_id">
-
-                        </select>
-                    </div>
-                </div>
 
                 <div class="col-md-3">
                     <div class="form-group">
@@ -143,31 +133,9 @@
     <script type="text/javascript">
 
         var logged_user_id = "{{$user_id}}";
-        var apiUrl = "/api/get_store_agent?user_store_id="+logged_user_id;
+
 
         jQuery(document).ready(function($) {
-                $("#agentSelect").select2({
-                    placeholder: "Search Agent Name",
-                    allowClear: true,
-                    minimumInputLength:2,
-                    ajax: {
-                        url: apiUrl,
-                        type: "post",
-                        dataType: 'json',
-                        delay: 250,
-                        data: function (params) {
-                            return {
-                                searchTerm: params.term // search term
-                            };
-                        },
-                        processResults: function (response) {
-                            return {
-                                results: response
-                            };
-                        },
-                        cache: true
-                    }
-                });
 
         });
 
@@ -201,7 +169,7 @@
             },
             created(){
 
-                let searchURL = '/api/getAgentPayment?type=all&user_type='+this.user_type+'&logged_user_id='+this.looged_user_id;
+                let searchURL = '/api/getAgentPayment?type=all&user_type='+this.user_type+'&agent_id='+this.looged_user_id;
                 searchURL+='&from_date='+this.from_date+'&end_date='+this.end_date
                 axios.get(searchURL).then(response => {
                     this.agent_payments = response.data.agent_payment_data;
@@ -218,8 +186,8 @@
 
                     var agent_id = $("#agentSelect").val();
 
-                    let searchURL = '/api/getAgentPayment?type=all&user_type='+this.user_type+'&logged_user_id='+this.looged_user_id;
-                    searchURL+='&from_date='+this.from_date+'&end_date='+this.end_date+'&agent_id='+agent_id;
+                    let searchURL = '/api/getAgentPayment?type=all&user_type='+this.user_type+'&agent_id='+this.looged_user_id;
+                    searchURL+='&from_date='+this.from_date+'&end_date='+this.end_date;
                     axios.get(searchURL).then(response => {
                         this.agent_payments = response.data.agent_payment_data;
                         this.total_amount = response.data.total_amount;

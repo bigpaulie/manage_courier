@@ -208,6 +208,13 @@
                             </a>
                         </li>
 
+                        <li @if($controller_name == 'reports')class="nav-active nav-expanded" @endif>
+                            <a href="/agent/reports/agent_payment">
+                                <i class="fa fa-file" aria-hidden="true"></i>
+                                <span>Agent Payment Report</span>
+                            </a>
+                        </li>
+
                     </ul>
                 </nav>
             @endif
@@ -270,18 +277,18 @@
                             <ul class="nav nav-children">
 
                                 <li @if($action_name == 'walking_customer')class="nav-active" @endif>
-                                    <a href="/admin/reports/walking_customer">
+                                    <a href="/store/reports/walking_customer">
                                         Walking Customer Payment
                                     </a>
                                 </li>
 
                                 <li @if($action_name == 'agent_payment')class="nav-active" @endif>
-                                    <a href="/admin/reports/agent_payment">
+                                    <a href="/store/reports/agent_payment">
                                         Agent Payment
                                     </a>
                                 </li>
                                 <li @if($action_name == 'payment_expense')class="nav-active" @endif>
-                                    <a href="/admin/reports/payment_expense">
+                                    <a href="/store/reports/payment_expense">
                                         Payment/Expense Report
                                     </a>
                                 </li>

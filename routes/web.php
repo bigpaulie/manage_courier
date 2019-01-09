@@ -96,6 +96,7 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/generate_barcode/{id}','CourierController@generateBarcode')->name('agent.generate_barcode');
         Route::get('/couriers/box_details/{id}', 'CourierController@boxDetails')->name('couriers.box_details');
         Route::get('/courier_report/{id}','CourierController@courierReport')->name('courierReport');
+        Route::get('/reports/agent_payment','ReportController@agentPayment')->name('reports.agent_payment');
 
 
         Route::resource('couriers', 'CourierController');

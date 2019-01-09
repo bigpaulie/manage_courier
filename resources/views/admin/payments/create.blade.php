@@ -43,7 +43,24 @@
                         <div class="row">
                             <div class="col-md-6">
 
-                                <div class="form-group @if ($errors->has('user_id')) has-error @endif">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Payment Type:<span class="text-danger">*</span> </label>
+                                    <div class="col-sm-8">
+
+                                        <label class="checkbox-inline">
+                                            <input type="radio" name="payment_user_type" value="agent_store" v-model="payment_user_type"> Agent/Store
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="radio" name="payment_user_type" value="walking_customer" v-model="payment_user_type"> Walking Customer
+                                        </label>
+
+                                        @if ($errors->has('payment_user_type'))
+                                            <label for="payment_user_type" class="error">{{ $errors->first('payment_user_type') }}</label>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group @if ($errors->has('user_id')) has-error @endif" v-show="payment_user_type == 'agent_store'">
                                     <label class="col-sm-4 control-label">Agent Name:<span class="text-danger">*</span> </label>
                                     <div class="col-sm-8">
 
@@ -52,6 +69,19 @@
                                         </select>
                                         @if ($errors->has('user_id'))
                                             <label for="user_id" class="error">{{ $errors->first('user_id') }}</label>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group @if ($errors->has('customer_phone')) has-error @endif" v-show="payment_user_type == 'walking_customer'">
+                                    <label class="col-sm-4 control-label">Customer Name:<span class="text-danger">*</span> </label>
+                                    <div class="col-sm-8">
+
+                                        <select  class="form-control populate" id="customerPhone" name="customer_phone">
+
+                                        </select>
+                                        @if ($errors->has('customer_phone'))
+                                            <label for="customer_phone" class="error">{{ $errors->first('customer_phone') }}</label>
                                         @endif
                                     </div>
                                 </div>
@@ -93,10 +123,10 @@
                                         @endif
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">TDS: </label>
+                                <div class="form-group" v-if="payment_user_type == 'walking_customer'">
+                                    <label class="col-sm-4 control-label">Discount: </label>
                                     <div class="col-sm-8">
-                                        <input type="text" name="tds" class="form-control"  value="{{old('tds')}}" placeholder="">
+                                        <input type="text" name="discount" class="form-control"  value="{{old('discount')}}" placeholder="">
                                     </div>
                                 </div>
 
@@ -296,7 +326,7 @@
         var user_type = "{{$user_type}}";
         var logged_user_id = "{{$logged_user_id}}";
 
-        jQuery(document).ready(function($) {
+        $(document).ready(function($) {
 
             if(user_type == 'admin'){
               var apiUrl = "/api/get_user_name";
@@ -307,9 +337,37 @@
             $("#agentSelect").select2({
                 placeholder: "Select a Agent Name",
                 allowClear: true,
+                width: '100%',
                 minimumInputLength:2,
                 ajax: {
                     url: apiUrl,
+                    type: "post",
+                    dataType: 'json',
+                    delay: 250,
+
+                    data: function (params) {
+                        return {
+                            searchTerm: params.term // search term
+                        };
+                    },
+                    processResults: function (response) {
+                        return {
+                            results: response
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            var customerUrl = "/api/get_walking_customer?user_store_id="+logged_user_id;
+
+            $("#customerPhone").select2({
+                placeholder: "Select Customer Name",
+                allowClear: true,
+                minimumInputLength:2,
+                width: '100%',
+                ajax: {
+                    url: customerUrl,
                     type: "post",
                     dataType: 'json',
                     delay: 250,
@@ -327,7 +385,11 @@
                 }
             });
 
+
+
         });
+
+
         var old_payment_by = "{{old('payment_by')}}";
         var paymentby ='cash';
           if(old_payment_by !=""){
@@ -340,7 +402,8 @@
                 net_banking:false,
                 cheque_details:false,
                 payment_type:paymentby,
-                payment_name:"Cash"
+                payment_name:"Cash",
+                payment_user_type:"{{old('payment_user_type','agent_store')}}",
 
             },
             created(){
@@ -361,6 +424,8 @@
                     this.payment_name="Net Banking";
                 }
             },
+
+
 
 
             methods: {

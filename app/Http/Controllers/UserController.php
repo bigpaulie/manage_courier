@@ -216,4 +216,28 @@ class UserController extends Controller
         }
         return $user_data;
     }
+
+
+    public function getWalkingCustomer(Request $request){
+        $input = $request->all();
+        $search_key = $input['searchTerm'];
+        $store_id = $input['user_store_id'];
+
+        $sender_phones =  Courier::where('user_id',$store_id)
+                                  ->where('s_phone','like',"%{$search_key}%")
+                                  ->groupBy('s_phone')
+                                  ->get();
+
+        $user_data=[];
+        foreach ($sender_phones as $sender){
+            $temp=[];
+            $temp['id']= $sender->s_phone;
+            $temp['text']= $sender->s_phone." - ".$sender->s_name." - ".$sender->s_city;
+            $user_data[]=$temp;
+        }
+        return $user_data;
+
+
+    }
+
 }

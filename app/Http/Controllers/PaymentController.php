@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Bank;
 use App\Models\Payment;
+use App\Models\Courier;
 use Validator;
 
 class PaymentController extends Controller
@@ -101,13 +102,30 @@ class PaymentController extends Controller
 
 
         $fields_array = [
-            'user_id' => 'required',
+
             'amount' => 'required',
             'payment_by' => 'required',
             'payment_date' => 'required',
 
 
         ];
+
+        if($request->payment_user_type == 'agent_store'){
+
+            $user_id_field = ['user_id'=>'required',
+            ];
+
+            $fields_array = $fields_array+$user_id_field;
+        }
+
+        if($request->payment_user_type == 'walking_customer'){
+
+            $customer_phone_field = ['customer_phone'=>'required',
+            ];
+
+            $fields_array = $fields_array+$customer_phone_field;
+        }
+
         if($request->payment_by == 'cash'){
 
             $cash_fields = ['receiver_cash_name'=>'required',
@@ -147,13 +165,27 @@ class PaymentController extends Controller
 
 
         $input = $request->all();
+
         $payment = new Payment();
-        $payment->user_id = $input['user_id'];
+        $payment->payment_user_type = $input['payment_user_type'];
+
+        if($payment->payment_user_type == 'agent_store'){
+            $payment->user_id = $input['user_id'];
+        }
+        if($payment->payment_user_type == 'walking_customer'){
+
+            $payment->customer_phone = $input['customer_phone'];
+            $payment->discount = $input['discount'];
+            $walking_customer = Courier::where('s_phone',$payment->customer_phone)->first();
+            $payment->walking_customer_name = $walking_customer->s_name." - ".$walking_customer->s_city;
+        }
+
+
         $payment->bank_id = $input['bank_id'];
         $payment->payment_date = date('Y-m-d',strtotime($input['payment_date']));
         $payment->payment_by = $input['payment_by'];
         $payment->amount = $input['amount'];
-        $payment->tds = $input['tds'];
+
         $payment->remark = $input['remark'];
         $payment->created_by = \Auth::user()->id;
         $payment->created_user_type = \Auth::user()->user_type;
@@ -219,13 +251,32 @@ class PaymentController extends Controller
     public function update(Request $request, $id)
     {
         $fields_array = [
-            'user_id' => 'required',
+
             'amount' => 'required',
             'payment_by' => 'required',
             'payment_date' => 'required',
 
 
         ];
+
+
+        if($request->payment_user_type == 'agent_store'){
+
+            $user_id_field = ['user_id'=>'required',
+            ];
+
+            $fields_array = $fields_array+$user_id_field;
+        }
+
+        if($request->payment_user_type == 'walking_customer'){
+
+            $customer_phone_field = ['customer_phone'=>'required',
+            ];
+
+            $fields_array = $fields_array+$customer_phone_field;
+        }
+
+
         if($request->payment_by == 'cash'){
 
             $cash_fields = ['receiver_cash_name'=>'required',
@@ -266,12 +317,27 @@ class PaymentController extends Controller
 
         $input = $request->all();
         $payment = Payment::find($id);
-        $payment->user_id = $input['user_id'];
+
+        $payment->payment_user_type = $input['payment_user_type'];
+
+        if($payment->payment_user_type == 'agent_store'){
+            $payment->user_id = $input['user_id'];
+        }
+        if($payment->payment_user_type == 'walking_customer'){
+
+            $payment->customer_phone = $input['customer_phone'];
+            $payment->discount = $input['discount'];
+            $walking_customer = Courier::where('s_phone',$payment->customer_phone)->first();
+            $payment->walking_customer_name = $walking_customer->s_name." - ".$walking_customer->s_city;
+        }
+
+
+
         $payment->bank_id = $input['bank_id'];
         $payment->payment_date = date('Y-m-d',strtotime($input['payment_date']));
         $payment->payment_by = $input['payment_by'];
         $payment->amount = $input['amount'];
-        $payment->tds = $input['tds'];
+
         $payment->remark = $input['remark'];
         $payment->created_by = \Auth::user()->id;
         $payment->created_user_type = \Auth::user()->user_type;

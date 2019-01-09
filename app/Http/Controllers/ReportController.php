@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Courier;
 use App\Models\Payment;
 use App\Models\Expense;
+use App\Models\User_profile;
+use App\Models\Courier_payment;
+
 
 
 class ReportController extends Controller
@@ -178,8 +181,13 @@ class ReportController extends Controller
 
         }else if($user_type == 'store'){
             $data['user_id']=\Auth::user()->id;
+            $data['user_type']=\Auth::user()->user_type;
             return view('store.reports.agent_payment',$data);
 
+        }else if($user_type == 'agent'){
+            $data['user_id']=\Auth::user()->id;
+            $data['user_type']=\Auth::user()->user_type;
+            return view('agent.reports.agent_payment',$data);
         }
     }
 
@@ -194,6 +202,63 @@ class ReportController extends Controller
             return view('store.reports.payment_expense',$data);
 
         }
+    }
+
+    public function getAgentPayment(Request $request){
+
+        $input = $request->all();
+        $logged_user_id= isset($input['logged_user_id'])?$input['logged_user_id']:"";
+        $from_date = isset($input['from_date'])?date('Y-m-d',strtotime($input['from_date'])):'';
+        $end_date = isset($input['end_date'])?date('Y-m-d',strtotime($input['end_date'])):'';
+        $agent_id = isset($input['agent_id'])?$input['agent_id']:'';
+        if(!empty($agent_id) && $agent_id > 0){
+            $agent_ids = [$agent_id];
+
+        }else{
+            $agent_ids = User_profile::where('store_id',$logged_user_id)->pluck('user_id')->toArray();
+        }
+
+        $courier_payments = Courier_payment::with('agent')
+                                            ->whereIn('user_id',$agent_ids)
+                                            ->whereDate('payment_date','>=', $from_date)
+                                            ->whereDate('payment_date', '<=',$end_date)
+                                            ->orderBy('payment_date','desc')
+                                            ->get();
+        $agent_payments =   Payment::with('agent')
+                                    ->whereIn('user_id',$agent_ids)
+                                    ->whereDate('payment_date','>=', $from_date)
+                                    ->whereDate('payment_date', '<=',$end_date)
+                                    ->orderBy('payment_date','desc')
+                                    ->get();
+
+
+        $total_amount = $courier_payments->sum('total');
+        $total_paid_amount = $agent_payments->sum('amount');
+
+        $cp_grouped = $courier_payments->groupBy('payment_date');
+
+        $ap_grouped = $agent_payments->groupBy('payment_date');
+
+
+        $agent_payment_arr = array_merge_recursive($cp_grouped->toArray(),$ap_grouped->toArray());
+
+        $agent_payment_data=[];
+        foreach ($agent_payment_arr as $key => $pe) {
+            foreach ($pe as $key => $value) {
+                $agent_payment_data[]=$value;
+            }
+
+        }
+
+        $response_data['agent_payment_data']=$agent_payment_data;
+
+        $response_data['total_amount']=$total_amount;
+        $response_data['total_paid_amount']=$total_paid_amount;
+
+        return response()->json($response_data);
+
+
+
     }
 
 }
