@@ -15,7 +15,11 @@ class Payment extends Model
         return $this->belongsTo('App\Models\User','user_id','id');
     }
 
-     public function user(){
+    public function user(){
         return $this->belongsTo('App\Models\User','user_id','id');
+    }
+
+    public function courier(){
+        return $this->belongsTo('App\Models\Courier','customer_phone','s_phone');
     }
 }

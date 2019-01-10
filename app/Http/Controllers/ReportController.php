@@ -167,6 +167,7 @@ class ReportController extends Controller
 
         }else if($user_type == 'store'){
             $data['user_id']=\Auth::user()->id;
+            $data['user_type']=\Auth::user()->user_type;
             return view('store.reports.walking_customer',$data);
 
         }
@@ -206,54 +207,122 @@ class ReportController extends Controller
 
     public function getAgentPayment(Request $request){
 
-        $input = $request->all();
-        $logged_user_id= isset($input['logged_user_id'])?$input['logged_user_id']:"";
-        $from_date = isset($input['from_date'])?date('Y-m-d',strtotime($input['from_date'])):'';
-        $end_date = isset($input['end_date'])?date('Y-m-d',strtotime($input['end_date'])):'';
-        $agent_id = isset($input['agent_id'])?$input['agent_id']:'';
-        if(!empty($agent_id) && $agent_id > 0){
-            $agent_ids = [$agent_id];
+    $input = $request->all();
+    $logged_user_id= isset($input['logged_user_id'])?$input['logged_user_id']:"";
+    $from_date = isset($input['from_date'])?date('Y-m-d',strtotime($input['from_date'])):'';
+    $end_date = isset($input['end_date'])?date('Y-m-d',strtotime($input['end_date'])):'';
+    $agent_id = isset($input['agent_id'])?$input['agent_id']:'';
+    if(!empty($agent_id) && $agent_id > 0){
+        $agent_ids = [$agent_id];
 
-        }else{
-            $agent_ids = User_profile::where('store_id',$logged_user_id)->pluck('user_id')->toArray();
+    }else{
+        $agent_ids = User_profile::where('store_id',$logged_user_id)->pluck('user_id')->toArray();
+    }
+
+    $courier_payments = Courier_payment::with('agent')
+        ->whereIn('user_id',$agent_ids)
+        ->whereDate('payment_date','>=', $from_date)
+        ->whereDate('payment_date', '<=',$end_date)
+        ->orderBy('payment_date','desc')
+        ->get();
+    $agent_payments =   Payment::with('agent')
+        ->whereIn('user_id',$agent_ids)
+        ->whereDate('payment_date','>=', $from_date)
+        ->whereDate('payment_date', '<=',$end_date)
+        ->orderBy('payment_date','desc')
+        ->get();
+
+
+    $total_amount = $courier_payments->sum('total');
+    $total_paid_amount = $agent_payments->sum('amount');
+
+    $cp_grouped = $courier_payments->groupBy('payment_date');
+
+    $ap_grouped = $agent_payments->groupBy('payment_date');
+
+
+    $agent_payment_arr = array_merge_recursive($cp_grouped->toArray(),$ap_grouped->toArray());
+
+    $agent_payment_data=[];
+    foreach ($agent_payment_arr as $key => $pe) {
+        foreach ($pe as $key => $value) {
+            $agent_payment_data[]=$value;
         }
 
-        $courier_payments = Courier_payment::with('agent')
-                                            ->whereIn('user_id',$agent_ids)
-                                            ->whereDate('payment_date','>=', $from_date)
-                                            ->whereDate('payment_date', '<=',$end_date)
+    }
+
+    $response_data['agent_payment_data']=$agent_payment_data;
+
+    $response_data['total_amount']=$total_amount;
+    $response_data['total_paid_amount']=$total_paid_amount;
+
+    return response()->json($response_data);
+
+
+
+}
+
+    public function getWalkingCustomerPayment(Request $request){
+
+        $input = $request->all();
+        $logged_user_id= isset($input['logged_user_id'])?$input['logged_user_id']:"";
+       // $from_date = isset($input['from_date'])?date('Y-m-d',strtotime($input['from_date'])):'';
+        //$end_date = isset($input['end_date'])?date('Y-m-d',strtotime($input['end_date'])):'';
+        $customer_phone = isset($input['customer_phone'])?$input['customer_phone']:'';
+        if(!empty($customer_phone)){
+            $courier_Ids = Courier::where('s_phone',$customer_phone)->pluck('id')->toArray();
+
+        }else{
+            $courier_Ids = Courier::where('user_id',$logged_user_id)->pluck('id')->toArray();
+        }
+
+        $courier_payments = Courier_payment::with('courier')
+                                            ->where('user_id',$logged_user_id)
+                                            ->whereIn('courier_id',$courier_Ids)
+                                           // ->whereDate('payment_date','>=', $from_date)
+                                           // ->whereDate('payment_date', '<=',$end_date)
                                             ->orderBy('payment_date','desc')
                                             ->get();
-        $agent_payments =   Payment::with('agent')
-                                    ->whereIn('user_id',$agent_ids)
-                                    ->whereDate('payment_date','>=', $from_date)
-                                    ->whereDate('payment_date', '<=',$end_date)
-                                    ->orderBy('payment_date','desc')
-                                    ->get();
 
 
-        $total_amount = $courier_payments->sum('total');
-        $total_paid_amount = $agent_payments->sum('amount');
+        $walking_payments =   Payment::with('courier')->where('created_by',$logged_user_id)
+                                        ->where('payment_user_type','walking_customer')
+                                        ->where('customer_phone',$customer_phone)
+                                       // ->whereDate('payment_date','>=', $from_date)
+                                        //->whereDate('payment_date', '<=',$end_date)
+                                        ->orderBy('payment_date','desc')
+                                        ->get();
+
+
+
+
+        $total_courier_amount = $courier_payments->sum('total');
+        $total_courier_paid_amount = $courier_payments->sum('pay_amount');
+        $total_courier_discount = $courier_payments->sum('discount');
+
+        $total_walking_payment = $walking_payments->sum('amount');
+        $total_walking_discount = $walking_payments->sum('discount');
 
         $cp_grouped = $courier_payments->groupBy('payment_date');
 
-        $ap_grouped = $agent_payments->groupBy('payment_date');
+        $wp_grouped = $walking_payments->groupBy('payment_date');
 
 
-        $agent_payment_arr = array_merge_recursive($cp_grouped->toArray(),$ap_grouped->toArray());
+        $walking_payment_arr = array_merge_recursive($cp_grouped->toArray(),$wp_grouped->toArray());
 
-        $agent_payment_data=[];
-        foreach ($agent_payment_arr as $key => $pe) {
+        $walking_payment_data=[];
+        foreach ($walking_payment_arr as $key => $pe) {
             foreach ($pe as $key => $value) {
-                $agent_payment_data[]=$value;
+                $walking_payment_data[]=$value;
             }
 
         }
 
-        $response_data['agent_payment_data']=$agent_payment_data;
+        $response_data['walking_payment_data']=$walking_payment_data;
 
-        $response_data['total_amount']=$total_amount;
-        $response_data['total_paid_amount']=$total_paid_amount;
+        $response_data['total_amount']=$total_courier_amount;
+        $response_data['total_paid_amount']=$total_courier_paid_amount+$total_walking_payment;
+        $response_data['total_discount']=$total_courier_discount+$total_walking_discount;
 
         return response()->json($response_data);
 

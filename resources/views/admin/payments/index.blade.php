@@ -111,7 +111,7 @@
                         <span v-if="payment.payment_user_type == 'walking_customer'">@{{payment.walking_customer_name}}</span>
                     </td>
                     <td data-title="Amount" class="hidden-xs hidden-sm">@{{payment.amount}}</td>
-                   
+
                     <td data-title="Payment Date" class="text-right hidden-xs hidden-sm">@{{payment.payment_date}}</td>
                     <td data-title="Payment By" class="text-right">@{{getPaymentType(payment.payment_by)}}</td>
                     <td data-title="Receiver Name" class="text-right">@{{payment.reciver_name}}</td>

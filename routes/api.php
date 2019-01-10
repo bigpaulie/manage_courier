@@ -34,6 +34,9 @@ Route::get('/get_recipient_address','CourierController@getRecipientAddress')->na
 Route::get('/generate_payment_expense','ReportController@generatePaymentExpense')->name('generate_report');
 Route::get('/getAgentPayment','ReportController@getAgentPayment')->name('getAgentPayment');
 Route::post('/get_walking_customer','UserController@getWalkingCustomer')->name('get_walking_customer');
+Route::get('/getWalkingCustomerPayment','ReportController@getWalkingCustomerPayment')->name('getWalkingCustomerPayment');
+
+
 
 
 
