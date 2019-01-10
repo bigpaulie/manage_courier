@@ -85,13 +85,13 @@ class ReportController extends Controller
     public function generatePaymentExpense(Request $request){
 
 
-         $input = $request->all();
+        $input = $request->all();
         $user_id= isset($input['user_id'])?$input['user_id']:"";
         $from_date = isset($input['from_date'])?date('Y-m-d',strtotime($input['from_date'])):'';
         $end_date = isset($input['end_date'])?date('Y-m-d',strtotime($input['end_date'])):'';
        
         if($user_id > 0){
-            $where_p[] = ['payments.user_id', $user_id];
+            $where_p[] = ['payments.created_by', $user_id];
              $where_ex[] = ['expenses.user_id', $user_id];
 
         }
@@ -102,9 +102,26 @@ class ReportController extends Controller
             $payments= Payment::with('user')->OrderBy('updated_at','desc')
                                 ->whereDate('payment_date','>=', $from_date)
                                 ->whereDate('payment_date', '<=',$end_date)
-                                ->where($where_p);
+                                ->where($where_p)
+                                ->where('payment_user_type','agent_store');
 
-             $expenses= Expense::with(['expense_type','user'])->OrderBy('updated_at','desc')
+            $walking_payments= Payment::with('user')->OrderBy('updated_at','desc')
+                                ->whereDate('payment_date','>=', $from_date)
+                                ->whereDate('payment_date', '<=',$end_date)
+                                ->where($where_p)
+                                ->where('payment_user_type','walking_customer');
+
+            $courier_Ids = Courier::where('user_id',$user_id)->pluck('id')->toArray();
+
+            $courier_payments = Courier_payment::where('user_id',$user_id)
+                                            ->whereIn('courier_id',$courier_Ids)
+                                             ->whereDate('payment_date','>=', $from_date)
+                                             ->whereDate('payment_date', '<=',$end_date)
+                                            ->orderBy('payment_date','desc');
+
+
+
+            $expenses= Expense::with(['expense_type','user'])->OrderBy('updated_at','desc')
                                 ->whereDate('expense_date','>=', $from_date)
                                 ->whereDate('expense_date', '<=',$end_date)
                                 ->where($where_ex);
@@ -113,7 +130,22 @@ class ReportController extends Controller
 
             $payments= Payment::with('user')->OrderBy('updated_at','desc')
                                             ->whereDate('payment_date','>=', $from_date)
-                                            ->whereDate('payment_date', '<=',$end_date);
+                                            ->whereDate('payment_date', '<=',$end_date)
+                                            ->where('payment_user_type','agent_store');
+
+
+            $walking_payments= Payment::with('user')->OrderBy('updated_at','desc')
+                                        ->whereDate('payment_date','>=', $from_date)
+                                        ->whereDate('payment_date', '<=',$end_date)
+                                        ->where('payment_user_type','walking_customer');
+
+
+
+            $courier_payments = Courier_payment::whereDate('payment_date','>=', $from_date)
+                                                ->whereDate('payment_date', '<=',$end_date)
+                                                ->whereNotNull('pay_amount')
+                                                ->orderBy('payment_date','desc');
+
 
             $expenses= Expense::with(['expense_type','user'])
                                 ->OrderBy('updated_at','desc')
@@ -126,20 +158,37 @@ class ReportController extends Controller
 
 
         $payment_data = $payments->get();
+        $walking_payment_data = $walking_payments->get();
+        $courier_payment_data = $courier_payments->get();
+
 
         $expense_data = $expenses->get();
 
 
         $payment_grouped = $payment_data->groupBy('payment_date');
+        $walking_payment_grouped = $walking_payment_data->groupBy('payment_date');
+        $courier_payment_grouped = $courier_payment_data->groupBy('payment_date');
 
         $expense_grouped = $expense_data->groupBy('expense_date');
 
 
         $total_payment = $payments->sum('amount');
-        $total_expense = $expenses->sum('amount');     
+
+        $total_expense = $expenses->sum('amount');
+
+        $total_courier_payment = $courier_payments->sum('pay_amount');
+
+        $total_walking_payments = $walking_payments->sum('amount');
+        //echo $total_walking_payments;exit;
+
+        $all_total = $total_payment+$total_courier_payment+$total_walking_payments;
        // dd($expense_grouped->toArray());
 
-        $payment_expense_arr = array_merge_recursive($payment_grouped->toArray(),$expense_grouped->toArray());
+        $payment_expense_arr = array_merge_recursive($payment_grouped->toArray(),
+                                                     $walking_payment_grouped->toArray(),
+                                                     $courier_payment_grouped->toArray(),
+                                                     $expense_grouped->toArray()
+                                                    );
 
         $payments_expense_data=[];
         foreach ($payment_expense_arr as $key => $pe) {
@@ -149,9 +198,9 @@ class ReportController extends Controller
            
         }
        // dd($payments_expense_data);
-         $response_data['total_payment']=$total_payment;
+         $response_data['total_payment']=$all_total;
          $response_data['total_expense']=$total_expense;
-         $response_data['total']=$total_payment - $total_expense;
+         $response_data['total']=$all_total - $total_expense;
         $response_data['payments_expense_data']=$payments_expense_data;
 
         return response()->json($response_data);

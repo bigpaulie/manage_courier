@@ -90,19 +90,17 @@
                     <input type="text"  class="form-control" name="tracking_number" v-model="traking_number" v-on:keyup.enter="onEnter">
                 </div>
             </div>
-            {{--@if(Auth::user()->user_type == 'agent' || Auth::user()->user_type == 'store')--}}
-                    {{--<div class="col-md-2">--}}
-                        {{--<div class="form-group">--}}
-                            {{--<label class="control-label text-bold">Total Charge: <span class="text-primary">{{$total_charge}}</span></label>--}}
-                        {{--</div>--}}
-                        {{--<div class="form-group">--}}
-                            {{--<label class="control-label text-bold">Total Payout: <span class="text-primary">{{$total_payout}}</span></label>--}}
-                        {{--</div>--}}
-                        {{--<div class="form-group">--}}
-                            {{--<label class="control-label text-bold">Grand Total: <span class="@if($grand_total < 0) text-danger @else text-success @endif">{{$grand_total}}</span></label>--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
-            {{--@endif--}}
+            @if(Auth::user()->user_type == 'store')
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">Agent Name</label>
+                        <select  class="form-control populate" id="agentSelect" name="agent_id">
+
+                        </select>
+                    </div>
+                </div>
+            @endif
 
         </div>
         <div class="row">
@@ -368,6 +366,31 @@
                     cache: true
                 }
             });
+            var logged_user_id = "{{Auth::user()->id}}";
+
+            var apiUrl = "/api/get_store_agent?user_store_id="+logged_user_id;
+            $("#agentSelect").select2({
+                placeholder: "Search Agent",
+                allowClear: true,
+                minimumInputLength:2,
+                ajax: {
+                    url: apiUrl,
+                    type: "post",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            searchTerm: params.term // search term
+                        };
+                    },
+                    processResults: function (response) {
+                        return {
+                            results: response
+                        };
+                    },
+                    cache: true
+                }
+            });
 
         });
 
@@ -442,7 +465,13 @@
                 searchCouriers(page = 1){
 
                     this.filter_type="filter";
-                    var agent_id = $("#userSelect").val();
+                    if(this.user_type == 'admin'){
+                        var agent_id = $("#userSelect").val();
+
+                    }else if(this.user_type =='store'){
+                        var agent_id = $("#agentSelect").val();
+
+                    }
 
                     let searchURL = '/api/getCouriers?page='+page+'&type=filter&traking_number='+this.traking_number;
                     searchURL+='&from_date='+this.from_date+'&end_date='+this.end_date

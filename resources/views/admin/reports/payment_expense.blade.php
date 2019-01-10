@@ -68,7 +68,7 @@
 
                 <div class="col-md-3">
                     <div class="form-group">
-                       <button type="button" class="btn btn-success" @click="searchEP"><i class="fa fa-search"></i> Search</button>
+                       <button type="button" class="btn btn-success" @click="searchEP" style="margin-top: 25px;"><i class="fa fa-search"></i> Search</button>
                     </div>
                 </div>
 
@@ -87,11 +87,11 @@
                 <thead>
                 <tr>
                     
-                    <th>Agent/Store Name</th>
+
                     <th class="text-right">Date</th>
                     <th class="text-right">Payment Type</th>
                     <th>Payment(Cr.)</th>
-                    <th>TDS</th>
+
                     <th class="text-right">Expense(Dr.)</th>
                     <th>Total</th>
                     
@@ -100,25 +100,37 @@
                 </thead>
                 <tbody>
                 <tr v-for="(ex, index) in payments_expenses">
-                    <td data-title="Name">@{{ex.user.name}}</td>
-                    <td data-title="Date">@{{ex.payment_date}} @{{ex.expense_date}}</td>
-                    <td data-title="Payment Type">@{{ex.payment_by | capitalize}}</td>
 
-                    <td data-title="Payment(Cr.)"><span v-if="ex.payment_date">@{{ex.amount}}</span></td>
-                    <td data-title="TDS">@{{ex.tds}}</td>
-                    <td data-title="Expense(Dr.)"><span v-if="ex.expense_type_id">@{{ex.amount}}</span></td>
+                    <td data-title="Date">@{{ex.payment_date}} @{{ex.expense_date}}</td>
+                    <td data-title="Payment Type">
+
+
+                        <span v-if="ex.payment_user_type">@{{ex.payment_by | capitalize}}</span>
+                        <span v-if="ex.courier_id">Courier</span>
+                        <span v-if="ex.expense_type_id">@{{ex.expense_type.name}}</span>
+                    </td>
+
+                    <td data-title="Payment(Cr.)">
+                        <span v-if="ex.payment_date">@{{ex.amount}}</span>
+                        <span v-if="ex.courier_id">@{{ex.pay_amount}}</span>
+
+                    </td>
+
+                    <td data-title="Expense(Dr.)">
+                        <span v-if="ex.expense_type_id">@{{ex.amount}}</span>
+                    </td>
                     <td></td>
-                 </tr>
+                </tr>
 
                 <tr v-if="typeof payments_expenses != 'undefined' && payments_expenses.length > 0">
-                    <td colspan="3">
+                    <td colspan="2">
 
                     </td>
 
                     <td>
                         <label><strong class="text-primary">Total Payment: @{{total_payment}}</strong></label>
                     </td>
-                    <td></td>
+
                     <td>
                         <label><strong class="text-primary">Total Expense: @{{total_expense}}</strong></label>
 
