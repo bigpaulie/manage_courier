@@ -26,9 +26,12 @@ Route::get('/welcome_agent', function () {
 });
 
 Route::get('/test', function () {
-    echo \Hash::make('agent@123');
-    //$courier = \App\Models\Courier::find(25);
-    //return view('exports.courier')->with('courier',$courier);
+    $couriers = \App\Models\Courier::whereNull('courier_date')->get();
+    foreach ($couriers as $cour){
+        $courier = \App\Models\Courier::find($cour->id);
+        $courier->courier_date = date('Y-m-d',strtotime($cour->created_at));
+        $courier->save();
+    }
 });
 
 

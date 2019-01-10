@@ -357,9 +357,15 @@
 
 
                                 <div class="form-group">
-                                    <label class="col-sm-4 control-label">Pickup: </label>
+                                    <label class="col-sm-4 control-label">Date:<span class="text-danger">*</span></label>
                                     <div class="col-sm-8">
-                                            <input type="checkbox" name="courier_status" class="" value="pickup" @if('pickup' == old('courier_status')) {{"checked"}} @endif >
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                                <input type="text" name="courier_date" data-plugin-datepicker="" class="form-control" value="{{date('m/d/Y')}}">
+                                            </div>
+
                                     </div>
                                 </div>
 

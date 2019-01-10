@@ -24,7 +24,7 @@ class Courier extends Model
         's_country', 's_state', 's_city','s_email','s_zip_code',
         'r_name', 'r_company', 'r_address1','r_address2',
         'r_phone', 'r_country', 'r_state','r_city','r_email','r_zip_code',
-        'no_of_boxes','description'
+        'no_of_boxes','description','courier_date'
     ];
 
     public function agent(){

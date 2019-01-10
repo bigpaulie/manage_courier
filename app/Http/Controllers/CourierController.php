@@ -114,6 +114,7 @@ class CourierController extends Controller
         $input['status_id']=$status->id;
         $input['unique_name']=$this->getCourierUniqueName(\Auth::user()->id);
         $input['barcode_no']= rand();
+        $input['courier_date']=date('Y-m-d',strtotime($input['courier_date']));
         $courier = Courier::create($input);
         $courier_id = $courier->id;
 
@@ -124,7 +125,7 @@ class CourierController extends Controller
         //$shippment->content_type_id = $input['content_type_id'];
         $shippment->weight = $input['weight'];
         $shippment->carriage_value = $input['carriage_value'];
-        $shippment->courier_status = isset($input['courier_status'])?$input['courier_status']:"drop";
+       // $shippment->courier_status = isset($input['courier_status'])?$input['courier_status']:"drop";
         $shippment->save();
 
         if(\Auth::user()->user_type == 'agent'){
@@ -226,6 +227,7 @@ class CourierController extends Controller
         $courier = Courier::find($id);
         $courier->s_name = $input['s_name'];
         $courier->s_company = $input['s_company'];
+        $courier->courier_date=date('Y-m-d',strtotime($input['courier_date']));
         $courier->s_address1 = $input['s_address1'];
         $courier->s_address2 = $input['s_address2'];
         $courier->s_phone = $input['s_phone'];
@@ -252,7 +254,7 @@ class CourierController extends Controller
         //$shippment->content_type_id = $input['content_type_id'];
         $shippment->weight = $input['weight'];
         $shippment->carriage_value = $input['carriage_value'];
-        $shippment->courier_status = isset($input['courier_status'])?$input['courier_status']:"drop";
+       // $shippment->courier_status = isset($input['courier_status'])?$input['courier_status']:"drop";
         $shippment->save();
         $request->session()->flash('message', 'Courier has been updated successfully!');
         return redirect('/'.\Auth::user()->user_type.'/couriers/box_details/'.$id);
@@ -300,26 +302,26 @@ class CourierController extends Controller
             if($user_type == 'agent') {
                 $user_ids = [$user_id];
                 $couriers = $courier_joins
-                    ->whereDate('updated_at', '>=', date('Y-m-d'))
-                    ->whereDate('updated_at', '<=', date('Y-m-d'))
+                    ->whereDate('courier_date', '>=', date('Y-m-d'))
+                    ->whereDate('courier_date', '<=', date('Y-m-d'))
                     ->whereIn('couriers.user_id', $user_ids)
-                    ->OrderBy('updated_at', 'desc');
+                    ->OrderBy('courier_date', 'desc');
             }
             elseif($user_type == 'store'){
                 $user_ids = User_profile::where('store_id',$user_id)->pluck('user_id')->toArray();
                 array_push($user_ids,[$user_id]);
                 $couriers= $courier_joins
-                    ->whereDate('updated_at','>=', date('Y-m-d'))
-                    ->whereDate('updated_at', '<=',date('Y-m-d'))
+                    ->whereDate('courier_date','>=', date('Y-m-d'))
+                    ->whereDate('courier_date', '<=',date('Y-m-d'))
                     ->whereIn('couriers.user_id',$user_ids)
-                    ->OrderBy('updated_at','desc');
+                    ->OrderBy('courier_date','desc');
 
             }else{
 
                 $couriers= $courier_joins
-                                    ->whereDate('updated_at','>=', date('Y-m-d'))
-                                    ->whereDate('updated_at', '<=',date('Y-m-d'))
-                                    ->OrderBy('updated_at','desc');
+                                    ->whereDate('courier_date','>=', date('Y-m-d'))
+                                    ->whereDate('courier_date', '<=',date('Y-m-d'))
+                                    ->OrderBy('courier_date','desc');
             }
 
 
@@ -357,8 +359,8 @@ class CourierController extends Controller
             if($from_date !="" && $end_date != ""){
 
                 $couriers= $courier_joins
-                    ->whereDate('updated_at','>=', $from_date)
-                    ->whereDate('updated_at', '<=',$end_date)
+                    ->whereDate('courier_date','>=', $from_date)
+                    ->whereDate('courier_date', '<=',$end_date)
                     ->where($where);
             }
 
