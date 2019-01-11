@@ -39,16 +39,27 @@ class ManifestController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         $status_id = Status::where('code_name',"pending")->first()->id;
+        $agent_id= isset($request->agent_id)?$request->agent_id:0;
 
         $user_type = \Auth::user()->user_type;
         $courier_joins = Courier::with(['agent','status','receiver_country']);
         if($user_type == 'admin'){
-            $couriers= $courier_joins
-                ->where('status_id',$status_id)
-                ->OrderBy('updated_at','desc')->get();
+            if(!empty($agent_id) && $agent_id > 0){
+
+                $couriers= $courier_joins
+                            ->where('status_id',$status_id)
+                            ->where('user_id',$agent_id)
+                            ->OrderBy('updated_at','desc')->get();
+
+            }else{
+                $couriers= $courier_joins
+                    ->where('status_id',$status_id)
+                    ->OrderBy('updated_at','desc')->get();
+            }
+
         }else if($user_type == 'store'){
 
             $agents_id= User::where('user_type','agent')
@@ -56,8 +67,11 @@ class ManifestController extends Controller
                     $query->where('store_id',\Auth::user()->id);
                 })->pluck('id')->toArray();
 
-
-            $agents_id = array_prepend($agents_id, \Auth::user()->id);
+            if(!empty($agent_id) && $agent_id > 0) {
+                $agents_id = [$agent_id];
+            }else{
+                $agents_id = array_prepend($agents_id, \Auth::user()->id);
+            }
 
             $couriers= $courier_joins
                 ->where('status_id',$status_id)
@@ -67,7 +81,9 @@ class ManifestController extends Controller
 
 
 
-
+        if(!empty($agent_id) && $agent_id > 0) {
+            $data['agent'] = User::find($agent_id);
+        }
         $data['vendors']=Vendor::pluck('name','id')->toArray();
         $data['couriers'] =$couriers;
        // dd(Session::get('manifest_data'));

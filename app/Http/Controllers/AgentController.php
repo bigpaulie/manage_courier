@@ -13,7 +13,7 @@ use App\Models\Pickup_charge;
 use Illuminate\Support\Str;
 use App\Mail\WelcomeAgent;
 use App\Mail\NewPassword;
-
+Use File;
 use Validator;
 
 
@@ -123,6 +123,13 @@ class AgentController extends Controller
         $user_profile->state_id = $input['state_id'];
         $user_profile->country_id = $input['country_id'];
         $user_profile->zip_code = $input['zip_code'];
+
+        if(isset($input['agent_image'])){
+            $agent_image = $this->saveAgentImage($request);
+            $user_profile->image_url = $agent_image;
+        }
+
+
         $user_profile->save();
         $request->session()->flash('message', 'Agent has been added successfully!');
         \Mail::to($user->email)
@@ -220,6 +227,8 @@ class AgentController extends Controller
         }
         $user_profile = User_profile::where('user_id',$id)->first();
         if($user_profile != null){
+            $old_image_url =$user_profile->image_url;
+
             $user_profile->company_name = $input['company_name'];
             $user_profile->store_id = $input['store_id'];
             //$user_profile->unique_name = $input['unique_name'];
@@ -232,6 +241,21 @@ class AgentController extends Controller
             $user_profile->state_id = $input['state_id'];
             $user_profile->country_id = $input['country_id'];
             $user_profile->zip_code = $input['zip_code'];
+
+            if(isset($input['agent_image'])){
+
+                $agent_image = $this->saveAgentImage($request);
+                //unlink previous image
+                $agent_image_path = $old_image_url;
+
+                if(File::exists(public_path().$agent_image_path)) {
+                    File::delete(public_path().$agent_image_path);
+                }
+                $user_profile->image_url = $agent_image;
+            }
+
+
+
             $user_profile->save();
         }
         $request->session()->flash('message', 'Agent has been updated successfully!');
@@ -252,5 +276,21 @@ class AgentController extends Controller
         $user = User::where('id',$id)->delete();
         \Session::flash('message', 'Agent has been deleted successfully!');
         return redirect()->route('agents.index');
+    }
+
+
+    public function saveAgentImage($request){
+
+        $agent_path = 'uploads/agents/';
+        if(!File::exists($agent_path)) {
+            File::makeDirectory($agent_path, 0777, true, true);
+        }
+        $file_name = $request->file('agent_image')->getClientOriginalName();
+        $file_extension = $request->file('agent_image')->getClientOriginalExtension();
+        $unique_name = md5($file_name. time());
+        $new_file_name = $unique_name.".".$file_extension;
+        $request->file('agent_image')->move($agent_path, $new_file_name);
+        return "/".$agent_path.$new_file_name;
+
     }
 }

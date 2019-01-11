@@ -30,7 +30,7 @@
                     <h2 class="panel-title">{{$agent->name}}</h2>
                 </header>
                 <div class="panel-body">
-                    {{Form::open(['url' => '/admin/agents/'.$agent->id, 'method' => 'PATCH'])}}
+                    {{Form::open(['url' => '/admin/agents/'.$agent->id, 'method' => 'PATCH','files'=>true,'class'=>'form-horizontal form-bordered'])}}
 
                     {{--{!! Form::model($agent,['method' => 'PATCH', 'action' => ['AgentController@update', $agent->id ] ]) !!}--}}
                     {{csrf_field()}}
@@ -184,6 +184,29 @@
                                 @endif
                             </div>
                         </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label"> Image: </label>
+                        <div class="col-sm-6">
+                            <div class="fileupload fileupload-new" data-provides="fileupload">
+                                <div class="input-append">
+                                    <div class="uneditable-input">
+                                        <i class="fa fa-file fileupload-exists"></i>
+                                        <span class="fileupload-preview"></span>
+                                    </div>
+                                    <span class="btn btn-default btn-file">
+																<span class="fileupload-exists">Change</span>
+																<span class="fileupload-new">Select Image </span>
+																<input type="file" name="agent_image" />
+															</span>
+                                    <a href="#" class="btn btn-default fileupload-exists" data-dismiss="fileupload">Remove</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <img src="{{$agent->profile->image_url}}" style="width: 150px;">
+                        </div>
+                    </div>
 
                     <div class="form-group @if ($errors->has('zip_code')) has-error  @endif">
                         <label class="col-md-3 control-label" for="inputDefault">Zip Code</label>

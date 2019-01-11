@@ -24,6 +24,9 @@
 {!! Html::style("/assets/vendor/bootstrap/css/bootstrap.css") !!}
 {!! Html::style("/assets/vendor/font-awesome/css/font-awesome.css") !!}
 {!! Html::style("/assets/vendor/magnific-popup/magnific-popup.css") !!}
+{!! Html::style("/assets/vendor/bootstrap-fileupload/bootstrap-fileupload.min.css") !!}
+
+
 @yield('date-styles')
 
 {{--{!! Html::style("/assets/vendor/bootstrap-datepicker/css/datepicker3.css") !!}--}}

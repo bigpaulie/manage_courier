@@ -1,5 +1,10 @@
 @extends('layouts.admin')
 
+@section('date-styles')
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css' rel='stylesheet' type='text/css'>
+
+@endsection
+
 @section('content')
 
     <header class="page-header">
@@ -37,6 +42,32 @@
 
             }
     ?>
+
+
+    <section class="panel">
+        <div class="panel-body">
+            <div class="row">
+
+               <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">Agent Name</label>
+                        <select  class="form-control populate" id="agentSelect" name="agent_id">
+                            @if(isset($agent))
+                                <option value="{{$agent->id}}">{{$agent->name}}</option>
+                            @endif
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-success" onclick="filterAgent();" style="margin-top: 25px;"><i class="fa fa-search"></i> Search</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
 
 
     <section class="panel">
@@ -150,10 +181,39 @@
 @section('scripts')
 
     <script>
-
+        var user_type = "{{Auth::user()->user_type}}";
+        var logged_user_id = "{{Auth::user()->id}}";
         jQuery(document).ready(function($) {
 
 
+            if(user_type == 'admin'){
+                var apiUrl = "/api/get_user_name";
+            }else if(user_type == 'store'){
+                var apiUrl = "/api/get_store_agent?user_store_id="+logged_user_id;
+            }
+
+            $("#agentSelect").select2({
+                placeholder: "Search Agent Name",
+                allowClear: true,
+                minimumInputLength:2,
+                ajax: {
+                    url: apiUrl,
+                    type: "post",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            searchTerm: params.term // search term
+                        };
+                    },
+                    processResults: function (response) {
+                        return {
+                            results: response
+                        };
+                    },
+                    cache: true
+                }
+            });
 
 
         });
@@ -205,6 +265,14 @@
             if(vendor !=""){
                 $('#btnSave').removeAttr('disabled');
             }
+        }
+
+        function filterAgent(){
+            var agent_id = $("#agentSelect").val();
+
+            window.location.href ="/"+user_type+"/manifest/create?agent_id="+agent_id;
+
+
         }
 
 

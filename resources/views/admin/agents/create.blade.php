@@ -30,7 +30,7 @@
                     <h2 class="panel-title">Agent</h2>
                 </header>
                 <div class="panel-body">
-                    <form action="{{route('agents.store')}}" class="form-horizontal form-bordered" method="POST">
+                    <form action="{{route('agents.store')}}" class="form-horizontal form-bordered" method="POST"  enctype="multipart/form-data">
                         {{csrf_field()}}
 
                         <div class="form-group  @if ($errors->has('unique_name')) has-error  @endif">
@@ -187,6 +187,26 @@
                             @if ($errors->has('city_id'))
                                     <label for="city_id" class="error">{{ $errors->first('city_id') }}</label>
                                 @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Image Upload</label>
+                            <div class="col-md-6">
+                                <div class="fileupload fileupload-new" data-provides="fileupload">
+                                    <div class="input-append">
+                                        <div class="uneditable-input">
+                                            <i class="fa fa-file fileupload-exists"></i>
+                                            <span class="fileupload-preview"></span>
+                                        </div>
+                                        <span class="btn btn-default btn-file">
+																<span class="fileupload-exists">Change</span>
+																<span class="fileupload-new">Select Image</span>
+																<input type="file" name="agent_image">
+															</span>
+                                        <a href="#" class="btn btn-default fileupload-exists" data-dismiss="fileupload">Remove</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
