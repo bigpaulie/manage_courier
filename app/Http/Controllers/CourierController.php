@@ -359,7 +359,7 @@ class CourierController extends Controller
             }
 
         }
-        $courier_data = $couriers->paginate(15);
+        $courier_data = $couriers->paginate(50);
 
 
         $total_paid_amount=0;
@@ -392,20 +392,19 @@ class CourierController extends Controller
                             'Unique Name',
                             'Agent Name',
                             'Status',
-                            'Package Type',
-                            'Service Type',
-                            //'Content Type',
-                            'Weight',
-                            'Carriage Value',
                             'Tracking No',
                             'Tracking URL',
-                            'Shipped',
-                            'Pickup/Drop',
-                            'Amount',
-                            'Pickup Charge',
-                            'Total',
+                            'Total Amount',
+                            'Paid Amount',
+                            'Remaining Amount',
+                            'Discount',
+                            'Total Weight',
+                            'No of Boxes',
+                            'Carriage Value',
+                            'Package Type',
+                            'Service Type',
                             'Sender Name',
-                             'Sender Company', 'Sender Address1','Sender Address2',
+                            'Sender Company', 'Sender Address1','Sender Address2',
                              'Sender Phone', 'Sender Country','Sender State',
                              'Sender City', 'Sender Email','Receiver Name',
                              'Receiver Company', 'Receiver Address1','Receiver Address2',
@@ -413,6 +412,9 @@ class CourierController extends Controller
                              'Receiver City','Receiver Zipcode',
                              'Receiver Email', 'Description','Created',
                             ]);
+
+        $package_types=Package_type::pluck('name', 'id')->toArray();
+        $service_types=Service_type::pluck('name', 'id')->toArray();
 
         $input = $request->all();
         $type = isset($input['type'])?$input['type']:'all';
@@ -423,56 +425,79 @@ class CourierController extends Controller
         $agent_name = isset($input['agent_name'])?$input['agent_name']:'';
         $user_id= $input['user_id'];
         $user_type = $input['user_type'];
-        $package_types=Package_type::pluck('name', 'id')->toArray();
-        $content_types=Content_type::pluck('name', 'id')->toArray();
-        $service_types=Service_type::pluck('name', 'id')->toArray();
 
-
-        $courier_joins = Courier::with(['agent','status','shippment','courier_charge','receiver_country']);
+        $courier_joins = Courier::with(['agent','status','shippment','courier_payment','receiver_country','sender_country']);
         if($type == 'all'){
-            $where = [];
-            if($user_type == 'agent' || $user_type == 'store'){
-                $where[] = ['couriers.user_id', $user_id];
+
+            if($user_type == 'agent') {
+                $user_ids = [$user_id];
+                $couriers = $courier_joins
+                    ->whereDate('courier_date', '>=', date('Y-m-d'))
+                    ->whereDate('courier_date', '<=', date('Y-m-d'))
+                    ->whereIn('couriers.user_id', $user_ids)
+                    ->OrderBy('courier_date', 'desc');
+            }
+            elseif($user_type == 'store'){
+                $user_ids = User_profile::where('store_id',$user_id)->pluck('user_id')->toArray();
+                array_push($user_ids,[$user_id]);
+                $couriers= $courier_joins
+                    ->whereDate('courier_date','>=', date('Y-m-d'))
+                    ->whereDate('courier_date', '<=',date('Y-m-d'))
+                    ->whereIn('couriers.user_id',$user_ids)
+                    ->OrderBy('courier_date','desc');
+
+            }else{
+
+                $couriers= $courier_joins
+                    ->whereDate('courier_date','>=', date('Y-m-d'))
+                    ->whereDate('courier_date', '<=',date('Y-m-d'))
+                    ->OrderBy('courier_date','desc');
             }
 
-            $couriers= $courier_joins
-                ->whereDate('updated_at','>=', date('Y-m-d'))
-                ->whereDate('updated_at', '<=',date('Y-m-d'))
-                ->where($where)
-                ->OrderBy('updated_at','desc');
+
         }else{
-
             $where = [];
-            if($user_type == 'agent' || $user_type == 'store'){
+            if($user_type == 'agent' ){
                 $where[] = ['couriers.user_id', $user_id];
             }
+            if($user_type == 'store'){
+
+                $user_ids = User_profile::where('store_id',$user_id)->pluck('user_id')->toArray();
+                array_push($user_ids,[$user_id]);
+                $couriers=  $courier_joins
+                    ->whereIn('couriers.user_id',$user_ids);
+            }
+
             if ($traking_number !="" ) {
                 $where[] = ['couriers.tracking_no', $traking_number];
-                $couriers=  $courier_joins->where($where);
+                $couriers=  $courier_joins
+                    ->where($where);
             }
             if ($status_id !="" ) {
                 $where[] = ['couriers.status_id', $status_id];
 
-                $couriers= $courier_joins->where($where);
+                $couriers= $courier_joins
+                    ->where($where);
             }
             if ($agent_name > 0 ) {
 
                 $couriers= $courier_joins
-                            ->where($where)
-                            ->where('user_id',$agent_name);
+                    ->where($where)
+                    ->where('user_id',$agent_name);
             }
 
             if($from_date !="" && $end_date != ""){
 
                 $couriers= $courier_joins
-                            ->whereDate('updated_at','>=', $from_date)
-                            ->whereDate('updated_at', '<=',$end_date)
-                            ->where($where);
+                    ->whereDate('courier_date','>=', $from_date)
+                    ->whereDate('courier_date', '<=',$end_date)
+                    ->where($where);
             }
 
         }
-        $records = $couriers->paginate(50);
-        foreach ($records as $courier){
+        $courier_data = $couriers->paginate(50);
+
+        foreach ($courier_data as $courier){
 
             $s_country = ($courier->sender_country != null)?$courier->sender_country->name:"";
             $s_state = ($courier->s_state != null)?$courier->s_state:"";
@@ -480,42 +505,40 @@ class CourierController extends Controller
             $r_country = ($courier->receiver_country != null)?$courier->receiver_country->name:"";
             $r_state = ($courier->r_state != null)?$courier->r_state:"";
             $r_city = ($courier->r_city != null)?$courier->r_city:"";
-            $shipped=null;
-            $amount=0;
-            $pickup_charge=0;
-            $total=0;
-            if($courier->courier_charge != null){
+            $total_amount=0;
+            $paid_amount=0;
+            $remaining_amount=0;
+            $discount=0;
 
-                if($courier->courier_charge->courier_service_id !=null){
-                    $shipped = $courier->courier_charge->courier_service->name;
-                }
-                $amount = $courier->courier_charge->amount;
-                $pickup_charge = $courier->courier_charge->pickup_charge;
-                $total = $courier->courier_charge->total;
+            if($courier->courier_payment != null){
+
+                $total_amount = $courier->courier_payment->total;
+                $paid_amount = $courier->courier_payment->pay_amount;
+                $remaining_amount = $courier->courier_payment->remaining;
+                $discount = $courier->courier_payment->discount;
 
             }
             $tracking_url = 'NA';
             if(!empty($courier->tracking_url)){
                 $tracking_url = $courier->tracking_url;
             }
-            $pickup = ucfirst($courier->shippment->courier_status);
+
             $temp = [
                 $courier->id,
                 $courier->unique_name,
                 $courier->agent->name,
                 $courier->status->name,
-                $package_types[$courier->shippment->package_type_id],
-                $service_types[$courier->shippment->service_type_id],
-               // $content_types[$courier->shippment->content_type_id],
-                $courier->shippment->weight,
-                $courier->shippment->carriage_value,
                 $courier->tracking_no,
                 $tracking_url,
-                $shipped,
-                $pickup,
-                $amount,
-                $pickup_charge,
-                $total,
+                $total_amount,
+                $paid_amount,
+                $remaining_amount,
+                $discount,
+                $courier->shippment->weight,
+                $courier->no_of_boxes,
+                $courier->shippment->carriage_value,
+                $package_types[$courier->shippment->package_type_id],
+                $service_types[$courier->shippment->service_type_id],
                 $courier->s_name,
                 $courier->s_company,
                 $courier->s_address1,
@@ -536,7 +559,7 @@ class CourierController extends Controller
                 $courier->r_zip_code,
                 $courier->r_email,
                 $courier->description,
-                $courier->created_at,
+                $courier->courier_date,
 
             ];
             $writer->writeLine($temp);

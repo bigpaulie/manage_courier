@@ -512,13 +512,29 @@
                     window.location.href ="/"+this.user_type+"/couriers/"+id;
                 },
 
-                createCourierCsv(page=1){
+                createCourierCsv(page){
 
-                    var agent_id = $("#userSelect").val();
-                    let csvURL = '/admin/create_courier_csv?page='+page+'&type='+this.filter_type+'&traking_number='+this.traking_number;
+                    // var agent_id = $("#userSelect").val();
+                    // let csvURL = '/admin/create_courier_csv?page='+page+'&type='+this.filter_type+'&traking_number='+this.traking_number;
+                    // csvURL+='&from_date='+this.from_date+'&end_date='+this.end_date
+                    // csvURL+='&agent_name='+agent_id+'&status_id='+this.status_id
+                    // csvURL+='&user_type='+this.user_type+'&user_id='+this.user_id
+
+
+                    if(this.user_type == 'admin'){
+                        var agent_id = $("#userSelect").val();
+
+                    }else if(this.user_type =='store'){
+                        var agent_id = $("#agentSelect").val();
+
+                    }
+
+                    let csvURL = '/admin/create_courier_csv?page='+1+'&type='+this.filter_type+'&traking_number='+this.traking_number;
                     csvURL+='&from_date='+this.from_date+'&end_date='+this.end_date
                     csvURL+='&agent_name='+agent_id+'&status_id='+this.status_id
                     csvURL+='&user_type='+this.user_type+'&user_id='+this.user_id
+
+
                     window.location.href=csvURL;
 
                 },
