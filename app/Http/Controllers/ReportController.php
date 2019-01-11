@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Courier;
 use App\Models\Payment;
 use App\Models\Expense;
+use App\Models\User;
 use App\Models\User_profile;
 use App\Models\Courier_payment;
 
@@ -209,34 +210,29 @@ class ReportController extends Controller
 
     public function walkingCustomer(){
 
-        $data=[];
+        $data['user_id']=\Auth::user()->id;
+        $data['user_type']=\Auth::user()->user_type;
         $user_type = \Auth::user()->user_type;
         if($user_type == 'admin'){
             return view('admin.reports.walking_customer',$data);
 
         }else if($user_type == 'store'){
-            $data['user_id']=\Auth::user()->id;
-            $data['user_type']=\Auth::user()->user_type;
-            return view('store.reports.walking_customer',$data);
+           return view('store.reports.walking_customer',$data);
 
         }
     }
 
     public function agentPayment(){
 
-        $data=[];
         $user_type = \Auth::user()->user_type;
+        $data['user_id']=\Auth::user()->id;
+        $data['user_type']=\Auth::user()->user_type;
         if($user_type == 'admin'){
-            return view('admin.reports.agent_payment',$data);
-
+           return view('admin.reports.agent_payment',$data);
         }else if($user_type == 'store'){
-            $data['user_id']=\Auth::user()->id;
-            $data['user_type']=\Auth::user()->user_type;
             return view('store.reports.agent_payment',$data);
-
         }else if($user_type == 'agent'){
-            $data['user_id']=\Auth::user()->id;
-            $data['user_type']=\Auth::user()->user_type;
+
             return view('agent.reports.agent_payment',$data);
         }
     }
@@ -261,25 +257,31 @@ class ReportController extends Controller
     $from_date = isset($input['from_date'])?date('Y-m-d',strtotime($input['from_date'])):'';
     $end_date = isset($input['end_date'])?date('Y-m-d',strtotime($input['end_date'])):'';
     $agent_id = isset($input['agent_id'])?$input['agent_id']:'';
-    if(!empty($agent_id) && $agent_id > 0){
+    $user_type = isset($input['user_type'])?$input['user_type']:'';
+
+        if(!empty($agent_id) && $agent_id > 0){
         $agent_ids = [$agent_id];
 
     }else{
-        $agent_ids = User_profile::where('store_id',$logged_user_id)->pluck('user_id')->toArray();
+        if($user_type == 'store'){
+            $agent_ids = User_profile::where('store_id',$logged_user_id)->pluck('user_id')->toArray();
+        }else if($user_type == 'admin'){
+            $agent_ids = User::where('user_type','agent')->pluck('id')->toArray();
+        }
     }
 
     $courier_payments = Courier_payment::with('agent')
-        ->whereIn('user_id',$agent_ids)
-        ->whereDate('payment_date','>=', $from_date)
-        ->whereDate('payment_date', '<=',$end_date)
-        ->orderBy('payment_date','desc')
-        ->get();
+                                        ->whereIn('user_id',$agent_ids)
+                                        ->whereDate('payment_date','>=', $from_date)
+                                        ->whereDate('payment_date', '<=',$end_date)
+                                        ->orderBy('payment_date','desc')
+                                        ->get();
     $agent_payments =   Payment::with('agent')
-        ->whereIn('user_id',$agent_ids)
-        ->whereDate('payment_date','>=', $from_date)
-        ->whereDate('payment_date', '<=',$end_date)
-        ->orderBy('payment_date','desc')
-        ->get();
+                                ->whereIn('user_id',$agent_ids)
+                                ->whereDate('payment_date','>=', $from_date)
+                                ->whereDate('payment_date', '<=',$end_date)
+                                ->orderBy('payment_date','desc')
+                                ->get();
 
 
     $total_amount = $courier_payments->sum('total');
@@ -318,6 +320,8 @@ class ReportController extends Controller
        // $from_date = isset($input['from_date'])?date('Y-m-d',strtotime($input['from_date'])):'';
         //$end_date = isset($input['end_date'])?date('Y-m-d',strtotime($input['end_date'])):'';
         $customer_phone = isset($input['customer_phone'])?$input['customer_phone']:'';
+        $userType = isset($input['user_type'])?$input['user_type']:'';
+
         if(!empty($customer_phone)){
             $courier_Ids = Courier::where('s_phone',$customer_phone)->pluck('id')->toArray();
 
@@ -325,23 +329,44 @@ class ReportController extends Controller
             $courier_Ids = Courier::where('user_id',$logged_user_id)->pluck('id')->toArray();
         }
 
-        $courier_payments = Courier_payment::with('courier')
-                                            ->where('user_id',$logged_user_id)
-                                            ->whereIn('courier_id',$courier_Ids)
-                                           // ->whereDate('payment_date','>=', $from_date)
-                                           // ->whereDate('payment_date', '<=',$end_date)
+        if($userType == 'store'){
+
+
+            $courier_payments = Courier_payment::with('courier')
+                                                ->where('user_id',$logged_user_id)
+                                                ->whereIn('courier_id',$courier_Ids)
+                                                // ->whereDate('payment_date','>=', $from_date)
+                                                // ->whereDate('payment_date', '<=',$end_date)
+                                                ->orderBy('payment_date','desc')
+                                                ->get();
+
+
+            $walking_payments =   Payment::with('courier')->where('created_by',$logged_user_id)
+                                                            ->where('payment_user_type','walking_customer')
+                                                            ->where('customer_phone',$customer_phone)
+                                                            // ->whereDate('payment_date','>=', $from_date)
+                                                            //->whereDate('payment_date', '<=',$end_date)
+                                                            ->orderBy('payment_date','desc')
+                                                            ->get();
+
+        }else if($userType == 'admin'){
+
+
+            $courier_payments = Courier_payment::with('courier')
+                                               ->whereIn('courier_id',$courier_Ids)
+                                            // ->whereDate('payment_date','>=', $from_date)
+                                            // ->whereDate('payment_date', '<=',$end_date)
                                             ->orderBy('payment_date','desc')
                                             ->get();
-
-
-        $walking_payments =   Payment::with('courier')->where('created_by',$logged_user_id)
+            $walking_payments =   Payment::with('courier')
                                         ->where('payment_user_type','walking_customer')
                                         ->where('customer_phone',$customer_phone)
-                                       // ->whereDate('payment_date','>=', $from_date)
+                                        // ->whereDate('payment_date','>=', $from_date)
                                         //->whereDate('payment_date', '<=',$end_date)
                                         ->orderBy('payment_date','desc')
                                         ->get();
 
+        }
 
 
 

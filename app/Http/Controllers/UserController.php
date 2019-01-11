@@ -199,14 +199,21 @@ class UserController extends Controller
 
     public function getStoreAgent(Request $request){
         $input = $request->all();
-        $store_id = $input['user_store_id'];
+        $store_id = isset($input['user_store_id'])?$input['user_store_id']:0;
         $search_key = $input['searchTerm'];
-        $users = User::where('name','like',"%{$search_key}%")
-                        ->where('user_type','agent')
-                        ->whereHas('profile', function ($query) use($store_id) {
-                            $query->where('store_id',$store_id);
-                        })
-                        ->orderBy('name','asc')->get();
+        if(!empty($store_id) && $store_id > 0){
+            $users = User::where('name','like',"%{$search_key}%")
+                ->where('user_type','agent')
+                ->whereHas('profile', function ($query) use($store_id) {
+                    $query->where('store_id',$store_id);
+                })
+                ->orderBy('name','asc')->get();
+        }else{
+            $users = User::where('name','like',"%{$search_key}%")
+                            ->where('user_type','agent')
+                            ->orderBy('name','asc')->get();
+        }
+
         $user_data=[];
         foreach ($users as $user){
             $temp=[];
@@ -221,12 +228,21 @@ class UserController extends Controller
     public function getWalkingCustomer(Request $request){
         $input = $request->all();
         $search_key = $input['searchTerm'];
-        $store_id = $input['user_store_id'];
+        $store_id = isset($input['user_store_id'])?$input['user_store_id']:0;
+        if(!empty($store_id) && $store_id > 0){
+            $sender_phones =  Courier::where('user_id',$store_id)
+                ->where('s_phone','like',"%{$search_key}%")
+                ->groupBy('s_phone')
+                ->get();
 
-        $sender_phones =  Courier::where('user_id',$store_id)
-                                  ->where('s_phone','like',"%{$search_key}%")
-                                  ->groupBy('s_phone')
-                                  ->get();
+        }else{
+
+            $sender_phones =  Courier::where('s_phone','like',"%{$search_key}%")
+                                        ->groupBy('s_phone')
+                                        ->get();
+        }
+
+
 
         $user_data=[];
         foreach ($sender_phones as $sender){
