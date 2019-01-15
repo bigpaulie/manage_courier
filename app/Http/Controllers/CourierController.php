@@ -639,7 +639,6 @@ class CourierController extends Controller
             $i=0;
 
             $package_types=Package_type::pluck('id', 'name')->toArray();
-            $content_types=Content_type::pluck('id', 'name')->toArray();
             $service_types=Service_type::pluck('id', 'name')->toArray();
 
             while (($line = $reader->readLine()) !== false) {
@@ -649,38 +648,37 @@ class CourierController extends Controller
                    $unique_name = $line[1];
                    $agent_name = $line[2];
                    $status = $line[3];
-                   $package_type = $line[4];
-                   $service_type = $line[5];
-                   $content_type = $line[6];
-                   $weight= $line[7];
-                   $carriage_value = $line[8];
-                   $tracking_no = $line[9];
-                   $tracking_url = $line[10];
-                   $shipped = $line[11];
-                   $pickup_drop = $line[12];
-                   $amount = $line[13];
-                   $pickup_charge = $line[14];
-                   $total = $line[15];
-                   $s_name = $line[16];
-                   $s_company = $line[17];
-                   $s_address1 = $line[18];
-                   $s_address2 = $line[19];
-                   $s_phone = $line[20];
-                   $s_country = $line[21];
-                   $s_state = $line[22];
-                   $s_city = $line[23];
-                   $s_email = $line[24];
-                   $r_name = $line[25];
-                   $r_comapny = $line[26];
-                   $r_address1 = $line[27];
-                   $r_address2 = $line[28];
-                   $r_phone = $line[29];
-                   $r_country = $line[30];
-                   $r_state = $line[31];
-                   $r_city = $line[32];
-                   $r_zip_code = $line[33];
-                   $r_email = $line[34];
-                   $description = $line[35];
+                   $tracking_no = $line[4];
+                   $tracking_url = $line[5];
+                   $total_amount = $line[6];
+                   $paid_amount = $line[7];
+                   $remaining_amount = $line[8];
+                   $discount = $line[9];
+                   $weight= $line[10];
+                   $no_of_boxes= $line[11];
+                   $carriage_value = $line[12];
+                   $package_type = $line[13];
+                   $service_type = $line[14];
+                   $s_name = $line[15];
+                   $s_company = $line[16];
+                   $s_address1 = $line[17];
+                   $s_address2 = $line[18];
+                   $s_phone = $line[19];
+                   $s_country = $line[20];
+                   $s_state = $line[21];
+                   $s_city = $line[22];
+                   $s_email = $line[23];
+                   $r_name = $line[24];
+                   $r_comapny = $line[25];
+                   $r_address1 = $line[26];
+                   $r_address2 = $line[27];
+                   $r_phone = $line[28];
+                   $r_country = $line[29];
+                   $r_state = $line[30];
+                   $r_city = $line[31];
+                   $r_zip_code = $line[32];
+                   $r_email = $line[33];
+                   $description = $line[34];
                    $courier = Courier::find($courier_id);
 
                    if($courier != null){
@@ -700,6 +698,7 @@ class CourierController extends Controller
                        $courier->s_address1 = $s_address1;
                        $courier->s_address2 = $s_address2;
                        $courier->s_phone = $s_phone;
+                       $courier->no_of_boxes = $no_of_boxes;
 
                        if(!empty($s_country)){
                          $country_data = Country::where('name',$s_country)->first();
@@ -745,51 +744,51 @@ class CourierController extends Controller
                        }
 
                        $courier->save();
-                       $courier_charge = Courier_charge::where('courier_id',$courier_id)->first();
-                       if($courier_charge != null){
+                       $courier_payment = Courier_payment::where('courier_id',$courier_id)->first();
+                       if($courier_payment != null){
 
-                           if(!empty($amount)){
-                               $courier_charge->amount = $amount;
-                           }
-
-                           if(!empty($pickup_charge)){
-                               $courier_charge->pickup_charge = $pickup_charge;
+                           if(!empty($total_amount)){
+                               $courier_payment->total = $total_amount;
                            }
 
-                           if(!empty($total)){
-                               $courier_charge->total = $total;
+                           if(!empty($paid_amount)){
+                               $courier_payment->pay_amount = $paid_amount;
                            }
-                           if(!empty($shipped)){
-                               $courier_service = Courier_service::where('name',$shipped)->first();
-                               if($courier_service != null){
-                                   $courier_charge->courier_service_id = $courier_service->id;
-                               }
+
+                           if(!empty($remaining_amount)){
+                               $courier_payment->remaining = $remaining_amount;
                            }
-                           $courier_charge->save();
+                           $courier_payment->payment_date = date('Y-m-d');
+
+                           if(!empty($discount)){
+                               $courier_payment->discount = $discount;
+                           }
+
+                           $courier_payment->save();
 
                        }else{
-                           $courier_charge = new Courier_charge();
-                           $courier_charge->courier_id = $courier_id;
-                           $courier_charge->user_id = $courier->user_id;
-                           if(!empty($amount)){
-                               $courier_charge->amount = $amount;
+                           $courier_payment = new Courier_payment();
+                           $courier_payment->courier_id = $courier_id;
+                           $courier_payment->user_id = $courier->user_id;
+
+                           if(!empty($total_amount)){
+                               $courier_payment->total = $total_amount;
                            }
 
-                           if(!empty($pickup_charge)){
-                               $courier_charge->pickup_charge = $pickup_charge;
+                           if(!empty($paid_amount)){
+                               $courier_payment->pay_amount = $paid_amount;
                            }
 
-                           if(!empty($total)){
-                               $courier_charge->total = $total;
+                           if(!empty($remaining_amount)){
+                               $courier_payment->remaining = $remaining_amount;
                            }
-                           if(!empty($shipped)){
-                               $courier_service = Courier_service::where('name',$shipped)->first();
-                               if($courier_service != null){
-                                   $courier_charge->courier_service_id = $courier_service->id;
-                               }
 
+                           if(!empty($discount)){
+                               $courier_payment->discount = $discount;
                            }
-                           $courier_charge->save();
+                           $courier_payment->payment_date = date('Y-m-d');
+
+                           $courier_payment->save();
 
                        }
 
@@ -797,9 +796,6 @@ class CourierController extends Controller
                            $shippment = Shippment::where('courier_id',$courier_id)->first();
                            if($shippment != null){
 
-                               if(!empty($pickup_drop)) {
-                                   $shippment->courier_status = strtolower($pickup_drop);
-                               }
                                if(!empty($package_type)){
                                    $package_type_id = $package_types[$package_type];
                                    $shippment->package_type_id = $package_type_id;
@@ -808,10 +804,7 @@ class CourierController extends Controller
                                    $service_type_id = $service_types[$service_type];
                                    $shippment->service_type_id = $service_type_id;
                                }
-                               if(!empty($content_type)){
-                                   $content_type_id = $content_types[$content_type];
-                                   $shippment->content_type_id = $content_type_id;
-                               }
+
                                if(!empty($weight)){
                                    $shippment->weight = $weight;
                                }
@@ -823,7 +816,8 @@ class CourierController extends Controller
 
 
                    }
-                   else{
+
+                   /*else{
                        // Create new record
                        $courier= new Courier();
                        if(!empty($agent_name)){
@@ -940,7 +934,7 @@ class CourierController extends Controller
                        }
                        $shippment->save();
 
-                   }
+                   }*/
 
                }
 
