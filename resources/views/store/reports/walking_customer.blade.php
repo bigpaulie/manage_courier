@@ -139,6 +139,20 @@
 
                 </tr>
 
+                <tr v-if="typeof walking_payments != 'undefined' && walking_payments.length > 0">
+                    <td colspan="8">
+
+                    </td>
+
+                    <td>
+                        <label><strong class="text-primary">Total Remaining : @{{total_remaining}}</strong></label>
+
+                    </td>
+
+
+                </tr>
+
+
 
 
 
@@ -248,6 +262,7 @@
                         this.total_amount = response.data.total_amount;
                         this.total_paid_amount = response.data.total_paid_amount;
                         this.total_discount = response.data.total_discount;
+                        this.total_remaining = response.data.total_remaining;
                      });
 
 

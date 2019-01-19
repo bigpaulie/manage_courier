@@ -260,15 +260,14 @@
                     <td data-title="Total"><span v-if="courier.courier_payment != null">@{{courier.courier_payment.total | exists }}</span><span v-if="courier.courier_payment == null">NA</span></td>
                     <td data-title="Actions" class="text-right actions">
 
-                        {{--@if(Auth::user()->user_type == 'admin')--}}
-                        {{--{!! Form::model($courier,['method' => 'DELETE', 'action' => ['CourierController@destroy', $courier->id ], 'id'=>'frmdeletecourier_'.$courier->id ]) !!}--}}
-                          {{--<button class="delete-row" type="button" onclick="deleteCourier('{{$courier->id}}')"><i class="fa fa-trash-o"></i></button>--}}
-                        {{--{!! Form::close() !!}--}}
-                        {{--@endif--}}
+
 
                         <a href="javascript:void(0);" @click="editCourier(courier.id)" class=""><i class="fa fa-pencil"></i></a>
                         <a href="javascript:void(0);" @click="showCourier(courier.id)" class=""><i class="fa fa-eye"></i></a>
                         <a href="javascript:void(0);" @click="courierReport(courier.id)" class=""><i class="fa fa-file-excel-o"></i></a>
+                        @if(Auth::user()->user_type == 'admin')
+                            <a href="javascript:void(0);" @click="deleteCourier(courier.id)" class=""><i class="fa fa-trash-o"></i></a>
+                        @endif
 
 
                     </td>
@@ -513,6 +512,19 @@
                 editCourier(id){
 
                     window.location.href ="/"+this.user_type+"/couriers/"+id+"/edit";
+                },
+
+                deleteCourier(id){
+
+                    var status= confirm('Are you sure want to delete this courier?');
+                    if(status == true){
+
+                        window.location.href ="/"+this.user_type+"/couriers/delete/"+id;
+
+                    }else{
+                        return false;
+                    }
+
                 },
 
                 generateBarocode(id){

@@ -112,6 +112,22 @@
                 </tr>
 
 
+                <tr v-if="typeof agent_payments != 'undefined' && agent_payments.length > 0">
+                    <td colspan="3">
+
+                    </td>
+
+
+
+                    <td>
+                        <label><strong class="text-primary">Total Remaining @{{remaining_amount}}</strong></label>
+
+                    </td>
+
+
+                </tr>
+
+
 
 
                 </tbody>
@@ -175,6 +191,7 @@
                     this.agent_payments = response.data.agent_payment_data;
                      this.total_amount = response.data.total_amount;
                      this.total_paid_amount = response.data.total_paid_amount;
+                     this.remaining_amount = response.data.remaining_amount;
                  });
             },
 
@@ -192,6 +209,7 @@
                         this.agent_payments = response.data.agent_payment_data;
                         this.total_amount = response.data.total_amount;
                         this.total_paid_amount = response.data.total_paid_amount;
+                        this.remaining_amount = response.data.remaining_amount;
                      });
 
 

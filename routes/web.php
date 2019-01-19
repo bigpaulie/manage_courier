@@ -64,6 +64,8 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/reports/walking_customer','ReportController@walkingCustomer')->name('reports.walking_customer');
         Route::get('/reports/agent_payment','ReportController@agentPayment')->name('reports.agent_payment');
         Route::get('/reports/payment_expense','ReportController@paymentExpense')->name('reports.payment_expense');
+        Route::get('/couriers/delete/{id}','CourierController@destroy')->name('courier.destroy');
+
 
 
 

@@ -271,6 +271,9 @@ class CourierController extends Controller
     public function destroy($id)
     {
 
+        Courier_box::where('courier_id',$id)->delete();
+        Courier_box_item::where('courier_id',$id)->delete();
+        Courier_payment::where('courier_id',$id)->delete();
         Shippment::where('courier_id',$id)->delete();
         Courier::where('id',$id)->delete();
         \Session::flash('message', 'Courier has been deleted successfully!');

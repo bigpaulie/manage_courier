@@ -14,8 +14,8 @@ class Courier extends Model
      * @var array
      */
 
-    use SoftDeletes;
-    protected $dates = ['deleted_at'];
+    //use SoftDeletes;
+    //protected $dates = ['deleted_at'];
 
     protected $fillable = [
         'user_id','unique_name', 'status_id', 'tracking_no','barcode_no',

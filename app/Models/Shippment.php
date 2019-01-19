@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Shippment extends Model
 {
-    use SoftDeletes;
-    protected $dates = ['deleted_at'];
+    //use SoftDeletes;
+    //protected $dates = ['deleted_at'];
 
     protected $fillable = [
         'courier_id', 'package_type_id', 'service_type_id','content_type_id',

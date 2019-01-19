@@ -306,6 +306,8 @@ class ReportController extends Controller
 
     $response_data['total_amount']=$total_amount;
     $response_data['total_paid_amount']=$total_paid_amount;
+    $response_data['remaining_amount']=$total_amount-$total_paid_amount;
+
 
     return response()->json($response_data);
 
@@ -397,6 +399,7 @@ class ReportController extends Controller
         $response_data['total_amount']=$total_courier_amount;
         $response_data['total_paid_amount']=$total_courier_paid_amount+$total_walking_payment;
         $response_data['total_discount']=$total_courier_discount+$total_walking_discount;
+        $response_data['total_remaining']= $response_data['total_amount']-($response_data['total_paid_amount']+$response_data['total_discount']);
 
         return response()->json($response_data);
 
