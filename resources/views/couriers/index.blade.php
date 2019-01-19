@@ -102,6 +102,21 @@
                 </div>
             @endif
 
+
+            @if(Auth::user()->user_type == 'agent')
+            <div class="col-md-2">
+            <div class="form-group">
+            <label class="control-label text-bold">Total Charge: <span class="text-primary">{{$total_amount}}</span></label>
+            </div>
+            <div class="form-group">
+            <label class="control-label text-bold">Total Paid Amount: <span class="text-primary">{{$paid_amount}}</span></label>
+            </div>
+            <div class="form-group">
+            <label class="control-label text-bold">Grand Total: <span class="@if($remaining > 0) text-danger @else text-success @endif">{{$remaining}}</span></label>
+            </div>
+            </div>
+            @endif
+
         </div>
         <div class="row">
 

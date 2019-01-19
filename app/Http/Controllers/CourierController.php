@@ -42,6 +42,14 @@ class CourierController extends Controller
         $data['accepted_status_id']=Status::where('code_name',"accepted")->first()->id;
         $data['shipped_status_id']=Status::where('code_name',"shipped")->first()->id;
         $data['courier_companies']=Courier_service::pluck('name','id')->toArray();
+        if(\Auth::user()->user_type == 'agent'){
+            $total_amount = Courier_payment::where('user_id',\Auth::user()->id)->sum('total');
+            $paid_amount = Payment::where('user_id',\Auth::user()->id)->sum('amount');
+            $data['total_amount']=$total_amount;
+            $data['paid_amount']=$paid_amount;
+            $data['remaining']=$total_amount-$paid_amount;
+        }
+
         return view('couriers.index',$data);
     }
 
