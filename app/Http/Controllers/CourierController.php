@@ -1125,7 +1125,7 @@ class CourierController extends Controller
         if($courier != null){
 
             $courier_payment = Courier_payment::where('courier_id',$id)
-                                                ->where('user_id',\Auth::user()->id)
+                                                //->where('user_id',\Auth::user()->id)
                                                 ->first();
             $data['courier']=$courier;
             if($courier_payment != null){
