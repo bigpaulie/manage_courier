@@ -65,6 +65,7 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/reports/agent_payment','ReportController@agentPayment')->name('reports.agent_payment');
         Route::get('/reports/payment_expense','ReportController@paymentExpense')->name('reports.payment_expense');
         Route::get('/couriers/delete/{id}','CourierController@destroy')->name('courier.destroy');
+        Route::get('/couriers/payment_details/{id}', 'CourierController@paymentDetails')->name('couriers.payment_details');
 
 
 
@@ -102,6 +103,7 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/couriers/box_details/{id}', 'CourierController@boxDetails')->name('couriers.box_details');
         Route::get('/courier_report/{id}','CourierController@courierReport')->name('courierReport');
         Route::get('/reports/agent_payment','ReportController@agentPayment')->name('reports.agent_payment');
+        Route::get('/couriers/payment_details/{id}', 'CourierController@paymentDetails')->name('couriers.payment_details');
 
 
         Route::resource('couriers', 'CourierController');

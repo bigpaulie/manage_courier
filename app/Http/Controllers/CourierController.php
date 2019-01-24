@@ -182,6 +182,7 @@ class CourierController extends Controller
 //        $data['r_states']=State::where('country_id',$courier->r_country)->get();
 //        $data['r_cities']=City::where('state_id',$courier->r_state)->get();
         $data['courier']=$courier;
+        $data['status']=Status::all();
 
         return view('couriers.edit',$data);
     }
@@ -248,6 +249,8 @@ class CourierController extends Controller
         $courier->r_city = $input['r_city'];
         $courier->r_email = $input['r_email'];
         $courier->r_zip_code = $input['r_zip_code'];
+        $courier->status_id = $input['status_id'];
+        $courier->tracking_no = $input['tracking_no'];
         $courier->save();
 
         $shippment = Shippment::where('courier_id',$id)->first();

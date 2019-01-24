@@ -299,6 +299,18 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Status:<span class="text-danger">*</span></label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control" name="status_id">
+                                            <option value="">Select Status</option>
+                                             @foreach($status as $st)
+                                                 <option value="{{$st->id}}" @if($st->id == $courier->status_id) {{"selected"}} @endif style="color: {{$st->color_code}}">{{$st->name}}</option>
+                                             @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <div class="col-md-6">
@@ -331,8 +343,16 @@
 
                                     </div>
                             </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Tracking No:</label>
+                                    <div class="col-sm-8">
+                                        <input type="text"  name="tracking_no" class="form-control"  value="{{$courier->tracking_no}}">
+                                    </div>
+                                </div>
                         </div>
 
+                        </div>
                     </div>
 
                 </section>
