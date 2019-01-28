@@ -82,10 +82,13 @@
                     <td data-title="Zip Code" class="text-right hidden-xs hidden-sm">{{$agent->profile->zip_code}}</td>
                     <td data-title="Created" class="text-right hidden-xs hidden-sm">{{date('d-M-Y',strtotime($agent->created_at))}}</td>
                     <td data-title="Actions" class="text-right actions">
+                        @if(Auth::user()->user_type == 'admin')
 
-                        {{--{!! Form::model($agent,['method' => 'DELETE', 'action' => ['AgentController@destroy', $agent->id ], 'id'=>'frmdeleteAgent_'.$agent->id ]) !!}--}}
-                          {{--<button class="delete-row" type="button" onclick="deleteAgents('{{$agent->id}}')"><i class="fa fa-trash-o"></i></button>--}}
-                        {{--{!! Form::close() !!}--}}
+                        {!! Form::model($agent,['method' => 'DELETE', 'action' => ['AgentController@destroy', $agent->id ], 'id'=>'frmdeleteAgent_'.$agent->id ]) !!}
+                          <button class="delete-row" type="button" onclick="deleteAgents('{{$agent->id}}')"><i class="fa fa-trash-o"></i></button>
+                        {!! Form::close() !!}
+
+                        @endif
                         <a href="/{{Auth::user()->user_type}}/agents/{{$agent->id}}/edit" style="float:right" ><i class="fa fa-pencil"></i></a>
 
                     </td>

@@ -30,6 +30,7 @@ class ManifestController extends Controller
 
 
         $data['manifests'] =$manifests;
+
         Session::forget('manifest_data');
         return view('admin.manifest.index',$data);
     }
@@ -100,6 +101,7 @@ class ManifestController extends Controller
             $data['manifest']=$manifest;
             $data['manifest_items']=$manifest_items;
             $data['manifest_bulks']=$manifest_bulks;
+           // dd($data);
             return view('admin.manifest.show',$data);
         }else{
             abort(404);

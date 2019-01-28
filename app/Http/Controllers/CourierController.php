@@ -22,6 +22,8 @@ use App\Models\Courier_box_item;
 use App\Exports\CourierExport;
 use App\Models\Courier_payment;
 use App\Models\User_profile;
+use App\Models\Manifest;
+
 
 
 use Maatwebsite\Excel\Facades\Excel;
@@ -155,6 +157,15 @@ class CourierController extends Controller
         $courier= Courier::find($id);
         if($courier != null){
             $data['courier']=$courier;
+
+            $courier_manifest_data = \DB::table("manifest")
+                         ->whereRaw('FIND_IN_SET(?,courier_ids)', [$id])
+                         ->first();
+            if($courier_manifest_data != null){
+                $manifest_data = Manifest::find($courier_manifest_data->id);
+                $data['manifest_data']=$manifest_data;
+            }
+
             return view('couriers.show',$data);
         }else{
             abort(404);
@@ -1137,9 +1148,9 @@ class CourierController extends Controller
             }else{
                 $courier_payment = new Courier_payment();
                 $courier_payment->total=null;
-                $courier_payment->pay_amount=null;
-                $courier_payment->remaining=null;
-                $courier_payment->discount=null;
+                $courier_payment->pay_amount=0;
+                $courier_payment->remaining=0;
+                $courier_payment->discount=0;
                 $courier_payment->payment_date=date('Y-m-d');
                 $data['courier_payment']=$courier_payment;
 
@@ -1154,6 +1165,7 @@ class CourierController extends Controller
 
     public function savePaymentDetails(Request $request){
         $input = $request->all();
+
         $courier_id =$input['courier_id'];
 
         if(\Auth::user()->user_type != 'agent'){

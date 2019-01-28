@@ -30,6 +30,13 @@
                             <h2 class="h2 mt-none mb-sm text-dark text-bold">INVOICE</h2>
                             <h4 class="h4 m-none text-dark text-bold">{{$courier->unique_name}}</h4>
                             <h5 class="h5 mt-none mb-sm text-dark text-bold">STATUS: <span style=" color:{{$courier->status->color_code  }}">{{ $courier->status->name }}</span></h5>
+                            @if(isset($manifest_data))
+
+                                <h5 class="h5 mt-none mb-sm text-dark text-bold">Manifest Id: <span >{{ $manifest_data->unique_name }}</span></h5>
+                                <h5 class="h5 mt-none mb-sm text-dark text-bold">Manifest Vendor: <span >{{ $manifest_data->vendor->name }}</span></h5>
+
+
+                            @endif
                         </div>
 
                         <div class="col-sm-6 text-right mt-md mb-md">
@@ -79,7 +86,7 @@
                             <div class="bill-data text-right">
                                 <p class="mb-none">
                                     <span class="text-dark">Invoice Date:</span>
-                                    <span class="value">NA</span>
+                                    <span class="value"><b>{{$courier->courier_date}}</b></span>
                                 </p>
                                 <p class="mb-none">
                                     <span class="text-dark">COUNTRY OF ORIGIN :</span>
@@ -100,6 +107,14 @@
                                 <p class="mb-none">
                                     <span class="text-dark text-uppercase">Carriage Value :</span>
                                     <span class="value"><b>@if(isset($courier->shippment)){{$courier->shippment->carriage_value}} @endif</b></span>
+                                </p>
+                                <p class="mb-none">
+                                    <span class="text-dark text-uppercase">Tracking NO. :</span>
+                                    <span class="value"><b>{{$courier->tracking_no}}</b></span>
+                                </p>
+                                <p class="mb-none">
+                                    <span class="text-dark text-uppercase">Tracking URL. :</span>
+                                    <span class="value"><b>{{$courier->tracking_url}}</b></span>
                                 </p>
                             </div>
                         </div>

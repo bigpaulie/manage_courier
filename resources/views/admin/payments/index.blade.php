@@ -122,6 +122,10 @@
                           {{--<button class="delete-row" type="button" onclick="deletePayment('{{$payment->id}}')"><i class="fa fa-trash-o"></i></button>--}}
                         {{--{!! Form::close() !!}--}}
 
+                        @if(Auth::user()->user_type == 'admin')
+                            <a href="javascript:void(0);" @click="deletePayment(payment.id)" class=""><i class="fa fa-trash-o"></i></a>
+                        @endif
+
 
                         <a href="javascript:void(0);" @click="editPayment(payment.id)" class=""><i class="fa fa-pencil"></i></a>
 
@@ -240,6 +244,20 @@
                 editPayment(id){
 
                     window.location.href ="/admin/payments/"+id+"/edit";
+                },
+
+
+                deletePayment(id){
+
+                    var status= confirm('Are you sure want to delete this payment?');
+                    if(status == true){
+
+                        window.location.href ="/admin/payments/delete/"+id;
+
+                    }else{
+                        return false;
+                    }
+
                 },
 
                 getPaymentType:function(type){

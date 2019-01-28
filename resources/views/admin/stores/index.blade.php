@@ -65,9 +65,9 @@
                     <td data-title="High" class="text-right hidden-xs hidden-sm">{{$store->profile->zip_code}}</td>
                     <td data-title="Created" class="text-right hidden-xs hidden-sm">{{date('d-M-Y',strtotime($store->created_at))}}</td>
                     <td data-title="Actions" class="text-right actions">
-                        {{--{!! Form::model($store,['method' => 'DELETE', 'action' => ['StoreController@destroy', $store->id ], 'id'=>'frmdeletestore_'.$store->id ]) !!}--}}
-                          {{--<button class="delete-row" type="button" onclick="deleteStore('{{$store->id}}')"><i class="fa fa-trash-o"></i></button>--}}
-                        {{--{!! Form::close() !!}--}}
+                        {!! Form::model($store,['method' => 'DELETE', 'action' => ['StoreController@destroy', $store->id ], 'id'=>'frmdeletestore_'.$store->id ]) !!}
+                          <button class="delete-row" type="button" onclick="deleteStore('{{$store->id}}')"><i class="fa fa-trash-o"></i></button>
+                        {!! Form::close() !!}
                         <a href="{{route('stores.edit',$store->id)}}" class=""><i class="fa fa-pencil"></i></a>
 
                     </td>

@@ -103,14 +103,14 @@
                             $bulk_couriers = \App\Models\Courier::whereIn('id', $courier_ids)->get();
                             ?>
                             <tr>
-                                <td colspan="6" align="center"><h5 class="h5 text-semibold text-primary">Bulk - {{$bkey}}</h5></td>
+                                <td colspan="6" align="center"><h5 class="h5 text-semibold text-primary">Bulk - {{$bkey+1}}</h5></td>
                             </tr>
                             @foreach($bulk_couriers as $bc)
                             <tr>
                                 <td>{{$bc->unique_name}}</td>
                                 <td class="text-semibold text-dark">{{$bc->s_name}} ({{$bc->s_company}})</td>
                                 <td class="text-semibold text-dark">{{$bc->r_name}} ({{$bc->r_company}})</td>
-                                <td>{{$item_courier->s_state}}, {{$bc->sender_country->name}}</td>
+                                <td>{{$bc->s_state}}, {{$bc->sender_country->name}}</td>
                                 <td class="text-center">{{$bc->r_state}}, {{$bc->receiver_country->name}}</td>
                                 <td class="text-center">{{$bc->no_of_boxes}}</td>
                                 <td class="text-center">@if(isset($bc->shippment)){{$bc->shippment->weight}}@endif</td>

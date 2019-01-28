@@ -11,7 +11,7 @@ use App\Models\State;
 use App\Models\City;
 use App\Models\Status;
 use App\Models\Courier;
-
+use App\Mail\NewPassword;
 
 use Validator;
 
@@ -140,6 +140,12 @@ class UserController extends Controller
         $user = User::find($id);
         $user->password = \Hash::make($request->password);
         $user->save();
+
+
+        $user->user_password=$request->password;
+        \Mail::to($user->email)
+            ->cc(env('CC_EMAIL'))
+            ->send(new NewPassword($user));
 
         $request->session()->flash('message', 'Password has been changed successfully!');
 

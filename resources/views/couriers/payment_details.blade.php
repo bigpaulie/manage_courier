@@ -43,7 +43,7 @@
                         <div class="form-group  @if ($errors->has('total')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">Total Amount<span class="text-danger">*</span></label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control text-capitalize" id="total" name="total" value="{{$courier_payment->total}}">
+                                <input type="text" class="form-control text-capitalize" id="total" name="total"  v-model="total_amount">
                                 @if ($errors->has('total'))
                                     <label for="total" class="error">{{ $errors->first('total') }}</label>
                                 @endif
@@ -53,19 +53,9 @@
                         <div class="form-group  @if ($errors->has('pay_amount')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">Paid Amount<span class="text-danger">*</span></label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control text-capitalize" id="pay_amount" name="pay_amount" value="{{$courier_payment->pay_amount}}">
+                                <input type="text" class="form-control text-capitalize" id="pay_amount" name="pay_amount" v-model="paid_amount">
                                 @if ($errors->has('pay_amount'))
                                     <label for="pay_amount" class="error">{{ $errors->first('pay_amount') }}</label>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group @if ($errors->has('remaining')) has-error  @endif">
-                            <label class="col-md-3 control-label" for="inputDefault">Remaining Amount</label>
-                            <div class="col-md-6">
-                                <input type="text" class="form-control text-capitalize" id="remaining" name="remaining" value="{{$courier_payment->remaining}}">
-                                @if ($errors->has('remaining'))
-                                    <label for="remaining" class="error">{{ $errors->first('remaining') }}</label>
                                 @endif
                             </div>
                         </div>
@@ -73,12 +63,24 @@
                         <div class="form-group @if ($errors->has('discount')) has-error  @endif">
                             <label class="col-md-3 control-label" for="inputDefault">Discount</label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control text-capitalize" id="discount" name="discount" value="{{$courier_payment->discount}}">
+                                <input type="text" class="form-control text-capitalize" id="discount" name="discount" v-model="discount">
                                 @if ($errors->has('discount'))
                                     <label for="discount" class="error">{{ $errors->first('discount') }}</label>
                                 @endif
                             </div>
                         </div>
+
+                        <div class="form-group @if ($errors->has('remaining')) has-error  @endif">
+                            <label class="col-md-3 control-label" for="inputDefault">Remaining Amount</label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control text-capitalize" id="remaining" name="remaining" v-model="remaining_amount">
+                                @if ($errors->has('remaining'))
+                                    <label for="remaining" class="error">{{ $errors->first('remaining') }}</label>
+                                @endif
+                            </div>
+                        </div>
+
+
                         @endif
 
                         <div class="form-group @if ($errors->has('email')) has-error  @endif">
@@ -124,6 +126,70 @@
 
         });
 
+
+        const oapp = new Vue({
+            el:'#app',
+
+            data:{
+                expenses:{},
+                total_amount:"{{$courier_payment->total}}",
+                paid_amount:"{{$courier_payment->pay_amount}}",
+                discount:"{{$courier_payment->discount}}",
+                remaining_amount:"{{$courier_payment->remaining}}",
+
+            },
+            created(){
+
+
+            },
+
+            watch: {
+                // When the query value changes, fetch new results from
+                // the API - in practice this action should be debounced
+                total_amount(value) {
+                    if(value == ''){
+                        this.remaining_amount = 0;
+                    }else{
+                        this.remaining_amount = parseFloat(value);
+                    }
+                  },
+                paid_amount(value){
+
+                    if(value === ""){
+                        this.remaining_amount = parseFloat(this.total_amount);
+                        this.paid_amount=0;
+                    }else{
+                        this.remaining_amount = parseFloat(this.total_amount) - (parseFloat(value)+parseFloat(this.discount));
+                    }
+                },
+
+                discount(value){
+
+                    if(value === ""){
+                        this.remaining_amount = parseFloat(this.total_amount) - parseFloat(this.paid_amount);
+                        this.discount=0;
+                    }else{
+                        this.remaining_amount = parseFloat(this.total_amount) - (parseFloat(this.paid_amount)+parseFloat(value));
+                    }
+                },
+
+
+                },
+
+
+            methods: {
+
+            },
+
+            computed: {
+
+
+            },
+
+
+
+
+        });
 
 
     </script>

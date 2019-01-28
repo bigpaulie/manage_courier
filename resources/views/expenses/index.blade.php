@@ -124,7 +124,10 @@
                         {{--{!! Form::close() !!}--}}
                         {{--@endif--}}
 
-                        <a href="javascript:void(0);" @click="editExpense(expense.id)"><i class="fa fa-pencil"></i></a>
+                            <a href="javascript:void(0);" @click="deleteExpense(expense.id)" class=""><i class="fa fa-trash-o"></i></a>
+
+
+                            <a href="javascript:void(0);" @click="editExpense(expense.id)"><i class="fa fa-pencil"></i></a>
 
                     </td>
                 </tr>
@@ -231,6 +234,19 @@
                 getPaymentType:function(type){
 
                     return type;
+                },
+
+                deleteExpense(id){
+
+                    var status= confirm('Are you sure want to delete this expense?');
+                    if(status == true){
+
+                        window.location.href ="/admin/expenses/delete/"+id;
+
+                    }else{
+                        return false;
+                    }
+
                 },
 
 
