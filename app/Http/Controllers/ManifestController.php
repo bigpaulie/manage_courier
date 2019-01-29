@@ -210,6 +210,8 @@ class ManifestController extends Controller
             $manifest->unique_name=$this->getManifestUniqueName();
             $manifest->courier_ids=implode(",",$courier_ids);
             $manifest->content=json_encode($manifest_data);
+            $manifest->amount = $input['amount'];
+            $manifest->payment_date = date('Y-m-d');
             $manifest->save();
             $manifest_id = $manifest->id;
             if(!empty($session_items)){

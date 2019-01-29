@@ -68,6 +68,8 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/couriers/payment_details/{id}', 'CourierController@paymentDetails')->name('couriers.payment_details');
         Route::get('/expenses/delete/{id}','ExpenseController@destroy')->name('expenses.destroy');
         Route::get('/payments/delete/{id}','PaymentController@destroy')->name('payments.destroy');
+        Route::get('/reports/manifest','ReportController@manifestPayment')->name('reports.manifest');
+
 
 
 
@@ -126,7 +128,7 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/reports/walking_customer','ReportController@walkingCustomer')->name('reports.walking_customer');
         Route::get('/reports/agent_payment','ReportController@agentPayment')->name('reports.agent_payment');
         Route::get('/reports/payment_expense','ReportController@paymentExpense')->name('reports.payment_expense');
-
+        Route::get('/reports/manifest','ReportController@manifestPayment')->name('reports.manifest');
 
         Route::resource('expenses', 'ExpenseController');
         Route::resource('couriers', 'CourierController');

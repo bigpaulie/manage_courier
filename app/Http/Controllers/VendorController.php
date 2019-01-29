@@ -119,4 +119,22 @@ class VendorController extends Controller
         \Session::flash('message', 'Vendor has been deleted successfully!');
         return redirect()->route('vendors.index');
     }
+
+    public function getVendors(Request $request){
+        $input = $request->all();
+        $search_key = $input['searchTerm'];
+        $vendors =  Vendor::where('name','like',"%{$search_key}%")
+                               ->get();
+
+        $user_data=[];
+        foreach ($vendors as $vendor){
+            $temp=[];
+            $temp['id']= $vendor->id;
+            $temp['text']= $vendor->name;
+            $user_data[]=$temp;
+        }
+        return $user_data;
+
+
+    }
 }

@@ -141,36 +141,42 @@
         </div>
         {!! Form::close() !!}
 
-        {!! Form::open(['url' => 'admin/manifest/save_manifest','method'=>'post']) !!}
-        {{csrf_field()}}
+
 
         <footer class="panel-footer">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group @if ($errors->has('vendor_id')) has-error  @endif"">
-                        <label class="col-sm-3 control-label">Vendors<span class="text-danger">*</span></label>
-                        <div class="col-sm-9">
-                            {!! Form::select('vendor_id', $vendors, old('vendor_id'), ['class'=>'form-control mb-md',
+
+
+            {!! Form::open(['url' => 'admin/manifest/save_manifest','method'=>'post','class'=>'form-inline']) !!}
+            {{csrf_field()}}
+                <div class="form-group">
+                    <label class="sr-only" for="exampleInputUsername2">Vendor<span class="text-danger">*</span></label>
+
+                    {!! Form::select('vendor_id', $vendors, old('vendor_id'), ['class'=>'form-control ',
                                                                                         'placeholder' => 'Select Vendor',
                                                                                         'onchange'=>'enableVendor();',
                                                                                         'id'=>'selectVendor'
                                                                                         ]); !!}
 
-                            @if ($errors->has('vendor_id'))
-                                <label for="name" class="error">{{ $errors->first('vendor_id') }}</label>
-                            @endif
-
-                        </div>
-                    </div>
-
+                    @if ($errors->has('vendor_id'))
+                        <label for="name" class="error">{{ $errors->first('vendor_id') }}</label>
+                    @endif
                 </div>
-                <div class="col-sm-3">
-
-                    <button class="btn btn-primary" disabled type="submit" id="btnSave">Save</button>
+                <div class="form-group">
+                    <label class="sr-only" for="exampleInputPassword2">Amount<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="amount" name="amount" placeholder="Amount">
                 </div>
-            </div>
+
+                <div class="visible-sm clearfix mt-sm mb-sm"></div>
+                 <button class="btn btn-primary" disabled type="submit" id="btnSave">Save</button>
+
+
+            {!! Form::close() !!}
+
+
+
+
         </footer>
-        {!! Form::close() !!}
+
 
     </section>
     <!-- end: page -->

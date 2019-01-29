@@ -1,6 +1,8 @@
 @extends('layouts.admin')
 @section('date-styles')
     {!! Html::style("/assets/vendor/bootstrap-datepicker/css/datepicker3.css") !!}
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css' rel='stylesheet' type='text/css'>
+
 @endsection
 
 @section('content')
@@ -40,12 +42,40 @@
                         <div class="row">
                             <div class="col-md-6">
 
-                                <div class="form-group @if ($errors->has('expense_type_id')) has-error @endif">
+                                <div class="form-group @if ($errors->has('expense_of')) has-error @endif">
+                                    <label class="col-sm-4 control-label">Expense : </label>
+                                    <div class="col-sm-8">
+                                        <label class="checkbox-inline">
+                                            <input type="radio" id="inlineCheckbox1" name="expense_of" value="office" v-model="expense_of"> Office
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="radio" id="inlineCheckbox2" name="expense_of" value="vendor" v-model="expense_of"> Vendor
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group @if ($errors->has('expense_type_id')) has-error @endif" v-show="expense_of == 'office'">
                                     <label class="col-sm-4 control-label">Expense Type: </label>
                                     <div class="col-sm-8">
                                         {!! Form::select('expense_type_id', $expense_types,$expense->expense_type_id, ['class'=>'form-control','placeholder' => 'Select Expense Type']); !!}
                                         @if ($errors->has('expense_type_id'))
                                             <label for="expense_type_id" class="error">{{ $errors->first('expense_type_id') }}</label>
+                                        @endif
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group @if ($errors->has('vendor_id')) has-error @endif" v-show="expense_of == 'vendor'">
+                                    <label class="col-sm-4 control-label">Vendor: </label>
+                                    <div class="col-sm-8">
+                                        <select  class="form-control populate" id="selectVendor" name="vendor_id">
+                                            @if($expense->vendor != null)
+                                            <option value="{{$expense->vendor_id}}">{{$expense->vendor->name}}</option>
+                                            @endif
+
+                                        </select>
+                                        @if ($errors->has('vendor_id'))
+                                            <label for="vendor_id" class="error">{{ $errors->first('vendor_id') }}</label>
                                         @endif
                                     </div>
                                 </div>
@@ -333,6 +363,33 @@
 
         jQuery(document).ready(function($) {
 
+            var apiUrl = "/api/get_vendors";
+            $("#selectVendor").select2({
+                placeholder: "Select a Vendor",
+                allowClear: true,
+                width: '100%',
+                minimumInputLength:2,
+                ajax: {
+                    url: apiUrl,
+                    type: "post",
+                    dataType: 'json',
+                    delay: 250,
+
+                    data: function (params) {
+                        return {
+                            searchTerm: params.term // search term
+                        };
+                    },
+                    processResults: function (response) {
+                        return {
+                            results: response
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+
         });
 
         const oapp = new Vue({
@@ -342,6 +399,7 @@
                 net_banking:false,
                 cheque_details:false,
                 payment_type:"{{$expense->payment_by}}",
+                expense_of:"{{$expense->expense_of}}",
 
             },
             created(){

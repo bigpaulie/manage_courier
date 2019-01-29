@@ -9,6 +9,8 @@ use App\Models\Expense;
 use App\Models\User;
 use App\Models\User_profile;
 use App\Models\Courier_payment;
+use App\Models\Manifest;
+
 
 
 
@@ -400,6 +402,78 @@ class ReportController extends Controller
         $response_data['total_paid_amount']=$total_courier_paid_amount+$total_walking_payment;
         $response_data['total_discount']=$total_courier_discount+$total_walking_discount;
         $response_data['total_remaining']= $response_data['total_amount']-($response_data['total_paid_amount']+$response_data['total_discount']);
+
+        return response()->json($response_data);
+
+
+
+    }
+
+    public function manifestPayment(){
+
+        $data['user_id']=\Auth::user()->id;
+        $data['user_type']=\Auth::user()->user_type;
+        return view('admin.reports.manifest_report',$data);
+    }
+
+    public function getManifestPayment(Request $request){
+
+        $input = $request->all();
+        $logged_user_id= isset($input['logged_user_id'])?$input['logged_user_id']:"";
+        $userType = isset($input['user_type'])?$input['user_type']:'';
+        $vendor_id = isset($input['vendor_id'])?$input['vendor_id']:'';
+
+        if($userType == 'store'){
+
+
+            $manifest_payments = Manifest::with('vendor')->where('created_by',$logged_user_id)
+                                            ->where('vendor_id',$vendor_id)
+                                            ->orderBy('payment_date','desc')
+                                            ->get();
+
+            $vendor_expenses =   Expense::with('vendor')->where('user_id',$logged_user_id)
+                                         ->where('vendor_id',$vendor_id)
+                                         ->orderBy('expense_date','desc')
+                                         ->get();
+
+        }else if($userType == 'admin'){
+
+
+            $manifest_payments = Manifest::with('vendor')->where('vendor_id',$vendor_id)
+                                            ->orderBy('payment_date','desc')
+                                            ->get();
+
+
+            $vendor_expenses =   Expense::with('vendor')->where('vendor_id',$vendor_id)
+                                        ->orderBy('expense_date','desc')
+                                        ->get();
+
+        }
+
+
+
+        $total_manifest_amount = $manifest_payments->sum('amount');
+        $total_manifest_paid_amount = $vendor_expenses->sum('amount');
+
+        $mp_grouped = $manifest_payments->groupBy('payment_date');
+
+        $ve_grouped = $vendor_expenses->groupBy('expense_date');
+
+
+        $manifest_payment_arr = array_merge_recursive($mp_grouped->toArray(),$ve_grouped->toArray());
+
+        $manifest_payment_data=[];
+        foreach ($manifest_payment_arr as $key => $pe) {
+            foreach ($pe as $key => $value) {
+                $manifest_payment_data[]=$value;
+            }
+
+        }
+
+        $response_data['manifest_payment_data']=$manifest_payment_data;
+        $response_data['total_amount']=$total_manifest_amount;
+        $response_data['total_paid_amount']=$total_manifest_paid_amount;
+        $response_data['total_remaining']= $total_manifest_amount-$total_manifest_paid_amount;
 
         return response()->json($response_data);
 

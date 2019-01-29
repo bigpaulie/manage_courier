@@ -74,7 +74,7 @@
 
 
                 <div class="col-md-3">
-                    <div class="form-group">
+                    <div class="form-group" style="margin-top: 25px;">
                         <button type="button" class="btn btn-success" @click="searchPayments"><i class="fa fa-search"></i> Search</button>
                     </div>
                 </div>
@@ -96,9 +96,11 @@
                 <thead>
                 <tr>
                     <th>Store Name</th>
+                    <th>Expense</th>
                     <th>Party Name</th>
                     <th>Amount</th>
                     <th class="hidden-xs hidden-sm">Expense Type</th>
+                    <th>Vendor</th>
                     <th class="text-right">Expense Date</th>
                     <th class="text-right hidden-xs hidden-sm">Payment By</th>
                     <th class="text-right">Receiver Name</th>
@@ -110,9 +112,11 @@
 
                 <tr v-for="(expense, index) in expenses.data">
                     <td data-title="Store Name">@{{expense.store.name}} (@{{expense.store.profile.company_name}})</td>
+                    <td data-title="Expense">@{{expense.expense_of | capitalize }}</td>
                     <td data-title="Party Name">@{{expense.party_name}}</td>
                     <td data-title="Amount" class="hidden-xs hidden-sm">@{{expense.amount}}</td>
-                    <td data-title="Expense Type" class="text-right">@{{expense.expense_type.name}}</td>
+                    <td data-title="Expense Type" class="text-right"><span v-if="expense.expense_type">@{{expense.expense_type.name}}</span></td>
+                    <td><span v-if="expense.vendor">@{{expense.vendor.name}}</span></td>
                     <td data-title="Expense Date" class="text-right hidden-xs hidden-sm">@{{expense.expense_date}}</td>
                     <td data-title="Payment By" class="text-right">@{{expense.payment_by}}</td>
                     <td data-title="Receiver Name" class="text-right">@{{expense.receiver_name}}</td>
@@ -187,6 +191,12 @@
             });
 
         });
+
+        Vue.filter('capitalize', function (value) {
+            if (!value) return ''
+            value = value.toString()
+            return value.charAt(0).toUpperCase() + value.slice(1)
+        })
 
         const oapp = new Vue({
             el:'#app',

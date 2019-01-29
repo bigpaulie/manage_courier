@@ -35,6 +35,10 @@ Route::get('/generate_payment_expense','ReportController@generatePaymentExpense'
 Route::get('/getAgentPayment','ReportController@getAgentPayment')->name('getAgentPayment');
 Route::post('/get_walking_customer','UserController@getWalkingCustomer')->name('get_walking_customer');
 Route::get('/getWalkingCustomerPayment','ReportController@getWalkingCustomerPayment')->name('getWalkingCustomerPayment');
+Route::post('/get_vendors','VendorController@getVendors')->name('get_vendors');
+Route::get('/getManifestPayment','ReportController@getManifestPayment')->name('getManifestPayment');
+
+
 
 
 

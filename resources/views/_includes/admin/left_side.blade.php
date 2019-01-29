@@ -78,6 +78,14 @@
                         </a>
 
                     </li>
+
+                    {{--<li @if($controller_name == 'payments')class="nav-active nav-expanded" @endif>--}}
+                        {{--<a href="/admin/couriers/new_courier">--}}
+                            {{--<i class="fa fa-envelope" aria-hidden="true"></i>--}}
+                            {{--<span>Import New Courier</span>--}}
+                        {{--</a>--}}
+
+                    {{--</li>--}}
                     {{--<li @if($controller_name == 'reports')class="nav-active nav-expanded" @endif>--}}
                         {{--<a href="/admin/reports">--}}
                             {{--<i class="fa fa-file" aria-hidden="true"></i>--}}
@@ -101,7 +109,7 @@
 
                     </li>
 
-                    <?php $reports_array = ['walking_customer','agent_payment','payment_expense']; ?>
+                    <?php $reports_array = ['walking_customer','agent_payment','payment_expense','manifest']; ?>
 
                     <li class="nav-parent @if(in_array($action_name, $reports_array))nav-expanded nav-active @endif">
                         <a>
@@ -124,6 +132,11 @@
                             <li @if($action_name == 'payment_expense')class="nav-active" @endif>
                                 <a href="/admin/reports/payment_expense">
                                     Payment/Expense Report
+                                </a>
+                            </li>
+                            <li @if($action_name == 'manifest')class="nav-active" @endif>
+                                <a href="/admin/reports/manifest">
+                                    Manifest Report
                                 </a>
                             </li>
 
@@ -267,7 +280,7 @@
 
                         </li>
 
-                        <?php $reports_array = ['walking_customer','agent_payment','payment_expense']; ?>
+                        <?php $reports_array = ['walking_customer','agent_payment','payment_expense','manifest']; ?>
 
                         <li class="nav-parent @if(in_array($action_name, $reports_array))nav-expanded nav-active @endif">
                             <a>
@@ -290,6 +303,12 @@
                                 <li @if($action_name == 'payment_expense')class="nav-active" @endif>
                                     <a href="/store/reports/payment_expense">
                                         Payment/Expense Report
+                                    </a>
+                                </li>
+
+                                <li @if($action_name == 'manifest')class="nav-active" @endif>
+                                    <a href="/store/reports/manifest">
+                                        Manifest Report
                                     </a>
                                 </li>
 

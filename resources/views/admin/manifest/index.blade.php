@@ -37,6 +37,7 @@
                          <th>Created By</th>
                     @endif
                     <th>Vendor Name</th>
+                    <th>Amount</th>
                     <th>Manifest Contents</th>
                     <th>Created</th>
                     <th>Action</th>
@@ -52,6 +53,7 @@
                          <td>{{$manifest->store->name}} ({{$manifest->store->profile->company_name}})</td>
                          @endif
                          <td>{{$manifest->vendor->name}}</td>
+                         <td>{{$manifest->amount}}</td>
                          <td>
                              <ul>
                                  <li>

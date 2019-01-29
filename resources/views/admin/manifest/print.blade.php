@@ -44,6 +44,9 @@
                                 <b class="text-uppercase">Vendor: {{$manifest->vendor->name}}</b>
 
                                 <br>
+                                <b class="text-uppercase">Amount: {{$manifest->amount}}</b>
+
+                                <br>
                                 Create Date: {{date('d-m-y',strtotime($manifest->created_at))}}
                             </address>
 

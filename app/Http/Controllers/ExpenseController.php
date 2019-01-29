@@ -43,25 +43,25 @@ class ExpenseController extends Controller
         }
 
         if($type == 'all'){
-            $expenses= Expense::with(['expense_type','store'])->OrderBy('created_at','desc');
+            $expenses= Expense::with(['expense_type','store','vendor'])->OrderBy('created_at','desc');
         }
 
         else if( $user_id > 0 && $from_date !="" && $end_date != ""){
 
-            $expenses= Expense::with(['expense_type','store'])->OrderBy('updated_at','desc')
+            $expenses= Expense::with(['expense_type','store','vendor'])->OrderBy('updated_at','desc')
                 ->whereDate('expense_date','>=', $from_date)
                 ->whereDate('expense_date', '<=',$end_date)
                 ->where($where);
 
         }else if($from_date !="" && $end_date != ""){
 
-            $expenses= Expense::with(['expense_type','store'])
+            $expenses= Expense::with(['expense_type','store','vendor'])
                                                 ->OrderBy('updated_at','desc')
                                                 ->whereDate('expense_date','>=', $from_date)
                                                 ->whereDate('expense_date', '<=',$end_date);
 
         }else if( $user_id > 0){
-            $expenses= Expense::with(['expense_type','store'])->OrderBy('updated_at','desc')
+            $expenses= Expense::with(['expense_type','store','vendor'])->OrderBy('updated_at','desc')
                                ->where($where);
         }
 
@@ -96,13 +96,22 @@ class ExpenseController extends Controller
     {
 
         $fields_array = [
-            'expense_type_id' => 'required',
+
             'party_name' => 'required',
             'payment_by' => 'required',
             'expense_date' => 'required',
 
 
         ];
+
+        if($request->expense_of == 'office'){
+            $fields_array = $fields_array+['expense_type_id'=>'required'];
+        }
+
+        if($request->expense_of == 'vendor'){
+            $fields_array = $fields_array+['vendor_id'=>'required'];
+        }
+
         if($request->payment_by == 'cash'){
 
             $cash_fields = ['receiver_cash_name'=>'required',
@@ -134,6 +143,7 @@ class ExpenseController extends Controller
             $fields_array = $fields_array+$net_banking_fields;
         }
 
+
         $validator = Validator::make($request->all(),$fields_array );
 
         if ($validator->fails()) {
@@ -151,6 +161,8 @@ class ExpenseController extends Controller
         $expense->party_name = $input['party_name'];
         $expense->debited_from = $input['debited_from'];
         $expense->description = $input['description'];
+        $expense->expense_of = $input['expense_of'];
+        $expense->vendor_id = $input['vendor_id'];
         if($request->payment_by == 'cash'){
             $expense->payment_by = 'Cash';
             $expense->amount = $input['cash_amount'];
@@ -221,13 +233,20 @@ class ExpenseController extends Controller
     {
 
         $fields_array = [
-            'expense_type_id' => 'required',
             'party_name' => 'required',
             'payment_by' => 'required',
             'expense_date' => 'required',
 
 
         ];
+
+        if($request->expense_of == 'office'){
+            $fields_array = $fields_array+['expense_type_id'=>'required'];
+        }
+
+        if($request->expense_of == 'vendor'){
+            $fields_array = $fields_array+['vendor_id'=>'required'];
+        }
         if($request->payment_by == 'cash'){
 
             $cash_fields = ['receiver_cash_name'=>'required',
@@ -278,6 +297,8 @@ class ExpenseController extends Controller
         $expense->party_name = $input['party_name'];
         $expense->debited_from = $input['debited_from'];
         $expense->description = $input['description'];
+        $expense->expense_of = $input['expense_of'];
+        $expense->vendor_id = $input['vendor_id'];
         if($request->payment_by == 'cash'){
             $expense->payment_by = 'Cash';
             $expense->amount = $input['cash_amount'];
