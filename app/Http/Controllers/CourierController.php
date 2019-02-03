@@ -520,7 +520,7 @@ class CourierController extends Controller
             }
 
         }
-        $courier_data = $couriers->paginate(50);
+        $courier_data = $couriers->get();
 
         foreach ($courier_data as $courier){
 
