@@ -9,6 +9,9 @@ use App\Models\Vendor;
 use App\Models\Manifest;
 use App\Models\Manifest_item;
 use App\Models\User;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ManifestExport;
+
 use Session;
 use Validator;
 
@@ -261,6 +264,27 @@ class ManifestController extends Controller
             $Mcount =  $menifest_count+1;
         }
         return "M0000".$Mcount;
+    }
+
+    public function downloadManifest(){
+
+
+        if(\Auth::user()->user_type == 'admin'){
+
+            $manifests=Manifest::get();
+        }
+        if(\Auth::user()->user_type == 'store'){
+
+            $logged_user_id = \Auth::user()->id;
+            $manifests=Manifest::where('created_by',$logged_user_id)->get();
+        }
+
+        $t="manifests_".time().".xlsx";
+        return Excel::download(new ManifestExport($manifests), $t);
+
+
+
+
     }
 
 

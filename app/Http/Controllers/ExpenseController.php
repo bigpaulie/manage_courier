@@ -162,7 +162,7 @@ class ExpenseController extends Controller
         $expense->debited_from = $input['debited_from'];
         $expense->description = $input['description'];
         $expense->expense_of = $input['expense_of'];
-        $expense->vendor_id = $input['vendor_id'];
+        $expense->vendor_id = isset($input['vendor_id'])?$input['vendor_id']:"";
         if($request->payment_by == 'cash'){
             $expense->payment_by = 'Cash';
             $expense->amount = $input['cash_amount'];
@@ -298,7 +298,7 @@ class ExpenseController extends Controller
         $expense->debited_from = $input['debited_from'];
         $expense->description = $input['description'];
         $expense->expense_of = $input['expense_of'];
-        $expense->vendor_id = $input['vendor_id'];
+        $expense->vendor_id = isset($input['vendor_id'])?$input['vendor_id']:"";
         if($request->payment_by == 'cash'){
             $expense->payment_by = 'Cash';
             $expense->amount = $input['cash_amount'];

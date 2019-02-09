@@ -25,6 +25,7 @@
         <header class="panel-heading">
 
             <a href="{{url(Auth::user()->user_type.'/manifest/create')}}" class="btn btn-primary pull-right">Create Manifest</a>
+            <a href="{{url(Auth::user()->user_type.'/manifest/download')}}" class="btn btn-warning pull-right" style="margin-right: 10px;"><i class="fa fa-download"></i> Export</a>
 
             <h2 class="panel-title">Manage Manifest</h2>
         </header>

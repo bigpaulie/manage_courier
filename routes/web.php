@@ -60,6 +60,9 @@ Route::group(['middleware' => array('auth')], function() {
         Route::post('/manifest/save_manifest', 'ManifestController@saveManifest');
         Route::get('/courier_report/{id}','CourierController@courierReport')->name('courierReport');
         Route::get('/manifest/print/{id}','ManifestController@printManifest')->name('manifest.print');
+        Route::get('/manifest/download','ManifestController@downloadManifest')->name('manifest.download');
+
+
 
         Route::get('/reports/walking_customer','ReportController@walkingCustomer')->name('reports.walking_customer');
         Route::get('/reports/agent_payment','ReportController@agentPayment')->name('reports.agent_payment');
@@ -129,6 +132,7 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/reports/agent_payment','ReportController@agentPayment')->name('reports.agent_payment');
         Route::get('/reports/payment_expense','ReportController@paymentExpense')->name('reports.payment_expense');
         Route::get('/reports/manifest','ReportController@manifestPayment')->name('reports.manifest');
+        Route::get('/manifest/download','ManifestController@downloadManifest')->name('manifest.download');
 
         Route::resource('expenses', 'ExpenseController');
         Route::resource('couriers', 'CourierController');
