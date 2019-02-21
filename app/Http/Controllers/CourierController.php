@@ -1050,6 +1050,25 @@ class CourierController extends Controller
 
             }
 
+            $courier_payment = Courier_payment::where('courier_id',$id)
+                //->where('user_id',\Auth::user()->id)
+                ->first();
+            $data['courier']=$courier;
+            if($courier_payment != null){
+                $data['courier_payment']=$courier_payment;
+
+            }else{
+                $courier_payment = new Courier_payment();
+                $courier_payment->total=null;
+                $courier_payment->pay_amount=0;
+                $courier_payment->remaining=0;
+                $courier_payment->discount=0;
+                $courier_payment->payment_date=date('Y-m-d');
+                $data['courier_payment']=$courier_payment;
+
+            }
+
+
 
 
             return view('couriers.box_details',$data);
@@ -1063,6 +1082,29 @@ class CourierController extends Controller
         $input = $request->all();
         $courier_id =$input['courier_id'];
         $courier= Courier::find($courier_id);
+
+
+        if(\Auth::user()->user_type != 'agent'){
+
+            $validator = Validator::make($request->all(), [
+                'payment_date' => 'required',
+                'pay_amount' => 'required',
+                'total' => 'required',
+
+            ]);
+        }else{
+            $validator = Validator::make($request->all(), [
+                'payment_date' => 'required',
+                'total' => 'required',
+            ]);
+        }
+
+
+        if ($validator->fails()) {
+            return redirect('/'.\Auth::user()->user_type.'/couriers/box_details/'.$courier_id)
+                ->withErrors($validator)
+                ->withInput();
+        }
 
 
         if($courier != null){
@@ -1115,7 +1157,26 @@ class CourierController extends Controller
 
                 }
 
-                    return redirect('/store/couriers/payment_details/'.$courier_id);
+
+                $input['payment_date']=date('Y-m-d',strtotime($request->payment_date));
+                $couier_payment = Courier_payment::where('courier_id',$courier_id)->first();
+                if($couier_payment != null){
+                    $couier_payment->id = $couier_payment->id;
+                    $couier_payment->total= $input['total'];
+                    if( \Auth::user()->user_type != 'agent') {
+                        $couier_payment->pay_amount = $input['pay_amount'];
+                        $couier_payment->remaining = $input['remaining'];
+                        $couier_payment->discount = $input['discount'];
+                    }
+                    $couier_payment->payment_date= date('Y-m-d',strtotime($request->payment_date));
+                    $couier_payment->save();
+                }else{
+                    Courier_payment::create($input);
+                }
+
+
+
+                return redirect('/'.\Auth::user()->user_type.'/couriers');
 
             }else{
                 $request->session()->flash('error_message', 'Courier weight and all boxes weight does not equal!');
@@ -1196,9 +1257,12 @@ class CourierController extends Controller
         if($couier_payment != null){
             $couier_payment->id = $couier_payment->id;
             $couier_payment->total= $input['total'];
-            $couier_payment->pay_amount= $input['pay_amount'];
-            $couier_payment->remaining= $input['remaining'];
-            $couier_payment->discount= $input['discount'];
+           if( \Auth::user()->user_type != 'agent'){
+               $couier_payment->pay_amount= $input['pay_amount'];
+               $couier_payment->remaining= $input['remaining'];
+               $couier_payment->discount= $input['discount'];
+           }
+
             $couier_payment->payment_date= date('Y-m-d',strtotime($request->payment_date));
             $couier_payment->save();
         }else{
