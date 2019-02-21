@@ -95,9 +95,9 @@
                     <div class="col-md-3">
                         <h4 class="text-primary">Items</h4>
                     </div>
-                    <div class="col-md-9">
-                        <button style="margin-top: 10px;" type="button"  class="btn btn-primary pull-right" v-on:click="addItem(b)">Add Item</button>
-                    </div>
+                    {{--<div class="col-md-9">--}}
+                        {{--<button style="margin-top: 10px;" type="button"  class="btn btn-primary pull-right" v-on:click="addItem(b)">Add Item</button>--}}
+                    {{--</div>--}}
                 </div>
                 <div class="row" v-for="item,i in box.items">
                     <div class="col-sm-3">
@@ -123,6 +123,15 @@
                             <input type="text" :name="'box[' + [b]+'][items]['+[i]+'][qty]'" class="form-control" v-model="item.qty">
                         </div>
                     </div>
+
+                    <div class="col-sm-3" v-if=" i == 0">
+                        <div class="form-group">
+                            <label class="control-label"></label>
+                            <button style="margin-top: 25px;" type="button"  class="btn btn-primary " v-on:click="addItem(b)">Add Item</button>
+
+                        </div>
+                    </div>
+
                     <div class="col-sm-3" v-if=" i > 0">
                         <div class="form-group">
                             <label class="control-label"></label>

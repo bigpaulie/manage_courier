@@ -48,20 +48,28 @@ class ManifestController extends Controller
     {
         $status_id = Status::where('code_name',"pending")->first()->id;
         $agent_id= isset($request->agent_id)?$request->agent_id:0;
-        $from_date= isset($request->from_date)?$request->from_date:date('m/d/Y');
-        $end_date= isset($request->end_date)?$request->end_date:date('m/d/Y');
+        $from_date= isset($request->from_date)?$request->from_date:"";
+        $end_date= isset($request->end_date)?$request->end_date:"";
 
         $user_type = \Auth::user()->user_type;
         $courier_joins = Courier::with(['agent','status','receiver_country']);
         if($user_type == 'admin'){
-            if(!empty($agent_id) && $agent_id > 0){
+            if(!empty($agent_id) && $agent_id > 0  && $from_date !="" && $end_date != "") {
 
-                $couriers= $courier_joins
-                            ->where('status_id',$status_id)
-                            ->where('user_id',$agent_id)
-                            ->whereDate('courier_date','>=', date('Y-m-d',strtotime($from_date)))
-                            ->whereDate('courier_date', '<=',date('Y-m-d',strtotime($end_date)))
-                            ->OrderBy('updated_at','desc')->get();
+                $couriers = $courier_joins
+                    ->where('status_id', $status_id)
+                    ->where('user_id', $agent_id)
+                    ->whereDate('courier_date', '>=', date('Y-m-d', strtotime($from_date)))
+                    ->whereDate('courier_date', '<=', date('Y-m-d', strtotime($end_date)))
+                    ->OrderBy('updated_at', 'desc')->get();
+
+            }else if($from_date !="" && $end_date != ""){
+
+                $couriers = $courier_joins
+                     ->where('status_id', $status_id)
+                     ->whereDate('courier_date', '>=', date('Y-m-d', strtotime($from_date)))
+                    ->whereDate('courier_date', '<=', date('Y-m-d', strtotime($end_date)))
+                    ->OrderBy('updated_at', 'desc')->get();
 
             }else{
                 $couriers= $courier_joins

@@ -1055,6 +1055,26 @@ class CourierController extends Controller
                 ->first();
             $data['courier']=$courier;
             if($courier_payment != null){
+                if(empty($courier_payment->total_amount))
+                {
+                    $courier_payment->total_amount=0;
+                }
+
+                if(empty($courier_payment->pay_amount))
+                {
+                    $courier_payment->pay_amount=0;
+                }
+
+                if(empty($courier_payment->remaining))
+                {
+                    $courier_payment->remaining=0;
+                }
+
+                if(empty($courier_payment->discount))
+                {
+                    $courier_payment->discount=0;
+                }
+
                 $data['courier_payment']=$courier_payment;
 
             }else{
