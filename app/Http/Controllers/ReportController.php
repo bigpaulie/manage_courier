@@ -285,6 +285,12 @@ class ReportController extends Controller
                                 ->orderBy('payment_date','desc')
                                 ->get();
 
+    $courier_payment_agent = Courier_payment::with('agent')
+                                             ->whereIn('user_id',$agent_ids)->sum('total');
+
+    $agent_all_payments = Payment::with('agent')
+                         ->whereIn('user_id',$agent_ids)->sum('amount');
+
 
     $total_amount = $courier_payments->sum('total');
     $total_paid_amount = $agent_payments->sum('amount');
@@ -309,6 +315,10 @@ class ReportController extends Controller
     $response_data['total_amount']=$total_amount;
     $response_data['total_paid_amount']=$total_paid_amount;
     $response_data['remaining_amount']=$total_amount-$total_paid_amount;
+
+    $response_data['all_total_amount']=$courier_payment_agent;
+    $response_data['all_total_paid_amount']=$agent_all_payments;
+    $response_data['all_remaining_amount']=$courier_payment_agent-$agent_all_payments;
 
 
     return response()->json($response_data);

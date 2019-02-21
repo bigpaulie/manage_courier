@@ -59,6 +59,31 @@
                     </div>
                 </div>
 
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">From Date</label>
+                        <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                            <input type="text" id="from_date" name="from_date" data-plugin-datepicker="" class="form-control" value="{{$from_date}}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">End Date</label>
+                        <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                            <input type="text" id="end_date" name="end_date" data-plugin-datepicker="" class="form-control" value="{{$end_date}}">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="col-md-3">
                     <div class="form-group">
                         <button type="button" class="btn btn-success" onclick="filterAgent();" style="margin-top: 25px;"><i class="fa fa-search"></i> Search</button>
@@ -87,6 +112,7 @@
                     <th >Id</th>
                     <th>Agent Name</th>
                     <th>Customer Name</th>
+                    <th>Created Date</th>
                     <th >Status</th>
                     <th >Country</th>
                     <th>Item/Bulked</th>
@@ -106,6 +132,7 @@
                             <td>{{$courier->unique_name}}</td>
                             <td>{{$courier->agent->name}}</td>
                             <td>{{$courier->r_name}}</td>
+                            <td>{{$courier->courier_date}}</td>
                             <td><span style="color:{{$courier->status->color_code}};">{{$courier->status->name}}</span></td>
                             <td>{{$courier->receiver_country->name}}</td>
                             <td>
@@ -275,8 +302,10 @@
 
         function filterAgent(){
             var agent_id = $("#agentSelect").val();
+            var from_date = $("#from_date").val();
+            var end_date = $("#end_date").val();
 
-            window.location.href ="/"+user_type+"/manifest/create?agent_id="+agent_id;
+            window.location.href ="/"+user_type+"/manifest/create?agent_id="+agent_id+"&from_date="+from_date+"&end_date="+end_date;
 
 
         }

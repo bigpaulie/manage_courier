@@ -61,6 +61,8 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/courier_report/{id}','CourierController@courierReport')->name('courierReport');
         Route::get('/manifest/print/{id}','ManifestController@printManifest')->name('manifest.print');
         Route::get('/manifest/download','ManifestController@downloadManifest')->name('manifest.download');
+        Route::get('/manifest/excel_report/{id}','ManifestController@excelManifest')->name('manifest.excel_report');
+
 
 
 
@@ -133,6 +135,7 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/reports/payment_expense','ReportController@paymentExpense')->name('reports.payment_expense');
         Route::get('/reports/manifest','ReportController@manifestPayment')->name('reports.manifest');
         Route::get('/manifest/download','ManifestController@downloadManifest')->name('manifest.download');
+        Route::get('/manifest/excel_report/{id}','ManifestController@excelManifest')->name('manifest.excel_report');
 
         Route::resource('expenses', 'ExpenseController');
         Route::resource('couriers', 'CourierController');

@@ -38,7 +38,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="form-group">
                         <label class="control-label">From Date</label>
                         <div class="input-group mb-md">
@@ -51,7 +51,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="form-group">
                         <label class="control-label">End Date</label>
                         <div class="input-group mb-md">
@@ -66,10 +66,16 @@
 
 
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="form-group">
                         <button type="button" class="btn btn-success" @click="filterAgentReport" style="margin-top: 25px;"><i class="fa fa-search"></i> Search</button>
                     </div>
+                </div>
+
+                <div class="col-md-3"  v-if="typeof agent_payments != 'undefined' ">
+                    <p><b>Total Amount(Dr.) :@{{all_total_amount}}</b></p>
+                    <p><b>Total Paid Amount(Cr.) :@{{all_total_paid_amount}}</b></p>
+                    <p><b>Remaining :@{{all_remaining_amount}}</b></p>
                 </div>
 
             </div>
@@ -212,19 +218,23 @@
                 from_date:"{{date('m/d/Y')}}",
                 end_date:"{{date('m/d/Y')}}",
                 looged_user_id:"{{$user_id}}",
-                user_type:"{{$user_type}}"
+                user_type:"{{$user_type}}",
+                all_total_amount:"",
+                all_total_paid_amount:"",
+                all_remaining_amount:"",
 
             },
             created(){
 
-                let searchURL = '/api/getAgentPayment?type=all&user_type='+this.user_type+'&logged_user_id='+this.looged_user_id;
-                searchURL+='&from_date='+this.from_date+'&end_date='+this.end_date
-                axios.get(searchURL).then(response => {
-                this.agent_payments = response.data.agent_payment_data;
-                this.total_amount = response.data.total_amount;
-                this.total_paid_amount = response.data.total_paid_amount;
-                this.remaining_amount = response.data.remaining_amount;
-            });
+                // let searchURL = '/api/getAgentPayment?type=all&user_type='+this.user_type+'&logged_user_id='+this.looged_user_id;
+                // searchURL+='&from_date='+this.from_date+'&end_date='+this.end_date
+                // axios.get(searchURL).then(response => {
+                // this.agent_payments = response.data.agent_payment_data;
+                // this.total_amount = response.data.total_amount;
+                // this.total_paid_amount = response.data.total_paid_amount;
+                // this.remaining_amount = response.data.remaining_amount;
+
+            // });
             },
 
 
@@ -242,6 +252,9 @@
                     this.total_amount = response.data.total_amount;
                     this.total_paid_amount = response.data.total_paid_amount;
                     this.remaining_amount = response.data.remaining_amount;
+                    this.all_total_amount = response.data.all_total_amount;
+                    this.all_total_paid_amount = response.data.all_total_paid_amount;
+                    this.all_remaining_amount = response.data.all_remaining_amount;
                 });
 
 

@@ -11,6 +11,7 @@ use App\Models\Manifest_item;
 use App\Models\User;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ManifestExport;
+use App\Exports\ManifestDetailExport;
 
 use Session;
 use Validator;
@@ -47,6 +48,8 @@ class ManifestController extends Controller
     {
         $status_id = Status::where('code_name',"pending")->first()->id;
         $agent_id= isset($request->agent_id)?$request->agent_id:0;
+        $from_date= isset($request->from_date)?$request->from_date:date('m/d/Y');
+        $end_date= isset($request->end_date)?$request->end_date:date('m/d/Y');
 
         $user_type = \Auth::user()->user_type;
         $courier_joins = Courier::with(['agent','status','receiver_country']);
@@ -56,6 +59,8 @@ class ManifestController extends Controller
                 $couriers= $courier_joins
                             ->where('status_id',$status_id)
                             ->where('user_id',$agent_id)
+                            ->whereDate('courier_date','>=', date('Y-m-d',strtotime($from_date)))
+                            ->whereDate('courier_date', '<=',date('Y-m-d',strtotime($end_date)))
                             ->OrderBy('updated_at','desc')->get();
 
             }else{
@@ -80,6 +85,8 @@ class ManifestController extends Controller
             $couriers= $courier_joins
                 ->where('status_id',$status_id)
                 ->whereIn('user_id',$agents_id)
+                ->whereDate('courier_date','>=', date('Y-m-d',strtotime($from_date)))
+                ->whereDate('courier_date', '<=',date('Y-m-d',strtotime($end_date)))
                 ->OrderBy('updated_at','desc')->get();
         }
 
@@ -90,6 +97,8 @@ class ManifestController extends Controller
         }
         $data['vendors']=Vendor::pluck('name','id')->toArray();
         $data['couriers'] =$couriers;
+        $data['from_date'] =$from_date;
+        $data['end_date'] =$end_date;
        // dd(Session::get('manifest_data'));
         return view('admin.manifest.create',$data);
 
@@ -283,8 +292,22 @@ class ManifestController extends Controller
         return Excel::download(new ManifestExport($manifests), $t);
 
 
+    }
 
+    public function excelManifest($id){
 
+        $manifest= Manifest::find($id);
+        if($manifest != null){
+            $courier_ids = explode(",",$manifest->courier_ids);
+            $manifest_couriers = Courier::whereIn('id',$courier_ids)->get();
+            $data['manifest']=$manifest;
+            $data['manifest_couriers']=$manifest_couriers;
+
+            $t="manifest_details_".time().".xlsx";
+            return Excel::download(new ManifestDetailExport($data), $t);
+        }else{
+            abort(404);
+        }
     }
 
 

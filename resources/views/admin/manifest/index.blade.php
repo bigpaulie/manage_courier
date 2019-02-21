@@ -68,7 +68,10 @@
                          </td>
                          <td data-title="Created">{{date('d-M-Y',strtotime($manifest->created_at))}}</td>
 
-                         <td><a href="\{{Auth::user()->user_type}}\manifest\print\{{$manifest->id}}"><i class="fa fa-file-excel-o"></i></a></td>
+                         <td>
+                             <a href="\{{Auth::user()->user_type}}\manifest\excel_report\{{$manifest->id}}" style="margin-right: 10px;"><i class="fa fa-file-excel-o"></i></a>
+                             <a href="\{{Auth::user()->user_type}}\manifest\print\{{$manifest->id}}"><i class="fa fa-print"></i></a>
+                         </td>
                      </tr>
 
                  @endforeach
