@@ -38,7 +38,7 @@ Route::get('/test', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-
+Route::get('/api/getCouriers','CourierController@getCouriers')->name('getCouriers');
 Route::group(['middleware' => array('auth')], function() {
 
     Route::prefix('admin')->group(function () {

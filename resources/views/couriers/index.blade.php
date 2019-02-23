@@ -78,7 +78,9 @@
                     <div class="form-group">
                         <label class="control-label">Agent/Store Name</label>
                         <select  class="form-control populate" id="userSelect" name="user_id">
-
+                            @if($agent_name > 0)
+                                <option value="{{$agent_name}}">{{$agent_full_name}}</option>
+                            @endif
                         </select>
                     </div>
                 </div>
@@ -429,11 +431,11 @@
                 cc_master: @json($courier_companies),
                 user_type:"{{Auth::user()->user_type}}",
                 user_id:"{{Auth::user()->id}}",
-                from_date:"{{date('m/d/Y')}}",
-                end_date:"{{date('m/d/Y')}}",
-                agent_name:'',
-                traking_number:'',
-                status_id:'',
+                from_date:"{{$from_date}}",
+                end_date:"{{$end_date}}",
+                agent_name:"{!! $agent_name !!}",
+                traking_number:"{!! $traking_number !!}",
+                status_id:"{!! $status_id !!}",
                 selected: [],
                 allSelected:false,
                 courierIds:[],
@@ -444,17 +446,24 @@
                 total_paid_amount:"NA",
                 total_remaining:"NA",
                 total:"NA",
-                pickup_status:""
+                pickup_status:"",
+                setFilter:"{{$setFilter}}"
 
             },
             created(){
-                let searchURL = '/api/getCouriers?type=all&user_type='+this.user_type+'&user_id='+this.user_id;
-                axios.get(searchURL).then(response => {
-                    this.couriers = response.data.courier_data;
+                if(this.setFilter){
+                    this.searchCouriers();
+                }else{
+                    let searchURL = '/api/getCouriers?type=all&user_type='+this.user_type+'&user_id='+this.user_id;
+                    searchURL+='&from_date='+this.from_date+'&end_date='+this.end_date
+                    axios.get(searchURL).then(response => {
+                        this.couriers = response.data.courier_data;
                     this.total_paid_amount = response.data.total_paid_amount;
                     this.total_remaining = response.data.total_remaining;
                     this.total = response.data.total;
                 });
+                }
+
 
             },
 

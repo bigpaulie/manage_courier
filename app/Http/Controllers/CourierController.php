@@ -37,7 +37,7 @@ class CourierController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
 
         $data['status']=Status::all();
@@ -51,7 +51,54 @@ class CourierController extends Controller
             $data['paid_amount']=$paid_amount;
             $data['remaining']=$total_amount-$paid_amount;
         }
+        $from_date = date('m/d/Y');
+        $end_date=date('m/d/Y');
+        $setFilter=0;
+        $status_id = "";
+        $traking_number="";
+        $agent_name="";
+        $agent_full_name="";
+        if($request->session()->has('from_date'))
+        {
+            $from_date =$request->session()->get('from_date');
+            $setFilter=1;
+        }
 
+        if($request->session()->has('end_date'))
+        {
+            $end_date =$request->session()->get('end_date');
+            $setFilter=1;
+        }
+
+        if($request->session()->has('status_id'))
+        {
+            $status_id =$request->session()->get('status_id');
+            $setFilter=1;
+        }
+
+        if($request->session()->has('traking_number'))
+        {
+            $traking_number =$request->session()->get('traking_number');
+            $setFilter=1;
+        }
+
+        if($request->session()->has('agent_name'))
+        {
+            $agent_name =$request->session()->get('agent_name');
+            if(!empty($agent_name) && $agent_name > 0){
+                $user_data = User::find($agent_name);
+                $agent_full_name = $user_data->name;
+            }
+
+            $setFilter=1;
+        }
+        $data['from_date']=$from_date;
+        $data['end_date']=$end_date;
+        $data['setFilter']=$setFilter;
+        $data['status_id']=$status_id;
+        $data['traking_number']=$traking_number;
+        $data['agent_name']=$agent_name;
+        $data['agent_full_name']=$agent_full_name;
         return view('couriers.index',$data);
     }
 
@@ -315,14 +362,22 @@ class CourierController extends Controller
         $user_id= $input['user_id'];
         $user_type = $input['user_type'];
 
+
+        $request->session()->put('from_date', $request->from_date);
+        $request->session()->put('end_date', $request->end_date);
+        $request->session()->put('status_id', $status_id);
+        $request->session()->put('traking_number', $traking_number);
+        $request->session()->put('agent_name', $agent_name);
+
+
         $courier_joins = Courier::with(['agent','status','shippment','courier_payment','receiver_country']);
         if($type == 'all'){
 
             if($user_type == 'agent') {
                 $user_ids = [$user_id];
                 $couriers = $courier_joins
-                    ->whereDate('courier_date', '>=', date('Y-m-d'))
-                    ->whereDate('courier_date', '<=', date('Y-m-d'))
+                    ->whereDate('courier_date', '>=', $from_date)
+                    ->whereDate('courier_date', '<=', $end_date)
                     ->whereIn('couriers.user_id', $user_ids)
                     ->OrderBy('courier_date', 'desc');
             }
@@ -330,16 +385,16 @@ class CourierController extends Controller
                 $user_ids = User_profile::where('store_id',$user_id)->pluck('user_id')->toArray();
                 array_push($user_ids,[$user_id]);
                 $couriers= $courier_joins
-                    ->whereDate('courier_date','>=', date('Y-m-d'))
-                    ->whereDate('courier_date', '<=',date('Y-m-d'))
+                    ->whereDate('courier_date','>=', $from_date)
+                    ->whereDate('courier_date', '<=',$end_date)
                     ->whereIn('couriers.user_id',$user_ids)
                     ->OrderBy('courier_date','desc');
 
             }else{
 
                 $couriers= $courier_joins
-                                    ->whereDate('courier_date','>=', date('Y-m-d'))
-                                    ->whereDate('courier_date', '<=',date('Y-m-d'))
+                                    ->whereDate('courier_date','>=', $from_date)
+                                    ->whereDate('courier_date', '<=',$end_date)
                                     ->OrderBy('courier_date','desc');
             }
 
