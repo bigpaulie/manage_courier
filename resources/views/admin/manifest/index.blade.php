@@ -40,7 +40,7 @@
                     <th>Vendor Name</th>
                     <th>Amount</th>
                     <th>Manifest Contents</th>
-                    <th>Created</th>
+                    <th>Manifest Date</th>
                     <th>Action</th>
 
 
@@ -66,9 +66,11 @@
                              </ul>
 
                          </td>
-                         <td data-title="Created">{{date('d-M-Y',strtotime($manifest->created_at))}}</td>
+                         <td data-title="Manifest Date">{{date('d-M-Y',strtotime($manifest->manifest_date))}}</td>
 
                          <td>
+                             <a href="{{route('manifest.edit',$manifest->id)}}" class="" style="margin-right: 10px;"><i class="fa fa-pencil"></i></a>
+
                              <a href="\{{Auth::user()->user_type}}\manifest\excel_report\{{$manifest->id}}" style="margin-right: 10px;"><i class="fa fa-file-excel-o"></i></a>
                              <a href="\{{Auth::user()->user_type}}\manifest\print\{{$manifest->id}}"><i class="fa fa-print"></i></a>
                          </td>

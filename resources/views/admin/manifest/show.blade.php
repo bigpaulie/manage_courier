@@ -42,7 +42,7 @@
                                 <b class="text-uppercase">Amount: {{$manifest->amount}}</b>
 
                                 <br>
-                               Create Date: {{date('d-m-y',strtotime($manifest->created_at))}}
+                               Manifest Date: {{date('d-m-y',strtotime($manifest->manifest_date))}}
                             </address>
 
                         </div>

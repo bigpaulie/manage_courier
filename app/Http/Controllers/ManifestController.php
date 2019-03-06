@@ -112,6 +112,42 @@ class ManifestController extends Controller
 
     }
 
+
+    public function edit($id)
+    {
+        $data['manifest']=Manifest::find($id);
+        $data['vendors']=Vendor::pluck('name','id')->toArray();
+        return view('admin.manifest.edit',$data);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'vendor_id' => 'required',
+            'amount' => 'required',
+            'manifest_date' => 'required',
+
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('/'.\Auth::user()->user_type.'/manifest/'.$id.'/edit')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $input = $request->all();
+        $manifest = Manifest::find($id);
+        if($manifest != null){
+            $manifest->vendor_id = $input['vendor_id'];
+            $manifest->amount = $input['amount'];
+            $manifest->manifest_date = date('Y-m-d',strtotime($input['manifest_date']));
+            $manifest->save();
+        }
+        $request->session()->flash('message', 'Manifest has been updated successfully!');
+        return redirect('/'.\Auth::user()->user_type.'/manifest');
+    }
+
+
     public function show($id){
 
         $manifest= Manifest::find($id);
@@ -231,6 +267,7 @@ class ManifestController extends Controller
             $manifest->courier_ids=implode(",",$courier_ids);
             $manifest->content=json_encode($manifest_data);
             $manifest->amount = $input['amount'];
+            $manifest->manifest_date = date('Y-m-d',strtotime($input['manifest_date']));
             $manifest->payment_date = date('Y-m-d');
             $manifest->save();
             $manifest_id = $manifest->id;

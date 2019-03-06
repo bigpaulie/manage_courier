@@ -192,6 +192,15 @@
                     <label class="sr-only" for="exampleInputPassword2">Amount<span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="amount" name="amount" placeholder="Amount">
                 </div>
+            <div class="form-group">
+                <label class="sr-only" for="exampleInputPassword2">Manifest Date<span class="text-danger">*</span></label>
+                <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                    <input type="text" id="manifest_date" name="manifest_date" data-plugin-datepicker="" class="form-control" value="{{date('m/d/Y')}}">
+                </div>
+            </div>
 
                 <div class="visible-sm clearfix mt-sm mb-sm"></div>
                  <button class="btn btn-primary" disabled type="submit" id="btnSave">Save</button>
