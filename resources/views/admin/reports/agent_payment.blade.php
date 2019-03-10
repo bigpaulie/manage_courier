@@ -29,7 +29,7 @@
             <div class="row">
 
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="form-group">
                         <label class="control-label">Agent Name</label>
                         <select  class="form-control populate" id="agentSelect" name="user_id">
@@ -66,9 +66,11 @@
 
 
 
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-group">
                         <button type="button" class="btn btn-success" @click="filterAgentReport" style="margin-top: 25px;"><i class="fa fa-search"></i> Search</button>
+                        <button type="button" class="btn btn-primary" @click="downloadAgentReport" style="margin-top: 25px;"><i class="fa fa-download"></i> Download</button>
+
                     </div>
                 </div>
 
@@ -259,6 +261,18 @@
 
 
                 },
+
+                downloadAgentReport(){
+
+                    var agent_id = $("#agentSelect").val();
+
+                    let searchURL = '/admin/downloadAgentPayment?type=all&user_type='+this.user_type+'&logged_user_id='+this.looged_user_id;
+                    searchURL+='&from_date='+this.from_date+'&end_date='+this.end_date+'&agent_id='+agent_id;
+
+                    window.location.href=searchURL;
+
+                },
+
 
 
 

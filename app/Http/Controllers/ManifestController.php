@@ -24,12 +24,13 @@ class ManifestController extends Controller
 
         if(\Auth::user()->user_type == 'admin'){
 
-            $manifests=Manifest::get();
+            $manifests=Manifest::orderBy('created_at', 'desc')->get();
         }
         if(\Auth::user()->user_type == 'store'){
 
             $logged_user_id = \Auth::user()->id;
-            $manifests=Manifest::where('created_by',$logged_user_id)->get();
+            $manifests=Manifest::where('created_by',$logged_user_id)
+                                ->orderBy('created_at', 'desc')->get();
         }
 
 
@@ -61,7 +62,7 @@ class ManifestController extends Controller
                     ->where('user_id', $agent_id)
                     ->whereDate('courier_date', '>=', date('Y-m-d', strtotime($from_date)))
                     ->whereDate('courier_date', '<=', date('Y-m-d', strtotime($end_date)))
-                    ->OrderBy('updated_at', 'desc')->get();
+                    ->OrderBy('courier_date', 'desc')->get();
 
             }else if($from_date !="" && $end_date != ""){
 
@@ -69,12 +70,12 @@ class ManifestController extends Controller
                      ->where('status_id', $status_id)
                      ->whereDate('courier_date', '>=', date('Y-m-d', strtotime($from_date)))
                     ->whereDate('courier_date', '<=', date('Y-m-d', strtotime($end_date)))
-                    ->OrderBy('updated_at', 'desc')->get();
+                    ->OrderBy('courier_date', 'desc')->get();
 
             }else{
                 $couriers= $courier_joins
                     ->where('status_id',$status_id)
-                    ->OrderBy('updated_at','desc')->get();
+                    ->OrderBy('courier_date','desc')->get();
             }
 
         }else if($user_type == 'store'){
@@ -95,7 +96,7 @@ class ManifestController extends Controller
                 ->whereIn('user_id',$agents_id)
                 ->whereDate('courier_date','>=', date('Y-m-d',strtotime($from_date)))
                 ->whereDate('courier_date', '<=',date('Y-m-d',strtotime($end_date)))
-                ->OrderBy('updated_at','desc')->get();
+                ->OrderBy('courier_date','desc')->get();
         }
 
 
@@ -148,6 +149,21 @@ class ManifestController extends Controller
     }
 
 
+    public function destroy($id)
+    {
+        $manifest = Manifest::where('id',$id)->first();
+        $courier_ids = explode(",",$manifest->courier_ids);
+        $pending_status_id = Status::where('code_name',"pending")->first()->id;
+        $manifest_couriers = Courier::whereIn('id',$courier_ids)->update(['status_id' => $pending_status_id]);
+        Manifest_item::where('manifest_id',$id)->delete();
+        Manifest::where('id',$id)->delete();
+
+
+        \Session::flash('message', 'Manifest has been deleted successfully!');
+        return redirect('/'.\Auth::user()->user_type.'/manifest');
+    }
+
+
     public function show($id){
 
         $manifest= Manifest::find($id);
@@ -182,6 +198,9 @@ class ManifestController extends Controller
 
 
         $input= $request->all();
+        $from_date = $input['from_date'];
+        $end_date = $input['end_date'];
+        $agent_id = isset($input['filter_agent_id'])?$input['filter_agent_id']:'';
         $courier_ids = $input['courier_id'];
         $manifest_data=[];
 
@@ -233,8 +252,16 @@ class ManifestController extends Controller
         $request->session()->put('manifest_data', $manifest_data);
 
        // return redirect()->route('manifest.create');
+        if(!empty($from_date) && !empty($end_date) && $agent_id > 0){
+            return redirect('/'.\Auth::user()->user_type.'/manifest/create?agent_id='.$agent_id.'&from_date='.$from_date.'&end_date='.$end_date);
 
-        return redirect('/'.\Auth::user()->user_type.'/manifest/create');
+        }else if(!empty($from_date) && !empty($end_date)){
+            return redirect('/'.\Auth::user()->user_type.'/manifest/create?agent_id=null&from_date='.$from_date.'&end_date='.$end_date);
+        }else{
+            return redirect('/'.\Auth::user()->user_type.'/manifest/create');
+
+        }
+
 
 
     }

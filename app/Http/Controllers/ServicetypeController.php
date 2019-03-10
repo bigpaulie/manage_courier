@@ -15,7 +15,7 @@ class ServicetypeController extends Controller
      */
     public function index()
     {
-        $data['service_types']=Service_type::all();
+        $data['service_types']=Service_type::orderBy('created_at', 'desc')->get();
         return view('admin.service_types.index',$data);
     }
 

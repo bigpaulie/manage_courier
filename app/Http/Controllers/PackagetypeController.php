@@ -15,7 +15,7 @@ class PackagetypeController extends Controller
      */
     public function index()
     {
-        $data['package_types']=Package_type::all();
+        $data['package_types']=Package_type::orderBy('created_at', 'desc')->get();
         return view('admin.package_types.index',$data);
     }
 

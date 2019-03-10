@@ -69,6 +69,8 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <button type="button" class="btn btn-success" @click="filterWalkingCustomer" style="margin-top: 25px;"><i class="fa fa-search"></i> Search</button>
+                        <button type="button" class="btn btn-primary" @click="downloadWalkingCustomer" style="margin-top: 25px;"><i class="fa fa-download"></i> Download</button>
+
                     </div>
                 </div>
 
@@ -265,9 +267,18 @@
                         this.total_remaining = response.data.total_remaining;
                      });
 
+                },
+
+                downloadWalkingCustomer(){
 
 
+                    var customer_phone = $("#walkingCustomer").val();
 
+                    let searchURL = '/admin/downloadWalkingCustomer?type=all&user_type='+this.user_type+'&logged_user_id='+this.looged_user_id;
+                    searchURL+='&customer_phone='+customer_phone;
+
+
+                    window.location.href=searchURL;
 
                 },
 

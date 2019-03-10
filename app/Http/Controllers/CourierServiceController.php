@@ -15,7 +15,7 @@ class CourierServiceController extends Controller
      */
     public function index()
     {
-        $data['courier_services']=Courier_service::all();
+        $data['courier_services']=Courier_service::orderBy('created_at', 'desc')->get();
         return view('admin.courier_services.index',$data);
     }
 

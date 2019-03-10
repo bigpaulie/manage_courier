@@ -42,6 +42,8 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <button type="button" class="btn btn-success" @click="filterWalkingCustomer" style="margin-top: 25px;"><i class="fa fa-search"></i> Search</button>
+                        <button type="button" class="btn btn-primary" @click="downloadManifestReport" style="margin-top: 25px;"><i class="fa fa-download"></i> Download</button>
+
                     </div>
                 </div>
 
@@ -211,9 +213,17 @@
                     this.total_remaining = response.data.total_remaining;
                 });
 
+                },
+
+                downloadManifestReport(){
 
 
+                    var vendor_id = $("#selectVendor").val();
 
+                    let searchURL = '/admin/downloadManifestReport?type=all&user_type='+this.user_type+'&logged_user_id='+this.looged_user_id;
+                    searchURL+='&vendor_id='+vendor_id;
+
+                    window.location.href=searchURL;
 
                 },
 

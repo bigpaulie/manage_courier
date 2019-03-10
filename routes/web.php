@@ -62,7 +62,10 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/manifest/print/{id}','ManifestController@printManifest')->name('manifest.print');
         Route::get('/manifest/download','ManifestController@downloadManifest')->name('manifest.download');
         Route::get('/manifest/excel_report/{id}','ManifestController@excelManifest')->name('manifest.excel_report');
-
+        Route::get('/downloadAgentPayment','ReportController@downloadAgentPayment')->name('downloadAgentPayment');
+        Route::get('/downloadWalkingCustomer','ReportController@downloadWalkingCustomer')->name('downloadWalkingCustomer');
+        Route::get('/downloadManifestReport','ReportController@downloadManifestReport')->name('downloadManifestReport');
+        Route::get('/downloadPaymentExpense','ReportController@downloadPaymentExpense')->name('downloadPaymentExpense');
 
 
 

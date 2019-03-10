@@ -120,6 +120,14 @@ class CourierController extends Controller
         $data['s_states']=State::where('country_id',$user_data->profile->country_id)->get();
         $data['s_cities']=City::where('state_id',$user_data->profile->state_id)->get();
         $data['courier_unique_no'] = $this->getCourierUniqueName(\Auth::user()->id);
+        $courier_payment = new Courier_payment();
+        $courier_payment->total=null;
+        $courier_payment->pay_amount=0;
+        $courier_payment->remaining=0;
+        $courier_payment->discount=0;
+        $courier_payment->payment_date=date('Y-m-d');
+        $data['courier_payment']=$courier_payment;
+
         return view('couriers.create',$data);
     }
 
@@ -149,6 +157,9 @@ class CourierController extends Controller
             'r_state'=>'required',
             'r_city'=>'required',
             //'r_zip_code' => 'required',
+           'payment_date' => 'required',
+          // 'pay_amount' => 'required',
+           'total' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -178,6 +189,18 @@ class CourierController extends Controller
         $shippment->carriage_value = $input['carriage_value'];
        // $shippment->courier_status = isset($input['courier_status'])?$input['courier_status']:"drop";
         $shippment->save();
+
+        $couier_payment = new Courier_payment();
+        $couier_payment->courier_id = $courier_id;
+        $couier_payment->user_id = \Auth::user()->id;
+        $couier_payment->total= $input['total'];
+        if( \Auth::user()->user_type != 'agent') {
+            $couier_payment->pay_amount = $input['pay_amount'];
+            $couier_payment->remaining = $input['remaining'];
+            $couier_payment->discount = $input['discount'];
+        }
+        $couier_payment->payment_date= date('Y-m-d',strtotime($request->payment_date));
+        $couier_payment->save();
 
         if(\Auth::user()->user_type == 'agent'){
             $notification = new Notification();
@@ -241,6 +264,45 @@ class CourierController extends Controller
 //        $data['r_cities']=City::where('state_id',$courier->r_state)->get();
         $data['courier']=$courier;
         $data['status']=Status::all();
+        $courier_payment = Courier_payment::where('courier_id',$id)
+                        ->first();
+
+        if($courier_payment != null){
+            if(empty($courier_payment->total_amount))
+            {
+                $courier_payment->total_amount=0;
+            }
+
+            if(empty($courier_payment->pay_amount))
+            {
+                $courier_payment->pay_amount=0;
+            }
+
+            if(empty($courier_payment->remaining))
+            {
+                $courier_payment->remaining=0;
+            }
+
+            if(empty($courier_payment->discount))
+            {
+                $courier_payment->discount=0;
+            }
+
+            $data['courier_payment']=$courier_payment;
+
+        }else{
+            $courier_payment = new Courier_payment();
+            $courier_payment->total=null;
+            $courier_payment->pay_amount=0;
+            $courier_payment->remaining=0;
+            $courier_payment->discount=0;
+            $courier_payment->payment_date=date('Y-m-d');
+            $data['courier_payment']=$courier_payment;
+
+        }
+
+
+
 
         return view('couriers.edit',$data);
     }
@@ -319,6 +381,27 @@ class CourierController extends Controller
         $shippment->carriage_value = $input['carriage_value'];
        // $shippment->courier_status = isset($input['courier_status'])?$input['courier_status']:"drop";
         $shippment->save();
+
+
+        $input['courier_id']=$id;
+        $input['user_id']=\Auth::user()->id;
+        $input['payment_date']=date('Y-m-d',strtotime($request->payment_date));
+        $couier_payment = Courier_payment::where('courier_id',$id)->first();
+        if($couier_payment != null){
+            $couier_payment->id = $couier_payment->id;
+            $couier_payment->total= $input['total'];
+            if( \Auth::user()->user_type != 'agent') {
+                $couier_payment->pay_amount = $input['pay_amount'];
+                $couier_payment->remaining = $input['remaining'];
+                $couier_payment->discount = $input['discount'];
+            }
+            $couier_payment->payment_date= date('Y-m-d',strtotime($request->payment_date));
+            $couier_payment->save();
+        }else{
+            Courier_payment::create($input);
+        }
+
+
         $request->session()->flash('message', 'Courier has been updated successfully!');
         return redirect('/'.\Auth::user()->user_type.'/couriers/box_details/'.$id);
     }
@@ -1105,10 +1188,9 @@ class CourierController extends Controller
 
             }
 
-            $courier_payment = Courier_payment::where('courier_id',$id)
-                //->where('user_id',\Auth::user()->id)
-                ->first();
+
             $data['courier']=$courier;
+            /*$courier_payment = Courier_payment::where('courier_id',$id)->first();
             if($courier_payment != null){
                 if(empty($courier_payment->total_amount))
                 {
@@ -1141,10 +1223,7 @@ class CourierController extends Controller
                 $courier_payment->payment_date=date('Y-m-d');
                 $data['courier_payment']=$courier_payment;
 
-            }
-
-
-
+            }*/
 
             return view('couriers.box_details',$data);
         }else{
@@ -1155,11 +1234,12 @@ class CourierController extends Controller
 
     public function saveBoxDetails(Request $request){
         $input = $request->all();
+
         $courier_id =$input['courier_id'];
         $courier= Courier::find($courier_id);
 
 
-        if(\Auth::user()->user_type != 'agent'){
+       /* if(\Auth::user()->user_type != 'agent'){
 
             $validator = Validator::make($request->all(), [
                 'payment_date' => 'required',
@@ -1180,7 +1260,7 @@ class CourierController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
-
+        */
 
         if($courier != null){
 
@@ -1233,7 +1313,7 @@ class CourierController extends Controller
                 }
 
 
-                $input['payment_date']=date('Y-m-d',strtotime($request->payment_date));
+                /*$input['payment_date']=date('Y-m-d',strtotime($request->payment_date));
                 $couier_payment = Courier_payment::where('courier_id',$courier_id)->first();
                 if($couier_payment != null){
                     $couier_payment->id = $couier_payment->id;
@@ -1247,15 +1327,74 @@ class CourierController extends Controller
                     $couier_payment->save();
                 }else{
                     Courier_payment::create($input);
+                }*/
+
+
+                if(isset($input['back'])){
+
+
+                    return redirect('/'.\Auth::user()->user_type.'/couriers/'.$courier_id.'/edit');
+
+                }else if(isset($input['save_box'])){
+                    return redirect('/'.\Auth::user()->user_type.'/couriers/'.$courier_id);
+
                 }
 
-
-
-                return redirect('/'.\Auth::user()->user_type.'/couriers');
-
             }else{
-                $request->session()->flash('error_message', 'Courier weight and all boxes weight does not equal!');
-                return redirect('/'.\Auth::user()->user_type.'/couriers/box_details/'.$courier_id);
+
+                if(isset($input['back'])){
+
+                    $check_courier_boxes = Courier_box::where('courier_id',$courier_id)->get();
+                    if($check_courier_boxes->count() >0){
+                        Courier_box::where('courier_id',$courier_id)->delete();
+                        Courier_box_item::where('courier_id',$courier_id)->delete();
+                    }
+
+                    foreach ($courier_boxes as $key=> $cb){
+                        $breadth = $cb['breadth'];
+                        $width = $cb['width'];
+                        $height = $cb['height'];
+                        $weight = $cb['weight'];
+                        $box_items = $cb['items'];
+
+                        $courier_box = new Courier_box();
+                        $courier_box->courier_id = $courier_id;
+                        $courier_box->box_name = "Box-".$key;
+                        $courier_box->breadth = $breadth;
+                        $courier_box->width = $width;
+                        $courier_box->height = $height;
+                        $courier_box->weight = $weight;
+                        $courier_box->save();
+                        $courier_box_id = $courier_box->id;
+
+                        foreach ($box_items as $item){
+                            $content_type_id = isset($item['content_type_id'])?$item['content_type_id']:"";
+                            if(!empty($content_type_id)){
+                                $unit_type = $item['unit_type'];
+                                $qty = $item['qty'];
+                                $courier_box_item = new Courier_box_item();
+                                $courier_box_item->courier_id = $courier_id;
+                                $courier_box_item->courier_box_id = $courier_box_id;
+                                $courier_box_item->content_type_id = $content_type_id;
+                                $courier_box_item->unit_type = $unit_type;
+                                $courier_box_item->qty = $qty;
+                                $courier_box_item->save();
+                            }
+
+                        }
+
+
+                    }
+
+
+                    return redirect('/'.\Auth::user()->user_type.'/couriers/'.$courier_id.'/edit');
+
+                }elseif(isset($input['save_box'])){
+                    $request->session()->flash('error_message', 'Courier weight and all boxes weight does not equal!');
+                    return redirect('/'.\Auth::user()->user_type.'/couriers/box_details/'.$courier_id);
+
+                }
+
             }
 
 

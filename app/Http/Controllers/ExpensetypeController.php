@@ -18,7 +18,7 @@ class ExpensetypeController extends Controller
     public function index()
     {
 
-        $data['expense_types']=Expense_type::all();
+        $data['expense_types']=Expense_type::orderBy('created_at', 'desc')->get();
         return view('admin.expense_types.index',$data);
     }
 

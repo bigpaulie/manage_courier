@@ -15,7 +15,7 @@ class StatusController extends Controller
      */
     public function index()
     {
-        $data['statuses']=Status::all();
+        $data['statuses']=Status::orderBy('created_at', 'desc')->get();
         return view('admin.status.index',$data);
     }
 

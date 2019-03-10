@@ -48,7 +48,7 @@ class ExpenseController extends Controller
 
         else if( $user_id > 0 && $from_date !="" && $end_date != ""){
 
-            $expenses= Expense::with(['expense_type','store','vendor'])->OrderBy('updated_at','desc')
+            $expenses= Expense::with(['expense_type','store','vendor'])->OrderBy('created_at','desc')
                 ->whereDate('expense_date','>=', $from_date)
                 ->whereDate('expense_date', '<=',$end_date)
                 ->where($where);
@@ -56,12 +56,12 @@ class ExpenseController extends Controller
         }else if($from_date !="" && $end_date != ""){
 
             $expenses= Expense::with(['expense_type','store','vendor'])
-                                                ->OrderBy('updated_at','desc')
+                                                ->OrderBy('created_at','desc')
                                                 ->whereDate('expense_date','>=', $from_date)
                                                 ->whereDate('expense_date', '<=',$end_date);
 
         }else if( $user_id > 0){
-            $expenses= Expense::with(['expense_type','store','vendor'])->OrderBy('updated_at','desc')
+            $expenses= Expense::with(['expense_type','store','vendor'])->OrderBy('created_at','desc')
                                ->where($where);
         }
 

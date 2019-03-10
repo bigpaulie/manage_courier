@@ -98,6 +98,12 @@
     <section class="panel">
         {!! Form::open(['url' => 'admin/manifest/create_manifest','method'=>'post']) !!}
         {{csrf_field()}}
+        <input type="hidden" name="from_date" value="{{$from_date}}">
+        <input type="hidden" name="end_date" value="{{$end_date}}">
+        @if(isset($agent))
+            <input type="hidden" name="filter_agent_id" value="{{$agent->id}}">
+        @endif
+
         <header class="panel-heading">
 
             <input name="bulk" class="btn btn-primary pull-right hide" type="submit" value="Create a Bulk" id="btn_bulk" >

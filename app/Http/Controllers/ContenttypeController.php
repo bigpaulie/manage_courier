@@ -15,7 +15,7 @@ class ContenttypeController extends Controller
      */
     public function index()
     {
-        $data['content_types']=Content_type::all();
+        $data['content_types']=Content_type::orderBy('created_at', 'desc')->get();
         return view('admin.content_types.index',$data);
     }
 

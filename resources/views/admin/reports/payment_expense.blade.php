@@ -69,6 +69,8 @@
                 <div class="col-md-3">
                     <div class="form-group">
                        <button type="button" class="btn btn-success" @click="searchEP" style="margin-top: 25px;"><i class="fa fa-search"></i> Search</button>
+                       <button type="button" class="btn btn-primary" @click="downloadEP" style="margin-top: 25px;"><i class="fa fa-download"></i> Download</button>
+
                     </div>
                 </div>
 
@@ -246,6 +248,15 @@
                     this.total_expense = response.data.total_expense;
                     this.total = response.data.total;
                 });
+
+                },
+
+                downloadEP(){
+
+                    var page_no =1;
+                    let searchURL = '/admin/downloadPaymentExpense?page='+page_no;
+                    searchURL+='&from_date='+this.from_date+'&end_date='+this.end_date
+                    window.location.href=searchURL;
 
                 },
 

@@ -20,6 +20,24 @@
         </div>
     </header>
 
+    <section class="panel">
+        <header class="panel-heading">
+
+            <h2 class="panel-title">Prints</h2>
+        </header>
+        <div class="panel-body">
+            <button type="button" class="mb-xs mt-xs mr-xs btn btn-default">Bill</button>
+
+            <button type="button" class="mb-xs mt-xs mr-xs btn btn-primary">Lable</button>
+
+            <button type="button" class="mb-xs mt-xs mr-xs btn btn-success">Package</button>
+
+            <button type="button" class="mb-xs mt-xs mr-xs btn btn-info">Invoice</button>
+
+            <button type="button" class="mb-xs mt-xs mr-xs btn btn-danger">Close</button>
+        </div>
+    </section>
+
 
     <section class="panel">
         <div class="panel-body">

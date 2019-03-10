@@ -20,6 +20,12 @@
         </div>
     </header>
 
+    @if (Session::has('message'))
+        <div class="alert alert-success">
+            <strong> {{ Session::get('message') }}</strong>
+        </div>
+    @endif
+
 
     <section class="panel">
         <header class="panel-heading">
@@ -73,6 +79,15 @@
 
                              <a href="\{{Auth::user()->user_type}}\manifest\excel_report\{{$manifest->id}}" style="margin-right: 10px;"><i class="fa fa-file-excel-o"></i></a>
                              <a href="\{{Auth::user()->user_type}}\manifest\print\{{$manifest->id}}"><i class="fa fa-print"></i></a>
+
+                             @if(Auth::user()->user_type == 'admin')
+
+                                 {!! Form::model($manifest,['method' => 'DELETE', 'action' => ['ManifestController@destroy', $manifest->id ], 'id'=>'frmdeleteManifest_'.$manifest->id ]) !!}
+                                 <button class="delete-row" type="button" onclick="deleteManifest('{{$manifest->id}}')"><i class="fa fa-trash-o"></i></button>
+                                 {!! Form::close() !!}
+
+                             @endif
+
                          </td>
                      </tr>
 
@@ -93,6 +108,21 @@
 @section('scripts')
 
     <script>
+
+        function deleteManifest(agentId){
+
+            var status= confirm('Are you sure want to delete this manifest?');
+            if(status == true){
+
+                event.preventDefault();
+                document.getElementById('frmdeleteManifest_'+agentId).submit();
+                return true;
+            }else{
+                return false;
+            }
+
+
+        }
 
         jQuery(document).ready(function($) {
 

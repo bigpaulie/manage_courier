@@ -55,14 +55,14 @@ class PaymentController extends Controller
 
         else if( $user_id > 0 && $from_date !="" && $end_date != ""){
 
-            $payments= Payment::with('agent')->OrderBy('updated_at','desc')
+            $payments= Payment::with('agent')->OrderBy('created_at','desc')
                 ->whereDate('payment_date','>=', $from_date)
                 ->whereDate('payment_date', '<=',$end_date)
                 ->where($where);
 
         }else{
 
-            $payments= Payment::with('agent')->OrderBy('updated_at','desc')
+            $payments= Payment::with('agent')->OrderBy('created_at','desc')
                             ->whereDate('payment_date','>=', $from_date)
                             ->whereDate('payment_date', '<=',$end_date);
 
