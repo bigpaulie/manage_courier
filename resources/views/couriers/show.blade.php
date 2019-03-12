@@ -28,18 +28,20 @@
         <div class="panel-body">
             <button type="button" class="mb-xs mt-xs mr-xs btn btn-default">Bill</button>
 
-            <button type="button" class="mb-xs mt-xs mr-xs btn btn-primary">Lable</button>
+            <a href="/{{Auth::user()->user_type}}/courier_label/{{$courier->id}}"><button type="button" class="mb-xs mt-xs mr-xs btn btn-primary">Lable</button></a>
 
             <button type="button" class="mb-xs mt-xs mr-xs btn btn-success">Package</button>
 
-            <button type="button" class="mb-xs mt-xs mr-xs btn btn-info">Invoice</button>
+            <a href="/{{Auth::user()->user_type}}/courier_report/{{$courier->id}}"><button type="button" class="mb-xs mt-xs mr-xs btn btn-info">Invoice</button></a>
 
-            <button type="button" class="mb-xs mt-xs mr-xs btn btn-danger">Close</button>
+            <a href="/{{Auth::user()->user_type}}/couriers"><button type="button" class="mb-xs mt-xs mr-xs btn btn-danger">Close</button></a>
+
+            <button type="button" class="mb-xs mt-xs mr-xs btn btn-warning" onclick="printDiv('printableArea')"><i class="fa fa-print"></i> Print</button>
         </div>
     </section>
 
 
-    <section class="panel">
+    <section class="panel" id="printableArea">
         <div class="panel-body">
             <div class="invoice">
                 <header class="clearfix">
@@ -235,6 +237,18 @@
         jQuery(document).ready(function($) {
 
         });
+
+
+        function printDiv(divName) {
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+
+            document.body.innerHTML = printContents;
+
+            window.print();
+
+            document.body.innerHTML = originalContents;
+        }
 
 
     </script>

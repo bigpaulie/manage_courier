@@ -38,9 +38,15 @@
 
                             <div class="form-group">
                                 <label class="col-sm-4 control-label">Self Address: </label>
-                                <div class="col-sm-8">
+                                <div class="col-sm-2">
                                     <input type="checkbox" v-model="self_address" @if(old('self_address') == 1) {{"checked"}} @endif name="self_address" class="checkbox" value="1" @click="fillUserData">
                                 </div>
+                                @if(Auth::user()->user_type == 'store')
+                                    <label class="col-sm-4 control-label">Is Agent: </label>
+                                    <div class="col-sm-2">
+                                        <input type="checkbox"  name="isAgent" class="checkbox" value="1">
+                                    </div>
+                                @endif
                             </div>
 
                             <div class="form-group @if ($errors->has('s_phone')) has-error  @endif">

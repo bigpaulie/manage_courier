@@ -74,4 +74,6 @@ class Courier extends Model
         return $this->hasOne('App\Models\Courier_payment');
     }
 
+
+
 }

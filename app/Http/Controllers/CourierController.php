@@ -140,7 +140,7 @@ class CourierController extends Controller
     public function store(Request $request)
     {
 
-       $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             's_name' => 'required',
             's_company' => 'required',
             's_address1' => 'required',
@@ -171,10 +171,21 @@ class CourierController extends Controller
 
         $input = $request->all();
 
-        $input['user_id']= \Auth::user()->id;
+        if(isset($input['isAgent'])){
+
+            $agent_user = User::where('name',$input['s_name'])->first();
+            $input['user_id']= $agent_user->id;
+            $input['unique_name']=$this->getCourierUniqueName($agent_user->id);
+
+        }else{
+            $input['user_id']= \Auth::user()->id;
+            $input['unique_name']=$this->getCourierUniqueName(\Auth::user()->id);
+        }
+
+
         $status = Status::where('code_name','pending')->first();
         $input['status_id']=$status->id;
-        $input['unique_name']=$this->getCourierUniqueName(\Auth::user()->id);
+
         $input['barcode_no']= rand();
         $input['courier_date']=date('Y-m-d',strtotime($input['courier_date']));
         $courier = Courier::create($input);
@@ -316,6 +327,7 @@ class CourierController extends Controller
      */
     public function update(Request $request, $id)
     {
+
 
         $validator = Validator::make($request->all(), [
             's_name' => 'required',
@@ -462,7 +474,8 @@ class CourierController extends Controller
                     ->whereDate('courier_date', '>=', $from_date)
                     ->whereDate('courier_date', '<=', $end_date)
                     ->whereIn('couriers.user_id', $user_ids)
-                    ->OrderBy('courier_date', 'desc');
+                    ->OrderBy('courier_date', 'desc')
+                ->OrderBy('id','desc');
             }
             elseif($user_type == 'store'){
                 $user_ids = User_profile::where('store_id',$user_id)->pluck('user_id')->toArray();
@@ -471,14 +484,16 @@ class CourierController extends Controller
                     ->whereDate('courier_date','>=', $from_date)
                     ->whereDate('courier_date', '<=',$end_date)
                     ->whereIn('couriers.user_id',$user_ids)
-                    ->OrderBy('courier_date','desc');
+                    ->OrderBy('courier_date','desc')
+                    ->OrderBy('id','desc');
 
             }else{
 
                 $couriers= $courier_joins
                                     ->whereDate('courier_date','>=', $from_date)
                                     ->whereDate('courier_date', '<=',$end_date)
-                                    ->OrderBy('courier_date','desc');
+                                    ->OrderBy('courier_date','desc')
+                                    ->OrderBy('id','desc');
             }
 
 
@@ -520,7 +535,8 @@ class CourierController extends Controller
                     ->whereDate('courier_date', '<=',$end_date)
                     ->where($where);
             }
-
+            $couriers->orderBy('courier_date','desc');
+            $couriers->orderBy('id','desc');
         }
         $courier_data = $couriers->paginate(50);
 
@@ -1543,7 +1559,27 @@ class CourierController extends Controller
             ->get();
         return response()->json($sender_phones);
 
+    }
 
+    public function courierLabel($id)
+    {
+        $courier= Courier::find($id);
+        if($courier != null){
+            $data['courier']=$courier;
+            $courier_boxes = $courier->courier_boxes;
+            $cb_boxes =[];
+            foreach ($courier_boxes as $cb){
+                $temp= [];
+                $temp['box_id']=$cb->id;
+                $temp['box_name']=$cb->box_name;
+                $temp['box_pics']= $cb->courier_box_items->count();
+                $cb_boxes[]= $temp;
+            }
+            $data['cb_boxes']=$cb_boxes;
+            return view('couriers.courier_label',$data);
+        }else{
+            abort(404);
+        }
 
     }
 

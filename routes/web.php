@@ -77,6 +77,7 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/expenses/delete/{id}','ExpenseController@destroy')->name('expenses.destroy');
         Route::get('/payments/delete/{id}','PaymentController@destroy')->name('payments.destroy');
         Route::get('/reports/manifest','ReportController@manifestPayment')->name('reports.manifest');
+        Route::get('/courier_label/{id}', 'CourierController@courierLabel')->name('admin.courierLabel');
 
 
 
@@ -116,6 +117,8 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/courier_report/{id}','CourierController@courierReport')->name('courierReport');
         Route::get('/reports/agent_payment','ReportController@agentPayment')->name('reports.agent_payment');
         Route::get('/couriers/payment_details/{id}', 'CourierController@paymentDetails')->name('couriers.payment_details');
+        Route::get('/courier_label/{id}', 'CourierController@courierLabel')->name('admin.courierLabel');
+
 
 
         Route::resource('couriers', 'CourierController');
@@ -139,6 +142,8 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/reports/manifest','ReportController@manifestPayment')->name('reports.manifest');
         Route::get('/manifest/download','ManifestController@downloadManifest')->name('manifest.download');
         Route::get('/manifest/excel_report/{id}','ManifestController@excelManifest')->name('manifest.excel_report');
+        Route::get('/courier_label/{id}', 'CourierController@courierLabel')->name('admin.courierLabel');
+
 
         Route::resource('expenses', 'ExpenseController');
         Route::resource('couriers', 'CourierController');
