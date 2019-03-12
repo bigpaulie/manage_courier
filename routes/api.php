@@ -30,6 +30,8 @@ Route::get('/getpayments','PaymentController@getPayments')->name('getpayments');
 Route::get('/getexpenses','ExpenseController@getExpenses')->name('getexpenses');
 Route::post('/get_store_agent','UserController@getStoreAgent')->name('get_store_agent');
 Route::get('/get_sender_phone','CourierController@getSenderPhone')->name('get_sender_phone');
+Route::get('/get_sender_name','CourierController@getSenderName')->name('get_sender_name');
+
 Route::get('/get_recipient_address','CourierController@getRecipientAddress')->name('get_recipient_address');
 Route::get('/generate_payment_expense','ReportController@generatePaymentExpense')->name('generate_report');
 Route::get('/getAgentPayment','ReportController@getAgentPayment')->name('getAgentPayment');

@@ -76,7 +76,26 @@
                             <div class="form-group @if ($errors->has('s_name')) has-error  @endif">
                                 <label class="col-sm-4 control-label">Name:<span class="text-danger">*</span> </label>
                                 <div class="col-sm-8">
-                                    <input type="text" name="s_name" class="form-control text-capitalize" value="{{old('s_name')}}" v-model="s_name">
+
+
+                                    <input type="hidden" name="s_name" id="senderName">
+                                    <vue-bootstrap-typeahead
+                                            v-model="s_name"
+                                            :data="senderNames"
+                                            :serializer="item => item.s_name"
+                                            @hit="selectedSName = $event"
+                                            class="phone_typeahead"
+
+                                    />
+
+                                    <template slot="suggestion" slot-scope="{ data, htmlText }">
+                                        <div class="d-flex align-items-center">
+
+                                            <div style="width: 100%">@{{data.s_phone}} <b>(@{{data.s_name}} - @{{data.s_company}})</b></div>
+                                        </div>
+                                    </template>
+
+                                    {{--<input type="text" name="s_name" class="form-control text-capitalize" value="{{old('s_name')}}" v-model="s_name">--}}
                                     @if ($errors->has('s_name'))
                                         <label for="s_name" class="error">{{ $errors->first('s_name') }}</label>
                                     @endif
@@ -529,6 +548,8 @@
                 remaining_amount:"{{$courier_payment->remaining}}",
                 calculate_weight:0,
                 courier_weight:0,
+                senderNames:[],
+                selectedSName:null,
 
 
 
@@ -559,9 +580,43 @@
                     $('#senderPhone').val(newQuery);
 
                 },
+
+                s_name(newQuery) {
+                    axios.get(`/api/get_sender_name?q=${newQuery}`)
+                        .then((res) => {
+                        this.senderNames = res.data;
+                })
+                    $('#senderName').val(newQuery);
+
+                },
                 selectedPhone(obj){
                     console.log(obj);
                     this.s_name = obj.s_name;
+                    this.s_company = obj.s_company;
+                    this.s_address1 = obj.s_address1;
+                    this.s_email = obj.s_email;
+                    this.s_country = obj.s_country;
+                    this.s_state = obj.s_state;
+                    this.s_city = obj.s_city;
+
+                    axios.get(`/api/get_recipient_address?q=${obj.s_phone}`)
+                        .then((res) => {
+                        this.repicipentAddress = res.data;
+                })
+
+                    $.magnificPopup.open({
+                        items: {
+                            src: '#recipientModal'
+                        },
+                        type: 'inline'
+                    });
+
+                },
+
+                selectedSName(obj){
+                    console.log(obj);
+
+                    this.s_phone = obj.s_phone;
                     this.s_company = obj.s_company;
                     this.s_address1 = obj.s_address1;
                     this.s_email = obj.s_email;

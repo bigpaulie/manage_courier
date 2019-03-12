@@ -1534,4 +1534,17 @@ class CourierController extends Controller
         return response()->json($recipient_details);
     }
 
+    public function getSenderName(Request $request){
+        $input = $request->all();
+        $search_key = $input['q'];
+
+        $sender_phones =  Courier::where('s_name','like',"%{$search_key}%")
+            ->groupBy('s_name')
+            ->get();
+        return response()->json($sender_phones);
+
+
+
+    }
+
 }
