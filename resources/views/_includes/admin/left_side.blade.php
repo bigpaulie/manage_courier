@@ -146,7 +146,7 @@
 
 
 
-                <?php $nav_array = ['expense_types','status','package_types','service_types', 'content_types','courier_services','banks','vendors']; ?>
+                <?php $nav_array = ['expense_types','status','package_types','service_types', 'content_types','courier_services','banks','vendors','companies']; ?>
 
                     <li class="nav-parent @if(in_array($controller_name, $nav_array))nav-expanded nav-active @endif">
                         <a>
@@ -195,6 +195,12 @@
                             <li @if($controller_name == 'vendors')class="nav-active" @endif>
                                 <a href="/admin/vendors">
                                     Vendors
+                                </a>
+                            </li>
+
+                            <li @if($controller_name == 'companies')class="nav-active" @endif>
+                                <a href="/admin/companies">
+                                    Companies
                                 </a>
                             </li>
 

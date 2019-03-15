@@ -12,6 +12,8 @@ use App\Models\User;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ManifestExport;
 use App\Exports\ManifestDetailExport;
+use App\Models\Company;
+
 
 use Session;
 use Validator;
@@ -105,6 +107,7 @@ class ManifestController extends Controller
             $data['agent'] = User::find($agent_id);
         }
         $data['vendors']=Vendor::pluck('name','id')->toArray();
+        $data['companies']=Company::all();
         $data['couriers'] =$couriers;
         $data['from_date'] =$from_date;
         $data['end_date'] =$end_date;
@@ -203,6 +206,8 @@ class ManifestController extends Controller
         $agent_id = isset($input['filter_agent_id'])?$input['filter_agent_id']:'';
         $courier_ids = $input['courier_id'];
         $manifest_data=[];
+        $company_id= $input['company_id'];
+
 
         $session_exists=0;
         if(Session::has('manifest_data')){
@@ -211,7 +216,7 @@ class ManifestController extends Controller
             $courier_ids= array_merge($courier_ids,$session_courier_ids);
             $session_exists=1;
 
-            if(isset($input['bulk'])){
+            if($company_id > 0){
                 $manifest_data['items']=isset($session_manifest_data['items'])?$session_manifest_data['items']:[];
             }
 
@@ -233,21 +238,23 @@ class ManifestController extends Controller
 
         }
 
-        if(isset($input['bulk'])){
+        if($company_id > 0){
 
             if($session_exists && isset($session_manifest_data['bulk_items'])){
                 $session_bulk_items =$session_manifest_data['bulk_items'];
                 $count_bulk_items = count($session_bulk_items);
-                $new_bulk_item[$count_bulk_items] = $input['courier_id'];
+                $new_bulk_item[$count_bulk_items]['courier_ids'] = $input['courier_id'];
+                $new_bulk_item[$count_bulk_items]['company_id']=$input['company_id'];
 
                 $manifest_data['bulk_items']=array_merge($session_bulk_items,$new_bulk_item);
 
             }else{
-                $manifest_data['bulk_items'][]=$input['courier_id'];
+                $manifest_data['bulk_items'][]['courier_ids']=$input['courier_id'];
+                $manifest_data['bulk_items'][0]['company_id']=$input['company_id'];
             }
         }
-
-
+           // dd($session_exists);
+           // dd($manifest_data);
 
         $request->session()->put('manifest_data', $manifest_data);
 
@@ -315,7 +322,8 @@ class ManifestController extends Controller
                     $manifest_item = new Manifest_item();
                     $manifest_item->manifest_id = $manifest_id;
                     $manifest_item->item_type = 'bulk';
-                    $manifest_item->courier_id = implode(",",$sbi);
+                    $manifest_item->courier_id = implode(",",$sbi['courier_ids']);
+                    $manifest_item->company_id = $sbi['company_id'];
                     $manifest_item->save();
                 }
 

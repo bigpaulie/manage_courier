@@ -102,6 +102,7 @@ Route::group(['middleware' => array('auth')], function() {
         Route::resource('courier_services', 'CourierServiceController');
         Route::resource('banks', 'BankController');
         Route::resource('vendors', 'VendorController');
+        Route::resource('companies', 'CompanyController');
 
 
 

@@ -96,17 +96,18 @@
 
 
     <section class="panel">
-        {!! Form::open(['url' => 'admin/manifest/create_manifest','method'=>'post']) !!}
+        {!! Form::open(['url' => 'admin/manifest/create_manifest','method'=>'post','id'=>'frmCreateManifest']) !!}
         {{csrf_field()}}
         <input type="hidden" name="from_date" value="{{$from_date}}">
         <input type="hidden" name="end_date" value="{{$end_date}}">
+        <input type="hidden" name="company_id" value="" id="hnCompanyId">
         @if(isset($agent))
             <input type="hidden" name="filter_agent_id" value="{{$agent->id}}">
         @endif
 
         <header class="panel-heading">
 
-            <input name="bulk" class="btn btn-primary pull-right hide" type="submit" value="Create a Bulk" id="btn_bulk" >
+            <input name="bulk" class="btn btn-primary pull-right hide" type="button" onclick="openCompanyModel();" value="Create a Bulk" id="btn_bulk" >
             <input name="item" style="margin-right: 10px;"  class="btn btn-primary pull-right hide" id="btn_item" type="submit" value="Add Item">
             <h2 class="panel-title">Manage Couriers</h2>
         </header>
@@ -157,7 +158,7 @@
                                         if($count_bulk > 0){
                                             foreach($bulk_items as $key=> $bi){
                                                 $bulk_no = $key+1;
-                                                if(in_array($courier->id, $bi)){
+                                                if(in_array($courier->id, $bi['courier_ids'])){
                                                     echo "<strong>Bulk".$bulk_no." </strong>";
                                                 }
                                             }
@@ -224,11 +225,88 @@
     <!-- end: page -->
 
 
+    <div id="modalForm" class="modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Companies</h2>
+            </header>
+            <div class="panel-body">
+                    <div class="form-group mt-lg">
+                        <label class="col-sm-3 control-label">Name</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" v-model="company_id" @change="selectedCompany">
+                                <option value="">Select Company</option>
+                                @foreach($companies as $company)
+                                    <option value="{{$company->id}}">{{$company->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" v-if="companyAddres">
+                        <label class="col-sm-3 control-label">Address</label>
+                        <div class="col-sm-9">
+                            <b>@{{companyAddres}}</b>
+                        </div>
+                    </div>
+
+
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="submitBulkform();">Submit</button>
+                        <button class="btn btn-default modal-dismiss" onclick="closeBulkform();">Cancel</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+
 @endsection
 
 @section('scripts')
 
     <script>
+
+
+
+
+        const oapp = new Vue({
+            el:'#app',
+
+            data:{
+
+                companies:@json($companies),
+                companyAddres:null,
+                company_id:"",
+
+            },
+
+
+            methods: {
+
+                selectedCompany(){
+                    var id = this.company_id;
+                    if(id > 0){
+                        var item = this.companies.filter(function(item){ return item.id == id;} ).pop();
+                        console.log(item.address);
+                        this.companyAddres = item.address;
+                        $('#hnCompanyId').val(id);
+                    }else{
+                        this.companyAddres = null;
+                    }
+
+                }
+
+            },
+
+            computed: {
+
+            }
+
+        });
+
+
         var user_type = "{{Auth::user()->user_type}}";
         var logged_user_id = "{{Auth::user()->id}}";
         jQuery(document).ready(function($) {
@@ -313,6 +391,30 @@
             if(vendor !=""){
                 $('#btnSave').removeAttr('disabled');
             }
+        }
+
+        function openCompanyModel(){
+
+            $.magnificPopup.open({
+                items: {
+                    src: '#modalForm'
+                },
+                type: 'inline'
+            });
+        }
+
+        function submitBulkform(){
+            if( $('#hnCompanyId').val() >0){
+                event.preventDefault();
+                document.getElementById('frmCreateManifest').submit();
+            }else{
+                alert("Please select Company");
+            }
+
+        }
+
+        function closeBulkform(){
+            $.magnificPopup.close();
         }
 
         function filterAgent(){

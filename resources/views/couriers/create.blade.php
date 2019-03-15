@@ -615,6 +615,11 @@
                             src: '#recipientModal'
                         },
                         type: 'inline'
+                    });$.magnificPopup.open({
+                        items: {
+                            src: '#recipientModal'
+                        },
+                        type: 'inline'
                     });
 
                 },
