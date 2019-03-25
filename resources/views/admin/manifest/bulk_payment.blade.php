@@ -95,6 +95,8 @@
                                         <input type="text" name="manifest[{{$key}}][bulk_payment]" class="form-control" value="{{$md['bulk_payment']}}">
                                         <input type="hidden" name="manifest[{{$key}}][manifest_id]" class="form-control" value="{{$manifest->id}}">
                                         <input type="hidden" name="manifest[{{$key}}][item_id]" class="form-control" value="{{$md['item_id']}}">
+                                        <input type="hidden" name="manifest[{{$key}}][company_id]" class="form-control" value="{{$md['company_id']}}">
+
                                     </td>
 
                                 </tr>

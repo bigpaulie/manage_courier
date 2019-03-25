@@ -52,6 +52,10 @@
                                         <label class="checkbox-inline">
                                             <input type="radio" id="inlineCheckbox2" name="expense_of" value="vendor" v-model="expense_of"> Vendor
                                         </label>
+
+                                        <label class="checkbox-inline">
+                                            <input type="radio" id="inlineCheckbox3" name="expense_of" value="company" v-model="expense_of"> Company
+                                        </label>
                                     </div>
                                 </div>
 
@@ -73,6 +77,17 @@
                                         </select>
                                         @if ($errors->has('vendor_id'))
                                             <label for="vendor_id" class="error">{{ $errors->first('vendor_id') }}</label>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group @if ($errors->has('company_id')) has-error @endif" v-show="expense_of == 'company'">
+                                    <label class="col-sm-4 control-label">Company: </label>
+                                    <div class="col-sm-8">
+                                        {!! Form::select('company_id', $companies, '', ['class'=>'form-control mb-md','placeholder' => 'Select Company',]); !!}
+
+                                    @if ($errors->has('company_id'))
+                                            <label for="company_id" class="error">{{ $errors->first('company_id') }}</label>
                                         @endif
                                     </div>
                                 </div>

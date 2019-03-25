@@ -26,4 +26,8 @@ class Expense extends Model
     public function vendor(){
         return $this->belongsTo('App\Models\Vendor','vendor_id','id');
     }
+
+    public function company(){
+        return $this->belongsTo('App\Models\Company','company_id','id');
+    }
 }

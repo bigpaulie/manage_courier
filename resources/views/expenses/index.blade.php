@@ -101,6 +101,7 @@
                     <th>Amount</th>
                     <th class="hidden-xs hidden-sm">Expense Type</th>
                     <th>Vendor</th>
+                    <th>Company</th>
                     <th class="text-right">Expense Date</th>
                     <th class="text-right hidden-xs hidden-sm">Payment By</th>
                     <th class="text-right">Receiver Name</th>
@@ -117,6 +118,7 @@
                     <td data-title="Amount" class="hidden-xs hidden-sm">@{{expense.amount}}</td>
                     <td data-title="Expense Type" class="text-right"><span v-if="expense.expense_type">@{{expense.expense_type.name}}</span></td>
                     <td><span v-if="expense.vendor">@{{expense.vendor.name}}</span></td>
+                    <td><span v-if="expense.company">@{{expense.company.name}}</span></td>
                     <td data-title="Expense Date" class="text-right hidden-xs hidden-sm">@{{expense.expense_date}}</td>
                     <td data-title="Payment By" class="text-right">@{{expense.payment_by}}</td>
                     <td data-title="Receiver Name" class="text-right">@{{expense.receiver_name}}</td>

@@ -163,6 +163,7 @@ class ManifestController extends Controller
         $pending_status_id = Status::where('code_name',"pending")->first()->id;
         $manifest_couriers = Courier::whereIn('id',$courier_ids)->update(['status_id' => $pending_status_id]);
         Manifest_item::where('manifest_id',$id)->delete();
+        Manifest_bulk_payment::where('manifest_id',$id)->delete();
         Manifest::where('id',$id)->delete();
 
 
@@ -462,6 +463,7 @@ class ManifestController extends Controller
                     $temp['source']=$countries[$manifest->store->profile->country_id];
                     $temp['destination']=$mi->company->address;
                     $temp['item_id']=$mi->id;
+                    $temp['company_id']=$mi->company_id;
                     $temp['bulk_payment']=$mi->bulk_payment;;
                 }
 
@@ -497,6 +499,7 @@ class ManifestController extends Controller
                 $manifest_bulk_payment->manifest_id = $bp['manifest_id'];
                 $manifest_bulk_payment->manifest_item_id = $bp['item_id'];
                 $manifest_bulk_payment->amount = $bp['bulk_payment'];
+                $manifest_bulk_payment->company_id = $bp['company_id'];
                 $manifest_bulk_payment->payment_date = date('Y-m-d');
                 $manifest_bulk_payment->save();
 
@@ -505,6 +508,7 @@ class ManifestController extends Controller
                 $manifest_bulk_payment->manifest_id = $bp['manifest_id'];
                 $manifest_bulk_payment->manifest_item_id = $bp['item_id'];
                 $manifest_bulk_payment->amount = $bp['bulk_payment'];
+                $manifest_bulk_payment->company_id = $bp['company_id'];
                 $manifest_bulk_payment->payment_date = date('Y-m-d');
                 $manifest_bulk_payment->save();
             }

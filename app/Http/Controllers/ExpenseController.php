@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Expense_type;
 use App\Models\Expense;
+use App\Models\Company;
+
 use Validator;
 
 class ExpenseController extends Controller
@@ -43,25 +45,25 @@ class ExpenseController extends Controller
         }
 
         if($type == 'all'){
-            $expenses= Expense::with(['expense_type','store','vendor'])->OrderBy('created_at','desc');
+            $expenses= Expense::with(['expense_type','store','vendor','company'])->OrderBy('created_at','desc');
         }
 
         else if( $user_id > 0 && $from_date !="" && $end_date != ""){
 
-            $expenses= Expense::with(['expense_type','store','vendor'])->OrderBy('created_at','desc')
+            $expenses= Expense::with(['expense_type','store','vendor','company'])->OrderBy('created_at','desc')
                 ->whereDate('expense_date','>=', $from_date)
                 ->whereDate('expense_date', '<=',$end_date)
                 ->where($where);
 
         }else if($from_date !="" && $end_date != ""){
 
-            $expenses= Expense::with(['expense_type','store','vendor'])
+            $expenses= Expense::with(['expense_type','store','vendor','company'])
                                                 ->OrderBy('created_at','desc')
                                                 ->whereDate('expense_date','>=', $from_date)
                                                 ->whereDate('expense_date', '<=',$end_date);
 
         }else if( $user_id > 0){
-            $expenses= Expense::with(['expense_type','store','vendor'])->OrderBy('created_at','desc')
+            $expenses= Expense::with(['expense_type','store','vendor','company'])->OrderBy('created_at','desc')
                                ->where($where);
         }
 
@@ -83,6 +85,7 @@ class ExpenseController extends Controller
 
         $data['expense_types']=Expense_type::pluck('name', 'id')->toArray();
         $data['payment_types']=['cheque'=>'Cheque','cash'=>'Cash','net_banking'=>'Net Banking'];
+        $data['companies']=Company::pluck('name', 'id')->toArray();
         return view('expenses.create',$data);
     }
 
@@ -110,6 +113,10 @@ class ExpenseController extends Controller
 
         if($request->expense_of == 'vendor'){
             $fields_array = $fields_array+['vendor_id'=>'required'];
+        }
+
+        if($request->expense_of == 'company'){
+            $fields_array = $fields_array+['company_id'=>'required'];
         }
 
         if($request->payment_by == 'cash'){
@@ -156,13 +163,14 @@ class ExpenseController extends Controller
         $input = $request->all();
         $expense = new Expense();
         $expense->user_id = \Auth::user()->id;
-        $expense->expense_type_id = $input['expense_type_id'];
+        $expense->expense_type_id = isset($input['expense_type_id'])?$input['expense_type_id']:"";
         $expense->expense_date = date('Y-m-d',strtotime($input['expense_date']));
         $expense->party_name = $input['party_name'];
         $expense->debited_from = $input['debited_from'];
         $expense->description = $input['description'];
         $expense->expense_of = $input['expense_of'];
         $expense->vendor_id = isset($input['vendor_id'])?$input['vendor_id']:"";
+        $expense->company_id = isset($input['company_id'])?$input['company_id']:"";
         if($request->payment_by == 'cash'){
             $expense->payment_by = 'Cash';
             $expense->amount = $input['cash_amount'];
@@ -214,6 +222,8 @@ class ExpenseController extends Controller
 
         $data['expense_types']=Expense_type::pluck('name', 'id')->toArray();
         $data['payment_types']=['cheque'=>'Cheque','cash'=>'Cash','net_banking'=>'Net Banking'];
+        $data['companies']=Company::pluck('name', 'id')->toArray();
+
 
         $key = array_search ($expense->payment_by, $data['payment_types']);
         $expense->payment_by = $key;
@@ -246,6 +256,10 @@ class ExpenseController extends Controller
 
         if($request->expense_of == 'vendor'){
             $fields_array = $fields_array+['vendor_id'=>'required'];
+        }
+
+        if($request->expense_of == 'company'){
+            $fields_array = $fields_array+['company_id'=>'required'];
         }
         if($request->payment_by == 'cash'){
 
@@ -292,13 +306,14 @@ class ExpenseController extends Controller
         $input = $request->all();
         $expense = Expense::find($id);
 
-        $expense->expense_type_id = $input['expense_type_id'];
+        $expense->expense_type_id = isset($input['expense_type_id'])?$input['expense_type_id']:"";
         $expense->expense_date = date('Y-m-d',strtotime($input['expense_date']));
         $expense->party_name = $input['party_name'];
         $expense->debited_from = $input['debited_from'];
         $expense->description = $input['description'];
         $expense->expense_of = $input['expense_of'];
         $expense->vendor_id = isset($input['vendor_id'])?$input['vendor_id']:"";
+        $expense->company_id = isset($input['company_id'])?$input['company_id']:"";
         if($request->payment_by == 'cash'){
             $expense->payment_by = 'Cash';
             $expense->amount = $input['cash_amount'];
