@@ -488,12 +488,28 @@ class ManifestController extends Controller
         foreach ($bulk_payment_data['manifest'] as $bp){
 
 
-            $manifest_bulk_payment = new Manifest_bulk_payment();
-            $manifest_bulk_payment->manifest_id = $bp['manifest_id'];
-            $manifest_bulk_payment->manifest_item_id = $bp['item_id'];
-            $manifest_bulk_payment->amount = $bp['bulk_payment'];
-            $manifest_bulk_payment->payment_date = date('Y-m-d');
-            $manifest_bulk_payment->save();
+            $manifest_bulk_payment = Manifest_bulk_payment::where('manifest_id',$bp['manifest_id'])
+                                                            ->where('manifest_item_id',$bp['item_id'])
+                                                            ->first();
+
+            if($manifest_bulk_payment != null){
+
+                $manifest_bulk_payment->manifest_id = $bp['manifest_id'];
+                $manifest_bulk_payment->manifest_item_id = $bp['item_id'];
+                $manifest_bulk_payment->amount = $bp['bulk_payment'];
+                $manifest_bulk_payment->payment_date = date('Y-m-d');
+                $manifest_bulk_payment->save();
+
+            }else{
+                $manifest_bulk_payment = new Manifest_bulk_payment();
+                $manifest_bulk_payment->manifest_id = $bp['manifest_id'];
+                $manifest_bulk_payment->manifest_item_id = $bp['item_id'];
+                $manifest_bulk_payment->amount = $bp['bulk_payment'];
+                $manifest_bulk_payment->payment_date = date('Y-m-d');
+                $manifest_bulk_payment->save();
+            }
+
+
 
             $manifest_item = Manifest_item::find($bp['item_id']);
             $manifest_item->bulk_payment = $bp['bulk_payment'];
