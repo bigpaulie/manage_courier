@@ -78,9 +78,12 @@
                              <a href="{{route('manifest.edit',$manifest->id)}}" class="" style="margin-right: 10px;"><i class="fa fa-pencil"></i></a>
 
                              <a href="\{{Auth::user()->user_type}}\manifest\excel_report\{{$manifest->id}}" style="margin-right: 10px;"><i class="fa fa-file-excel-o"></i></a>
-                             <a href="\{{Auth::user()->user_type}}\manifest\print\{{$manifest->id}}"><i class="fa fa-print"></i></a>
+                             <a href="\{{Auth::user()->user_type}}\manifest\print\{{$manifest->id}}"  style="margin-right: 10px;"><i class="fa fa-print"></i></a>
 
                              @if(Auth::user()->user_type == 'admin')
+
+                                 <a href="\{{Auth::user()->user_type}}\manifest\bulk_payment\{{$manifest->id}}"  style="margin-right: 10px;"><i class="fa fa-money"></i></a>
+
 
                                  {!! Form::model($manifest,['method' => 'DELETE', 'action' => ['ManifestController@destroy', $manifest->id ], 'id'=>'frmdeleteManifest_'.$manifest->id ]) !!}
                                  <button class="delete-row" type="button" onclick="deleteManifest('{{$manifest->id}}')"><i class="fa fa-trash-o"></i></button>

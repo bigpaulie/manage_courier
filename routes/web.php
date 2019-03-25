@@ -66,6 +66,9 @@ Route::group(['middleware' => array('auth')], function() {
         Route::get('/downloadWalkingCustomer','ReportController@downloadWalkingCustomer')->name('downloadWalkingCustomer');
         Route::get('/downloadManifestReport','ReportController@downloadManifestReport')->name('downloadManifestReport');
         Route::get('/downloadPaymentExpense','ReportController@downloadPaymentExpense')->name('downloadPaymentExpense');
+        Route::get('/manifest/bulk_payment/{id}','ManifestController@bulkPayment')->name('manifest.bulk_payment');
+        Route::post('/manifest/save_bulk_payment', 'ManifestController@saveBulkPayment');
+
 
 
 

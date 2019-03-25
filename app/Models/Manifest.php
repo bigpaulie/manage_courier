@@ -14,7 +14,7 @@ class Manifest extends Model
     }
 
     public function manifest_items(){
-        return $this->hasMany('App\Models\Manifest_item','manifest_id');
+        return $this->hasMany('App\Models\Manifest_item','manifest_id')->with('company');
     }
 
     public function store(){

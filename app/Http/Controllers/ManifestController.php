@@ -8,11 +8,15 @@ use App\Models\Status;
 use App\Models\Vendor;
 use App\Models\Manifest;
 use App\Models\Manifest_item;
+use App\Models\Manifest_bulk_payment;
 use App\Models\User;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ManifestExport;
 use App\Exports\ManifestDetailExport;
 use App\Models\Company;
+use App\Models\Country;
+
+
 
 
 use Session;
@@ -377,17 +381,129 @@ class ManifestController extends Controller
     public function excelManifest($id){
 
         $manifest= Manifest::find($id);
+        $manifest_items = $manifest->manifest_items;
+       // dd($manifest_items);
         if($manifest != null){
-            $courier_ids = explode(",",$manifest->courier_ids);
-            $manifest_couriers = Courier::whereIn('id',$courier_ids)->get();
+            //$courier_ids = explode(",",$manifest->courier_ids);
+           // $manifest_couriers = Courier::whereIn('id',$courier_ids)->get();
+
+
+            $manifest_details =[];
+
+            foreach ($manifest_items as $mi){
+
+                $courier_ids = explode(",",$mi->courier_id);
+                $manifest_couriers = Courier::whereIn('id',$courier_ids)->get();
+                $manifest_weight =0;
+                $no_of_boxes=0;
+                foreach ($manifest_couriers as $mc){
+                    $manifest_weight+= $mc->shippment->weight;
+                    $no_of_boxes+= $mc->no_of_boxes;
+                }
+
+                $countries = Country::pluck('name', 'id')->toArray();
+                $temp =[];
+                $temp['unique_name']=$manifest->unique_name;
+                if($mi->item_type == 'bulk'){
+                    $temp['sender_name']=$manifest->store->name;
+                    $temp['recipient_name']=$mi->company->name;
+                    $temp['source']=$countries[$manifest->store->profile->country_id];
+                    $temp['destination']=$mi->company->address;
+                }else if($mi->item_type == 'item'){
+                    $temp['sender_name']=$manifest_couriers[0]->s_name;
+                    $temp['recipient_name']=$manifest_couriers[0]->r_name;
+                    $temp['source']=$countries[$manifest_couriers[0]->s_country];
+                    $temp['destination']=$countries[$manifest_couriers[0]->r_country];
+                }
+
+                $temp['weight']=$manifest_weight;
+                $temp['no_of_boxes']=$no_of_boxes;
+                $temp['amount']=0;
+
+                $manifest_details[]=$temp;
+            }
+           // dd($manifest_details);
             $data['manifest']=$manifest;
-            $data['manifest_couriers']=$manifest_couriers;
+            $data['manifest_details']=$manifest_details;
 
             $t="manifest_details_".time().".xlsx";
             return Excel::download(new ManifestDetailExport($data), $t);
         }else{
             abort(404);
         }
+    }
+
+
+    public function bulkPayment($id){
+
+        $manifest= Manifest::find($id);
+        $manifest_items = $manifest->manifest_items->where('item_type','bulk');
+
+        if($manifest != null){
+           $manifest_details =[];
+
+            foreach ($manifest_items as $mi){
+
+                $courier_ids = explode(",",$mi->courier_id);
+                $manifest_couriers = Courier::whereIn('id',$courier_ids)->get();
+                $manifest_weight =0;
+                $no_of_boxes=0;
+                foreach ($manifest_couriers as $mc){
+                    $manifest_weight+= $mc->shippment->weight;
+                    $no_of_boxes+= $mc->no_of_boxes;
+                }
+
+                $countries = Country::pluck('name', 'id')->toArray();
+                $temp =[];
+                $temp['unique_name']=$manifest->unique_name;
+                if($mi->item_type == 'bulk'){
+                    $temp['sender_name']=$manifest->store->name;
+                    $temp['recipient_name']=$mi->company->name;
+                    $temp['source']=$countries[$manifest->store->profile->country_id];
+                    $temp['destination']=$mi->company->address;
+                    $temp['item_id']=$mi->id;
+                    $temp['bulk_payment']=$mi->bulk_payment;;
+                }
+
+                $temp['weight']=$manifest_weight;
+                $temp['no_of_boxes']=$no_of_boxes;
+
+
+                $manifest_details[]=$temp;
+            }
+             //dd($manifest_details);
+            $data['manifest']=$manifest;
+            $data['manifest_details']=$manifest_details;
+            return view('admin.manifest.bulk_payment',$data);
+
+        }else{
+            abort(404);
+        }
+    }
+
+    public function saveBulkPayment(Request $request){
+
+        $bulk_payment_data = $request->all();
+
+        foreach ($bulk_payment_data['manifest'] as $bp){
+
+
+            $manifest_bulk_payment = new Manifest_bulk_payment();
+            $manifest_bulk_payment->manifest_id = $bp['manifest_id'];
+            $manifest_bulk_payment->manifest_item_id = $bp['item_id'];
+            $manifest_bulk_payment->amount = $bp['bulk_payment'];
+            $manifest_bulk_payment->payment_date = date('Y-m-d');
+            $manifest_bulk_payment->save();
+
+            $manifest_item = Manifest_item::find($bp['item_id']);
+            $manifest_item->bulk_payment = $bp['bulk_payment'];
+            $manifest_item->save();
+
+        }
+
+        $request->session()->flash('message', 'Bulk Payment has been added successfully!');
+        return redirect('/'.\Auth::user()->user_type.'/manifest');
+
     }
 
 
