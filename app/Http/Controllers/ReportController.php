@@ -144,7 +144,8 @@ class ReportController extends Controller
 
         }else{
 
-            $payments= Payment::with('user')->OrderBy('updated_at','desc')
+            $payments= Payment::with('user')
+                                            ->OrderBy('payment_date','desc')
                                             ->whereDate('payment_date','>=', $from_date)
                                             ->whereDate('payment_date', '<=',$end_date)
                                             ->where('payment_user_type','agent_store');
