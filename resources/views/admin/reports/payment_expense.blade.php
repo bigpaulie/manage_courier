@@ -110,8 +110,8 @@
                         <span v-if="ex.payment_user_type">@{{ex.payment_by | capitalize}}</span>
                         <span v-if="ex.courier_id">Courier</span>
                         <span v-if="ex.expense_type_id && ex.expense_type_id > 0">@{{ex.expense_type.name}}</span>
-                        <span v-if="ex.vendor_id && ex.expense_type_id > 0">Vendor - @{{ex.vendor.name}}</span>
-                        <span v-if="ex.company_id && ex.expense_type_id > 0">Company - @{{ex.company.name}}</span>
+                        <span v-if="ex.vendor_id && ex.vendor_id > 0">Vendor - @{{ex.vendor.name}}</span>
+                        <span v-if="ex.company_id && ex.company_id > 0">Company - @{{ex.company.name}}</span>
                     </td>
 
                     <td data-title="Payment(Cr.)">
