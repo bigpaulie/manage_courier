@@ -121,9 +121,9 @@
                     </td>
 
                     <td data-title="Expense(Dr.)">
-                        <span v-if="ex.expense_type_id">@{{ex.amount}}</span>
-                        <span v-if="ex.company_id">@{{ex.amount}}</span>
-                        <span v-if="ex.vendor_id">@{{ex.amount}}</span>
+                        <span v-if="ex.expense_type_id && ex.expense_type_id > 0">@{{ex.amount}}</span>
+                        <span v-if="ex.company_id && ex.company_id > 0">@{{ex.amount}}</span>
+                        <span v-if="ex.vendor_id && ex.vendor_id > 0">@{{ex.amount}}</span>
                     </td>
                     <td></td>
                 </tr>
