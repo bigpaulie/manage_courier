@@ -39,6 +39,8 @@ Route::post('/get_walking_customer','UserController@getWalkingCustomer')->name('
 Route::get('/getWalkingCustomerPayment','ReportController@getWalkingCustomerPayment')->name('getWalkingCustomerPayment');
 Route::post('/get_vendors','VendorController@getVendors')->name('get_vendors');
 Route::get('/getManifestPayment','ReportController@getManifestPayment')->name('getManifestPayment');
+Route::get('/getCompanyPayment','ReportController@getCompanyPayment')->name('getCompanyPayment');
+
 
 
 

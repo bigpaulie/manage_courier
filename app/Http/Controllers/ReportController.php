@@ -10,11 +10,19 @@ use App\Models\User;
 use App\Models\User_profile;
 use App\Models\Courier_payment;
 use App\Models\Manifest;
+use App\Models\Company;
+use App\Models\Manifest_bulk_payment;
+
+
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AgentPaymentExport;
 use App\Exports\WalkingCustomerExport;
 use App\Exports\ManifestReportExport;
 use App\Exports\PaymentExpenseExport;
+use App\Exports\CompanyReportExport;
+
+
+
 
 
 
@@ -854,7 +862,112 @@ class ReportController extends Controller
         return Excel::download(new ManifestReportExport($response_data), $t);
 
 
+    }
 
+    public function companyPayment(){
+
+        $data['user_id']=\Auth::user()->id;
+        $data['user_type']=\Auth::user()->user_type;
+        $data['companies']=Company::pluck('name', 'id')->toArray();
+        return view('admin.reports.company_report',$data);
+    }
+
+
+    public function getCompanyPayment(Request $request){
+
+        $input = $request->all();
+        $logged_user_id= isset($input['logged_user_id'])?$input['logged_user_id']:"";
+        $userType = isset($input['user_type'])?$input['user_type']:'';
+        $company_id = isset($input['company_id'])?$input['company_id']:'';
+        $manifest_bulk_payments = Manifest_bulk_payment::with(['company','manifest'])->where('company_id',$company_id)
+                                                        ->orderBy('payment_date','desc')
+                                                        ->get();
+
+
+        $company_expenses =   Expense::with('company')
+                                    ->where('company_id',$company_id)
+                                    ->orderBy('expense_date','desc')
+                                    ->get();
+
+
+
+
+
+        $total_company_amount = $manifest_bulk_payments->sum('amount');
+        $total_company_paid_amount = $company_expenses->sum('amount');
+
+        $mp_grouped = $manifest_bulk_payments->groupBy('payment_date');
+
+        $ce_grouped = $company_expenses->groupBy('expense_date');
+
+
+        $manifest_payment_arr = array_merge_recursive($mp_grouped->toArray(),$ce_grouped->toArray());
+
+        $company_payment_data=[];
+        foreach ($manifest_payment_arr as $key => $pe) {
+            foreach ($pe as $key => $value) {
+                $company_payment_data[]=$value;
+            }
+
+        }
+
+        $response_data['company_payment_data']=$company_payment_data;
+        $response_data['total_amount']=$total_company_amount;
+        $response_data['total_paid_amount']=$total_company_paid_amount;
+        $response_data['total_remaining']= $total_company_amount-$total_company_paid_amount;
+
+        return response()->json($response_data);
+
+
+
+    }
+
+
+    public function downloadCompanyReport(Request $request){
+
+        $input = $request->all();
+        $logged_user_id= isset($input['logged_user_id'])?$input['logged_user_id']:"";
+        $userType = isset($input['user_type'])?$input['user_type']:'';
+        $company_id = isset($input['company_id'])?$input['company_id']:'';
+        $manifest_bulk_payments = Manifest_bulk_payment::with(['company','manifest'])->where('company_id',$company_id)
+            ->orderBy('payment_date','desc')
+            ->get();
+
+
+        $company_expenses =   Expense::with('company')
+            ->where('company_id',$company_id)
+            ->orderBy('expense_date','desc')
+            ->get();
+
+
+
+
+
+        $total_company_amount = $manifest_bulk_payments->sum('amount');
+        $total_company_paid_amount = $company_expenses->sum('amount');
+
+        $mp_grouped = $manifest_bulk_payments->groupBy('payment_date');
+
+        $ce_grouped = $company_expenses->groupBy('expense_date');
+
+
+        $manifest_payment_arr = array_merge_recursive($mp_grouped->toArray(),$ce_grouped->toArray());
+
+        $company_payment_data=[];
+        foreach ($manifest_payment_arr as $key => $pe) {
+            foreach ($pe as $key => $value) {
+                $company_payment_data[]=$value;
+            }
+
+        }
+
+        $response_data['company_payment_data']=$company_payment_data;
+        $response_data['total_amount']=$total_company_amount;
+        $response_data['total_paid_amount']=$total_company_paid_amount;
+        $response_data['total_remaining']= $total_company_amount-$total_company_paid_amount;
+
+        $t="company_report".time().".xlsx";
+        return Excel::download(new CompanyReportExport($response_data), $t);
 
 
     }

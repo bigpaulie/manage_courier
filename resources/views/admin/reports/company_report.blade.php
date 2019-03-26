@@ -1,13 +1,12 @@
 @extends('layouts.admin')
 @section('date-styles')
-    <link href='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css' rel='stylesheet' type='text/css'>
 
 @endsection
 
 @section('content')
 
     <header class="page-header">
-        <h2>Manifest Reports</h2>
+        <h2>Company Reports</h2>
 
         <div class="right-wrapper pull-right">
             <ol class="breadcrumbs">
@@ -17,7 +16,7 @@
                     </a>
                 </li>
 
-                <li><span>Manifest</span></li>
+                <li><span>Company</span></li>
             </ol>
 
             <a class="sidebar-right-toggle" data-open="sidebar-right"></a>
@@ -31,23 +30,22 @@
 
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label class="control-label">Vendor</label>
-                        <select  class="form-control populate" id="selectVendor" name="user_id">
+                        <label class="control-label">Company</label>
+                        {!! Form::select('company_id', $companies, '', ['class'=>'form-control mb-md','placeholder' => 'Select Company','id'=>'company_id']); !!}
 
-                        </select>
                     </div>
                 </div>
 
 
                 <div class="col-md-3">
                     <div class="form-group">
-                        <button type="button" class="btn btn-success" @click="filterWalkingCustomer" style="margin-top: 25px;"><i class="fa fa-search"></i> Search</button>
-                        <button type="button" class="btn btn-primary" @click="downloadManifestReport" style="margin-top: 25px;"><i class="fa fa-download"></i> Download</button>
+                        <button type="button" class="btn btn-success" @click="filterCompany" style="margin-top: 25px;"><i class="fa fa-search"></i> Search</button>
+                        <button type="button" class="btn btn-primary" @click="downloadCompanyReport" style="margin-top: 25px;"><i class="fa fa-download"></i> Download</button>
 
                     </div>
                 </div>
 
-                <div class="col-md-3" v-if="typeof manifest_payments != 'undefined' && manifest_payments.length > 0">
+                <div class="col-md-3" v-if="typeof company_payments != 'undefined' && company_payments.length > 0">
                     <div class="form-group">
                         <label class="control-label text-bold">Total Amount(Dr.) <span class="text-primary">@{{total_amount}}</span></label>
                     </div>
@@ -75,7 +73,7 @@
                 <thead>
                 <tr>
                     <th class="">Payment Date</th>
-                    <th class="">Vendor Name</th>
+                    <th class="">Transaction Details</th>
                     <th>Total Amount(Dr.)</th>
                     <th class="">Total Paid Amount(Cr.)</th>
 
@@ -83,20 +81,24 @@
                 </thead>
                 <tbody>
 
-                <tr v-for="(mp, index) in manifest_payments">
+                <tr v-for="(cp, index) in company_payments">
                     <td data-title="Date">
-                        <span v-if="mp.expense_date">@{{mp.expense_date}}</span>
-                        <span v-if="mp.payment_date">@{{mp.payment_date}}</span>
+                        <span v-if="cp.expense_date">@{{cp.expense_date}}</span>
+                        <span v-if="cp.payment_date">@{{cp.payment_date}}</span>
                     </td>
-                    <td data-title="Vendor">@{{mp.vendor.name}} </td>
-                     <td data-title="Total Amount(Dr.)"><span v-if="mp.unique_name">@{{mp.amount}}</span></td>
+                    <td data-title="Transaction Details">
+                        <span v-if="cp.payment_date"> Bulk (@{{ cp.manifest.unique_name }})</span>
+                        <span v-if="cp.expense_date"> @{{cp.receiver_name}} (By @{{ cp.payment_by }})</span>
+
+                    </td>
+                    <td data-title="Total Amount(Dr.)"><span v-if="cp.manifest_item_id">@{{cp.amount}}</span></td>
                     <td data-title="Total Paid Amount(Cr.)">
-                        <span v-if="mp.expense_of">@{{mp.amount}}</span>
+                        <span v-if="cp.expense_of">@{{cp.amount}}</span>
                     </td>
 
                 </tr>
 
-                <tr v-if="typeof manifest_payments != 'undefined' && manifest_payments.length > 0">
+                <tr v-if="typeof company_payments != 'undefined' && company_payments.length > 0">
                     <td colspan="2">
 
                     </td>
@@ -111,7 +113,7 @@
                     </td>
                 </tr>
 
-                <tr v-if="typeof manifest_payments != 'undefined' && manifest_payments.length > 0">
+                <tr v-if="typeof company_payments != 'undefined' && company_payments.length > 0">
                     <td colspan="3">
 
                     </td>
@@ -149,33 +151,6 @@
         var logged_user_id = "{{$user_id}}";
         var customerUrl = "/api/get_vendors";
 
-        jQuery(document).ready(function($) {
-            $("#selectVendor").select2({
-                placeholder: "Search Vendor",
-                allowClear: true,
-                minimumInputLength:2,
-                ajax: {
-                    url: customerUrl,
-                    type: "post",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            searchTerm: params.term // search term
-                        };
-                    },
-                    processResults: function (response) {
-                        return {
-                            results: response
-                        };
-                    },
-                    cache: true
-                }
-            });
-
-        });
-
-
 
 
         Vue.filter('exists', function (value) {
@@ -196,7 +171,7 @@
             el:'#app',
 
             data:{
-                manifest_payments:{},
+                company_payments:{},
                 looged_user_id:"{{$user_id}}",
                 user_type:"{{$user_type}}"
 
@@ -210,16 +185,16 @@
             methods: {
 
 
-                filterWalkingCustomer(page=1){
+                filterCompany(page=1){
 
-                    var vendor_id = $("#selectVendor").val();
+                    var company_id = $("#company_id").val();
 
-                    let searchURL = '/api/getManifestPayment?type=all&user_type='+this.user_type+'&logged_user_id='+this.looged_user_id;
-                    searchURL+='&vendor_id='+vendor_id;
+                    let searchURL = '/api/getCompanyPayment?type=all&user_type='+this.user_type+'&logged_user_id='+this.looged_user_id;
+                    searchURL+='&company_id='+company_id;
 
 
                     axios.get(searchURL).then(response => {
-                        this.manifest_payments = response.data.manifest_payment_data;
+                    this.company_payments = response.data.company_payment_data;
                     this.total_amount = response.data.total_amount;
                     this.total_paid_amount = response.data.total_paid_amount;
                     this.total_remaining = response.data.total_remaining;
@@ -227,13 +202,13 @@
 
                 },
 
-                downloadManifestReport(){
+                downloadCompanyReport(){
 
 
-                    var vendor_id = $("#selectVendor").val();
+                    var company_id = $("#company_id").val();
 
-                    let searchURL = '/admin/downloadManifestReport?type=all&user_type='+this.user_type+'&logged_user_id='+this.looged_user_id;
-                    searchURL+='&vendor_id='+vendor_id;
+                    let searchURL = '/admin/downloadCompanyReport?type=all&user_type='+this.user_type+'&logged_user_id='+this.looged_user_id;
+                    searchURL+='&company_id='+company_id;
 
                     window.location.href=searchURL;
 

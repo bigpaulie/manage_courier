@@ -109,7 +109,7 @@
 
                     </li>
 
-                    <?php $reports_array = ['walking_customer','agent_payment','payment_expense','manifest']; ?>
+                    <?php $reports_array = ['walking_customer','agent_payment','payment_expense','manifest','company']; ?>
 
                     <li class="nav-parent @if(in_array($action_name, $reports_array))nav-expanded nav-active @endif">
                         <a>
@@ -137,6 +137,12 @@
                             <li @if($action_name == 'manifest')class="nav-active" @endif>
                                 <a href="/admin/reports/manifest">
                                     Manifest Report
+                                </a>
+                            </li>
+
+                            <li @if($action_name == 'company')class="nav-active" @endif>
+                                <a href="/admin/reports/company">
+                                    Company Report
                                 </a>
                             </li>
 
@@ -286,7 +292,7 @@
 
                         </li>
 
-                        <?php $reports_array = ['walking_customer','agent_payment','payment_expense','manifest']; ?>
+                        <?php $reports_array = ['walking_customer','agent_payment','payment_expense','manifest','company']; ?>
 
                         <li class="nav-parent @if(in_array($action_name, $reports_array))nav-expanded nav-active @endif">
                             <a>
@@ -315,6 +321,12 @@
                                 <li @if($action_name == 'manifest')class="nav-active" @endif>
                                     <a href="/store/reports/manifest">
                                         Manifest Report
+                                    </a>
+                                </li>
+
+                                <li @if($action_name == 'company')class="nav-active" @endif>
+                                    <a href="/store/reports/company">
+                                        Company Report
                                     </a>
                                 </li>
 
