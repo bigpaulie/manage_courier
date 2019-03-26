@@ -114,17 +114,19 @@ class ReportController extends Controller
       
         if( $user_id > 0 && $from_date !="" && $end_date != ""){
 
-            $payments= Payment::with('user')->OrderBy('payment_date','desc')
+            $payments= Payment::with('user')
                                 ->whereDate('payment_date','>=', $from_date)
                                 ->whereDate('payment_date', '<=',$end_date)
                                 ->where($where_p)
-                                ->where('payment_user_type','agent_store');
+                                ->where('payment_user_type','agent_store')
+                                ->OrderBy('payment_date','desc');
 
-            $walking_payments= Payment::with('user')->OrderBy('payment_date','desc')
+            $walking_payments= Payment::with('user')
                                 ->whereDate('payment_date','>=', $from_date)
                                 ->whereDate('payment_date', '<=',$end_date)
                                 ->where($where_p)
-                                ->where('payment_user_type','walking_customer');
+                                ->where('payment_user_type','walking_customer')
+                                ->OrderBy('payment_date','desc');
 
             $courier_Ids = Courier::where('user_id',$user_id)->pluck('id')->toArray();
 
@@ -137,10 +139,11 @@ class ReportController extends Controller
 
 
             $expenses= Expense::with(['expense_type','user','vendor','company'])
-                                ->OrderBy('expense_date','desc')
+
                                 ->whereDate('expense_date','>=', $from_date)
                                 ->whereDate('expense_date', '<=',$end_date)
-                                ->where($where_ex);
+                                ->where($where_ex)
+                                ->OrderBy('expense_date','desc');
 
         }else{
 
