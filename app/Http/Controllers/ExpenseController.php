@@ -161,6 +161,7 @@ class ExpenseController extends Controller
 
 
         $input = $request->all();
+        
         $expense = new Expense();
         $expense->user_id = \Auth::user()->id;
         $expense->expense_type_id = isset($input['expense_type_id'])?$input['expense_type_id']:"";

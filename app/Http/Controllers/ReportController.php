@@ -114,13 +114,13 @@ class ReportController extends Controller
       
         if( $user_id > 0 && $from_date !="" && $end_date != ""){
 
-            $payments= Payment::with('user')->OrderBy('updated_at','desc')
+            $payments= Payment::with('user')->OrderBy('payment_date','desc')
                                 ->whereDate('payment_date','>=', $from_date)
                                 ->whereDate('payment_date', '<=',$end_date)
                                 ->where($where_p)
                                 ->where('payment_user_type','agent_store');
 
-            $walking_payments= Payment::with('user')->OrderBy('updated_at','desc')
+            $walking_payments= Payment::with('user')->OrderBy('payment_date','desc')
                                 ->whereDate('payment_date','>=', $from_date)
                                 ->whereDate('payment_date', '<=',$end_date)
                                 ->where($where_p)
@@ -136,7 +136,8 @@ class ReportController extends Controller
 
 
 
-            $expenses= Expense::with(['expense_type','user'])->OrderBy('updated_at','desc')
+            $expenses= Expense::with(['expense_type','user','vendor','company'])
+                                ->OrderBy('expense_date','desc')
                                 ->whereDate('expense_date','>=', $from_date)
                                 ->whereDate('expense_date', '<=',$end_date)
                                 ->where($where_ex);
@@ -149,7 +150,7 @@ class ReportController extends Controller
                                             ->where('payment_user_type','agent_store');
 
 
-            $walking_payments= Payment::with('user')->OrderBy('updated_at','desc')
+            $walking_payments= Payment::with('user')->OrderBy('payment_date','desc')
                                         ->whereDate('payment_date','>=', $from_date)
                                         ->whereDate('payment_date', '<=',$end_date)
                                         ->where('payment_user_type','walking_customer');
@@ -162,8 +163,8 @@ class ReportController extends Controller
                                                 ->orderBy('payment_date','desc');
 
 
-            $expenses= Expense::with(['expense_type','user'])
-                                ->OrderBy('updated_at','desc')
+            $expenses= Expense::with(['expense_type','user','vendor','company'])
+                                ->OrderBy('expense_date','desc')
                                 ->whereDate('expense_date','>=', $from_date)
                                 ->whereDate('expense_date', '<=',$end_date);     
 
