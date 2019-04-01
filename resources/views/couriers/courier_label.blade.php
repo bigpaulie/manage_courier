@@ -58,8 +58,9 @@
 
 
 
-                                    <td style="float: right; ">Box: {{$courier->no_of_boxes}}</td>
-                                    {{--<td style="float: right; margin-right: 10px;" >Box: {{$key+1}}</td>--}}
+
+                                    <td style="float: right; margin-right: 10px;" >PCS: {{$courier->no_of_boxes}}</td>
+                                    <td style="float: right;margin-right: 10px; ">Box: {{$key+1}}</td>
                                 </tr>
                             </table>
                         </h3>
@@ -83,7 +84,11 @@
 
                                         <th>ADDRESS :</th>
 
-                                        <td style="float: left;">{{$courier->r_address1}}, {{$courier->r_city}},{{$courier->r_state}} ,{{$courier->r_zip_code}}</td>
+                                        <td style="float: left;">
+                                            <p>{{$courier->r_address1}}</p>
+                                            <p>{{$courier->r_city}}, {{$courier->r_state}}</p>
+                                             <p>{{$courier->r_zip_code}}</p>
+                                        </td>
 
                                     </tr>
                                     <tr><td>&nbsp;</td></tr>
