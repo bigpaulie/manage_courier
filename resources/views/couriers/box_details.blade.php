@@ -47,7 +47,7 @@
                             <tr>
                                 <th>Boxes</th>
                                 <th>(L*W*H)</th>
-                                <th>Cal/365</th>
+                                <th>Cal/5000</th>
 
                             </tr>
                             </thead>
@@ -55,7 +55,7 @@
                             <tr v-for="box,b in boxes">
                                 <td>Box - @{{b}}</td>
                                 <td>(@{{box.cb.breadth}} * @{{box.cb.width}} * @{{box.cb.height}} )</td>
-                                <td>@{{(box.cb.breadth * box.cb.width * box.cb.height /365) | round_value}}</td>
+                                <td>@{{(box.cb.breadth * box.cb.width * box.cb.height /5000) | round_value}}</td>
 
                             </tr>
                             <tr>
@@ -290,7 +290,7 @@
                             var box_h =0;
                         }
                         var cal_mul = parseFloat(box_l)*parseFloat(box_w)*parseFloat(box_h);
-                        var cal_div = cal_mul/365;
+                        var cal_div = cal_mul/5000;
                         total_vol= total_vol+cal_div;
                     }
                     return total_vol.toFixed(1);

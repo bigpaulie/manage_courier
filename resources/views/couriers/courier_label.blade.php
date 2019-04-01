@@ -58,8 +58,8 @@
 
 
 
-                                    <td style="float: right; ">PCS: {{$box['box_pics']}}</td>
-                                    <td style="float: right; margin-right: 10px;" >Box: {{$key+1}}</td>
+                                    <td style="float: right; ">Box: {{$courier->no_of_boxes}}</td>
+                                    {{--<td style="float: right; margin-right: 10px;" >Box: {{$key+1}}</td>--}}
                                 </tr>
                             </table>
                         </h3>
@@ -74,7 +74,7 @@
 
                                         <th>TO :</th>
 
-                                        <td style="float: left;">{{$courier->s_name}}</td>
+                                        <td style="float: left;">{{$courier->r_name}}</td>
 
                                     </tr>
                                     <tr><td colspan="2">&nbsp;</td></tr>
@@ -83,7 +83,7 @@
 
                                         <th>ADDRESS :</th>
 
-                                        <td style="float: left;">{{$courier->s_address1}}, {{$courier->s_city}},{{$courier->s_state}}</td>
+                                        <td style="float: left;">{{$courier->r_address1}}, {{$courier->r_city}},{{$courier->r_state}} ,{{$courier->r_zip_code}}</td>
 
                                     </tr>
                                     <tr><td>&nbsp;</td></tr>
@@ -92,21 +92,21 @@
                                     <tr>
                                         <th>COUNTRY :</th>
 
-                                        <td style="float: left;"><b>{{$courier->sender_country->name}}</b></td>
+                                        <td style="float: left;"><b>{{$courier->receiver_country->name}}</b></td>
                                     </tr>
                                     <tr><td>&nbsp;</td></tr>
 
                                     <tr>
                                         <th>PHONE :</th>
 
-                                        <td style="float: left;">{{$courier->s_phone}}</td>
+                                        <td style="float: left;">{{$courier->r_phone}}</td>
                                     </tr>
                                     <tr><td>&nbsp;</td></tr>
 
                                     <tr style="border-top: 1px solid #eee;">
                                         <th>FROM :</th>
 
-                                        <td style="float: left;">{{$courier->r_name}}</td>
+                                        <td style="float: left;">{{$courier->s_name}}</td>
                                     </tr>
                                     </tbody>
                                 </table>
