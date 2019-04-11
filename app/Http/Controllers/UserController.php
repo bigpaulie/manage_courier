@@ -203,6 +203,23 @@ class UserController extends Controller
     }
 
 
+    public function getStoreName(Request $request){
+        $input = $request->all();
+        $search_key = $input['searchTerm'];
+        $users = User::where('name','like',"%{$search_key}%")
+            ->where('user_type','store')
+            ->orderBy('name','asc')->get();
+        $user_data=[];
+        foreach ($users as $user){
+            $temp=[];
+            $temp['id']= $user->id;
+            $temp['text']= $user->name." - ".$user->profile->company_name;
+            $user_data[]=$temp;
+        }
+        return $user_data;
+    }
+
+
     public function getStoreAgent(Request $request){
         $input = $request->all();
         $store_id = isset($input['user_store_id'])?$input['user_store_id']:0;

@@ -15,4 +15,8 @@ class Courier_payment extends Model
     public function courier(){
         return $this->belongsTo('App\Models\Courier','courier_id','id');
     }
+
+    public function user(){
+        return $this->belongsTo('App\Models\User','user_id','id');
+    }
 }

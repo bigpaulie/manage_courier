@@ -14,8 +14,8 @@
     </tr>
 
     <tbody>
-
     @foreach($payment_expense['payments_expense_data'] as $ex)
+
     <tr>
 
         <td>
@@ -23,10 +23,11 @@
             @if (isset($ex['expense_date'])){{$ex['expense_date']}} @endif
            </td>
         <td>
-            @if (isset($ex['payment_by'])){{ucfirst($ex['payment_by'])}} @endif
-            @if (isset($ex['courier_id'])){{"Courier"}} @endif
+            @if (isset($ex['payment_user_type']) ){{ucfirst($ex['payment_by'])}} - {{ucfirst($ex['reciver_name']) }} @endif
+            @if (isset($ex['courier_id'])){{"Courier"}}  - {{ $ex['courier']['unique_name']}} ({{ $ex['courier']['s_name'] }}) @endif
             @if (isset($ex['expense_type_id'])){{$ex['expense_type']['name']}} @endif
-
+            @if(isset($ex['company_id']) && $ex['company_id'] > 0)Company - {{$ex['company']['name']}} @endif
+            @if(isset($ex['vendor_id']) && $ex['vendor_id'] > 0)Company - {{$ex['vendor']['name']}} @endif
 
         </td>
 

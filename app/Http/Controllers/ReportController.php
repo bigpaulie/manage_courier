@@ -130,7 +130,7 @@ class ReportController extends Controller
 
             $courier_Ids = Courier::where('user_id',$user_id)->pluck('id')->toArray();
 
-            $courier_payments = Courier_payment::where('user_id',$user_id)
+            $courier_payments = Courier_payment::with(['courier','user'])->where('user_id',$user_id)
                                             ->whereIn('courier_id',$courier_Ids)
                                              ->whereDate('payment_date','>=', $from_date)
                                              ->whereDate('payment_date', '<=',$end_date)
@@ -161,7 +161,7 @@ class ReportController extends Controller
 
 
 
-            $courier_payments = Courier_payment::whereDate('payment_date','>=', $from_date)
+            $courier_payments = Courier_payment::with(['courier','user'])->whereDate('payment_date','>=', $from_date)
                                                 ->whereDate('payment_date', '<=',$end_date)
                                                 ->whereNotNull('pay_amount')
                                                 ->orderBy('payment_date','desc');
@@ -259,15 +259,16 @@ class ReportController extends Controller
 
             $courier_Ids = Courier::where('user_id',$user_id)->pluck('id')->toArray();
 
-            $courier_payments = Courier_payment::where('user_id',$user_id)
-                ->whereIn('courier_id',$courier_Ids)
-                ->whereDate('payment_date','>=', $from_date)
-                ->whereDate('payment_date', '<=',$end_date)
-                ->orderBy('payment_date','desc');
+            $courier_payments = Courier_payment::with(['courier','user'])
+                                                ->where('user_id',$user_id)
+                                                ->whereIn('courier_id',$courier_Ids)
+                                                ->whereDate('payment_date','>=', $from_date)
+                                                ->whereDate('payment_date', '<=',$end_date)
+                                                ->orderBy('payment_date','desc');
 
 
 
-            $expenses= Expense::with(['expense_type','user'])->OrderBy('updated_at','desc')
+            $expenses= Expense::with(['expense_type','user','vendor','company'])->OrderBy('updated_at','desc')
                 ->whereDate('expense_date','>=', $from_date)
                 ->whereDate('expense_date', '<=',$end_date)
                 ->where($where_ex);
@@ -287,13 +288,14 @@ class ReportController extends Controller
 
 
 
-            $courier_payments = Courier_payment::whereDate('payment_date','>=', $from_date)
-                ->whereDate('payment_date', '<=',$end_date)
-                ->whereNotNull('pay_amount')
-                ->orderBy('payment_date','desc');
+            $courier_payments = Courier_payment::with(['courier','user'])
+                                                    ->whereDate('payment_date','>=', $from_date)
+                                                    ->whereDate('payment_date', '<=',$end_date)
+                                                    ->whereNotNull('pay_amount')
+                                                    ->orderBy('payment_date','desc');
 
 
-            $expenses= Expense::with(['expense_type','user'])
+            $expenses= Expense::with(['expense_type','user','vendor','company'])
                 ->OrderBy('updated_at','desc')
                 ->whereDate('expense_date','>=', $from_date)
                 ->whereDate('expense_date', '<=',$end_date);

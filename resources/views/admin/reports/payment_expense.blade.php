@@ -29,14 +29,14 @@
             <div class="row">
 
                 
-               <!--  <div class="col-md-3">
+                <div class="col-md-3">
                     <div class="form-group">
-                        <label class="control-label">Name</label>
+                        <label class="control-label">Store Name</label>
                         <select  class="form-control populate" id="userSelect" name="user_id">
 
                         </select>
                     </div>
-                </div> -->
+                </div>
 
                 <div class="col-md-3">
                     <div class="form-group">
@@ -90,11 +90,12 @@
                 <tr>
                     
 
-                    <th class="text-right">Date</th>
-                    <th class="text-right">Payment Type</th>
+                    <th class="">Date</th>
+
+                    <th class="">Payment Type</th>
                     <th>Payment(Cr.)</th>
 
-                    <th class="text-right">Expense(Dr.)</th>
+                    <th class="">Expense(Dr.)</th>
                     <th>Total</th>
                     
                     
@@ -107,8 +108,8 @@
                     <td data-title="Payment Type">
 
 
-                        <span v-if="ex.payment_user_type">@{{ex.payment_by | capitalize}}</span>
-                        <span v-if="ex.courier_id">Courier</span>
+                        <span v-if="ex.payment_user_type">@{{ex.payment_by | capitalize}} - @{{ex.reciver_name | capitalize}}</span>
+                        <span v-if="ex.courier_id">Courier - @{{ ex.courier.unique_name }} (@{{ ex.courier.s_name }})</span>
                         <span v-if="ex.expense_type_id && ex.expense_type_id > 0">@{{ex.expense_type.name}}</span>
                         <span v-if="ex.vendor_id && ex.vendor_id > 0">Vendor - @{{ex.vendor.name}}</span>
                         <span v-if="ex.company_id && ex.company_id > 0">Company - @{{ex.company.name}}</span>
@@ -171,28 +172,28 @@
 
         jQuery(document).ready(function($) {
 
-            // $("#userSelect").select2({
-            //     placeholder: "Search User Name",
-            //     allowClear: true,
-            //     minimumInputLength:2,
-            //     ajax: {
-            //         url: "/api/get_user_name",
-            //         type: "post",
-            //         dataType: 'json',
-            //         delay: 250,
-            //         data: function (params) {
-            //             return {
-            //                 searchTerm: params.term // search term
-            //             };
-            //         },
-            //         processResults: function (response) {
-            //             return {
-            //                 results: response
-            //             };
-            //         },
-            //         cache: true
-            //     }
-            // });
+            $("#userSelect").select2({
+                placeholder: "Search Store Name",
+                allowClear: true,
+                minimumInputLength:2,
+                ajax: {
+                    url: "/api/get_store_name",
+                    type: "post",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            searchTerm: params.term // search term
+                        };
+                    },
+                    processResults: function (response) {
+                        return {
+                            results: response
+                        };
+                    },
+                    cache: true
+                }
+            });
 
         });
 
@@ -242,8 +243,9 @@
 
                    
                     var page_no =1;
+                    var store_id = $("#userSelect").val();
 
-                    let searchURL = '/api/generate_payment_expense?page='+page_no;
+                    let searchURL = '/api/generate_payment_expense?page='+page_no+'&user_id='+store_id;
                     searchURL+='&from_date='+this.from_date+'&end_date='+this.end_date
 
                     axios.get(searchURL).then(response => {
@@ -258,7 +260,8 @@
                 downloadEP(){
 
                     var page_no =1;
-                    let searchURL = '/admin/downloadPaymentExpense?page='+page_no;
+                    var store_id = $("#userSelect").val();
+                    let searchURL = '/admin/downloadPaymentExpense?page='+page_no+'&user_id='+store_id;
                     searchURL+='&from_date='+this.from_date+'&end_date='+this.end_date
                     window.location.href=searchURL;
 
